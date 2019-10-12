@@ -1,0 +1,264 @@
+<div id="dashboard-analytics" class="page-layout blank">
+
+    <div class="main-widget">
+
+        <div class="position-relative visitor_top_sec blue-600" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <span class="h1 top_heading">Dashboard</span>
+                <!-- <span class="h5 secondary-text">Unique visitors by month</span> -->
+            </div>
+            <!-- <div fxLayout="row" fxLayoutAlign="start center">
+                <div class="py-8 px-12 border-radius-2 line-height-1 mr-8 cursor-pointer"
+                    (click)="widget1SelectedYear = '2016'" [ngClass]="{'blue-700': widget1SelectedYear === '2016'}">
+                    2016
+                </div>
+                <div class="py-8 px-12 border-radius-2 line-height-1 mr-8 cursor-pointer"
+                    (click)="widget1SelectedYear = '2017'" [ngClass]="{'blue-700': widget1SelectedYear === '2017'}">
+                    2017
+                </div>
+                <div class="py-8 px-12 border-radius-2 line-height-1 cursor-pointer"
+                    (click)="widget1SelectedYear = '2018'" [ngClass]="{'blue-700': widget1SelectedYear === '2018'}">
+                    2018
+                </div>
+            </div> -->
+        </div>
+
+        <!-- <div class="position-relative h-256 pb-16 blue-600">
+            <canvas baseChart [datasets]="widgets.widget1.datasets[widget1SelectedYear]"
+                [labels]="widgets.widget1.labels" [colors]="widgets.widget1.colors" [options]="widgets.widget1.options"
+                [chartType]="widgets.widget1.chartType">
+            </canvas>
+        </div> -->
+
+    </div>
+
+    <div class="content">
+
+        <div class="left mr-lg-32 visitor_view_sec">
+
+            <!-- <div class="pb-24 font-size-18 font-weight-300">
+                How are your active users trending over time?
+            </div> -->
+
+
+
+            <div class="fuse-card auto-width top-border visitor_fuse_card">
+
+                <div class="position-relative p-24" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                        <span class="h2">Visitors & Page views</span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div class="py-8 px-12 border-radius-2 line-height-1 mr-8 cursor-pointer"
+                            (click)="widget5SelectedDay = 'yesterday'"
+                            [ngClass]="{'accent': widget5SelectedDay === 'yesterday'}">
+                            Yesterday
+                        </div>
+                        <div class="py-8 px-12 border-radius-2 line-height-1 mr-8 cursor-pointer"
+                            (click)="widget5SelectedDay = 'today'"
+                            [ngClass]="{'accent': widget5SelectedDay === 'today'}">
+                            Today
+                        </div>
+                    </div>
+                </div>
+
+                <div class="position-relative h-368 pb-16">
+                    <canvas baseChart [datasets]="widgets.widget5.datasets[widget5SelectedDay]"
+                        [labels]="widgets.widget5.labels" [colors]="widgets.widget5.colors"
+                        [options]="widgets.widget5.options" [chartType]="widgets.widget5.chartType">
+                    </canvas>
+                </div>
+
+            </div>
+            <!-- / Widget 5 -->
+
+            <!-- Widget 6 -->
+
+            <!-- / Widget 6 -->
+
+        </div>
+
+        <div class="right">
+
+
+
+            <!-- Widget 7 -->
+            <div class="mb-48" [ngClass.lt-lg]="''" [ngClass.xs]="'mr-0'">
+
+                <!-- <div class="pb-24 font-size-18 font-weight-300">
+                        What are your top devices?
+                    </div> -->
+
+                <div class="fuse-card top-border right_fuse_card">
+
+                    <div class="p-16">
+                        <div class="h2 font-weight-300">New Users</div>
+                    </div>
+
+                    <div class="h-200">
+                        <!-- <ngx-charts-pie-chart *fuseIfOnDom [scheme]="widgets.widget7.scheme"
+                                [results]="widgets.widget7.devices" [doughnut]="true">
+                            </ngx-charts-pie-chart> -->
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <!-- <div class="block">
+                                <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                                <h2>Anna Strong</h2>
+                                <p> ADM Stamford<button class="view_btn">View</button></p>
+
+                            </div> -->
+
+                        <div class="user_sec">
+                            <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                            <span>
+                                Anna Strong</span>
+                            <!-- <span class="user_next"> ADM Stamford</span> -->
+                            <button class="view_btn">View</button>
+                        </div>
+                        <!-- <div class="user_sec">
+                                <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
+                                <span>
+                                    Anna Strong</span>
+                                <span class="user_next"> ADM Stamford</span>
+                            <button class="view_btn">View</button>
+                            -->
+                    </div>
+
+                    <!-- <div class="p-16" fxLayout="row" fxLayoutAlign="center center">
+
+                            <div class="px-16" fxLayout="column" fxLayoutAlign="start center"
+                                *ngFor="let device of widgets.widget7.devices">
+
+                                <div class="h4 secondary-text">{{device.name}}</div>
+                                <div class="h2 font-weight-300 py-8">{{device.value}}%</div>
+
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <mat-icon class="s-18 pr-4 red-fg" *ngIf="device.change < 0">
+                                        arrow_downward
+                                    </mat-icon>
+
+                                    <mat-icon class="s-18 pr-4 green-fg" *ngIf="device.change > 0">
+                                        arrow_upward
+                                    </mat-icon>
+
+                                    <div class="h5 red-fg"
+                                        [ngClass]="{'red-fg': device.change < 0, 'green-fg': device.change > 0}">
+                                        {{device.change}}%
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div> -->
+
+                    <!-- <div class="card-divider mb-0"></div> -->
+
+                    <!-- <div class="px-16" fxLayout="row" fxLayoutAlign="space-between center">
+                            <mat-form-field>
+                                <mat-select class="simplified" value="7days">
+                                    <mat-option value="today">Today</mat-option>
+                                    <mat-option value="yesterday">Yesterday</mat-option>
+                                    <mat-option value="7days">Last 7 days</mat-option>
+                                    <mat-option value="28days">Last 28 days</mat-option>
+                                    <mat-option value="90days">Last 90 days</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-button color="accent">OVERVIEW</button>
+                        </div> -->
+
+                </div>
+
+            </div>
+            <!-- / Widget 7 -->
+
+        </div>
+
+
+
+        <!-- pagination -->
+        <div class="pagination_sec">
+            <h2>Reports</h2>
+            <div class="">
+                <table mat-table [dataSource]="dataSource">
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef> No. </th>
+                        <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                    </ng-container>
+
+
+
+                    <!-- Name Column -->
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef> CP Date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="charterer">
+                        <th mat-header-cell *matHeaderCellDef>Charterer</th>
+                        <td mat-cell *matCellDef="let element"> {{element.charterer}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Vessel & Charterer </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="schar">
+                        <th mat-header-cell *matHeaderCellDef>S. Charterer</th>
+                        <td mat-cell *matCellDef="let element"> {{element.schar}} </td>
+                    </ng-container>
+
+                    <!-- Symbol Column -->
+                    <ng-container matColumnDef="symbol">
+                        <th mat-header-cell *matHeaderCellDef> S. Owner</th>
+                        <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[6, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- <h2>Dashboard</h2> -->
+<!-- </div>
+</div> -->

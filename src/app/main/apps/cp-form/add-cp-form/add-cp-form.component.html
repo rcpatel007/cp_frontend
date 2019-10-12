@@ -1,0 +1,59 @@
+<div id="cp-form" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+    <div class="top-bg accent"></div>
+    <div class="heading center">
+        <div class="header-row">
+            <div class="row-col-3">
+                <h2>CP Form Management</h2>
+            </div>
+
+            <div class="row-col-3">
+                <div style="float: right;">
+                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <a
+                        routerLink="/apps/cp-form-management"> CP Form
+                        Management </a> > <b> CP Form Add </b>
+                </div>
+            </div>
+        </div>
+
+        <div class="mat-elevation-z8">
+
+            <div class="main-tab">
+                <div class="header-row">
+                    <div class="row-col-3">
+                        <h2 style="padding-bottom: 0;"> Add CP Form </h2>
+                    </div>
+                    <div class="row-col-3">
+                        <button routerLink="/apps/cp-form-management" class="add-item add-item--back-button"> Back
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <hr>
+            <div class="content-card">
+
+                <form [formGroup]="cpManagementForm" (ngSubmit)="onSubmit()">
+
+
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>CP Form Name* </mat-label>
+                        <input matInput formControlName="cpformName">
+                        <mat-error *ngIf="cpManagementForm.get('cpformName').hasError('required')">
+                            CP Form Name is required
+                        </mat-error>
+                        <mat-error *ngIf="cpManagementForm.get('cpformName').hasError('cpformName')">
+                            Type enter a valid CP Form Name
+                        </mat-error>
+                    </mat-form-field>
+
+
+
+                    <button class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>

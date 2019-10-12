@@ -1,0 +1,21 @@
+<div class="fuse-search-bar" [ngClass]="{'expanded':!collapsed}" style="width:24%;">
+
+    <div class="fuse-search-bar-content">
+
+        <label for="fuse-search-bar-input">
+            <button mat-icon-button class="fuse-search-bar-expander" aria-label="Expand Search Bar" (click)="expand()"
+                *ngIf="collapsed" style="color: #fff;">
+                <mat-icon class="s-24 secondary-text">search</mat-icon> Click to search
+            </button>
+        </label>
+
+        <input id="fuse-search-bar-input" class="ml-24" type="text" placeholder="Search " (input)="search($event)"
+            fxFlex>
+
+        <button mat-icon-button class="fuse-search-bar-collapser" (click)="collapse()" aria-label="Collapse Search Bar">
+            <mat-icon class="s-24 secondary-text">close</mat-icon>
+        </button>
+
+    </div>
+
+</div>
