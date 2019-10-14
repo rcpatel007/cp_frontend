@@ -175,7 +175,7 @@ export class UserService {
         return this.http.post(`${config.baseUrl}/clusescreate`, req);
     }
     getclusesupdate(req) {
-        return this.http.post(`${config.baseUrl}/clusespeupdate`, req);
+        return this.http.post(`${config.baseUrl}/clusesupdate`, req);
     }
     getclusesdelete(req) {
         return this.http.post(`${config.baseUrl}/clusesdelete`, req);

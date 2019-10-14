@@ -1,14 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FuseSharedModule } from '@fuse/shared.module';
-import { AddCharterPartyTypeComponent } from './charter-party-type/add-charter-party-type/add-charter-party-type.component';
-import { CharterPartyTypeComponent } from './charter-party-type/charter-party-type.component';
-import { EditCharterPartyTypeComponent } from './charter-party-type/edit-charter-party-type/edit-charter-party-type.component';
-import { CpFormComponent } from './cp-form/cp-form.component';
-import { AddCpFormComponent } from './cp-form/add-cp-form/add-cp-form.component';
-import { EditCpFormComponent } from './cp-form/edit-cp-form/edit-cp-form.component';
-import { ClauseCategoryTermsComponent } from './clause-category-terms/clause-category-terms.component';
 
+
+// import{ClauseTermsComponent} from './clause-terms/clause-terms.component';
 const routes = [
     {
         path: 'dashboards/analytics',
@@ -82,13 +77,24 @@ const routes = [
     {
         path: 'cp-form-management',
         loadChildren: './cp-form/cp-form.module#CPFormModule',
-    }
+    },
+    {
+        path: 'clause-terms-management',
+        loadChildren: './clause-terms/clauseterms.module#clusesTermsModule',
+    },
+    {
+        path: 'draw-management',
+        loadChildren: './draw/draw.module#DrawTypeModule',
+    },
+    // {
+    //     path: 'clauses-terms-management',
+    //     loadChildren: './clause-terms/cluses-terms.module#ClauseTermsModule',
+    // }
+
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes), FuseSharedModule],
-    declarations: [
-ClauseCategoryTermsComponent],
-   
+    declarations: [],
 })
 export class AppsModule {}

@@ -69,6 +69,12 @@ export const navigation: FuseNavigation[] = [
                         title: 'CP Form',
                         type : 'item',
                         url  : '/apps/cp-form-management'
+                    },
+                    {
+                        id   : 'Clause Category Terms',
+                        title: 'Clause Category Terms',
+                        type : 'item',
+                        url  : '/apps/clause-terms-management'
                     }
                 ]
             },
