@@ -1,11 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators, FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-// import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// import { AlertService, AuthenticationService } from '../../../../_services';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -13,10 +10,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { UserService } from '../../../_services/user.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { config } from '../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../_services';
+import { getNumberOfCurrencyDigits } from '@angular/common';
 
 export interface PeriodicElement
 {
@@ -45,22 +43,16 @@ export interface PeriodicElement
     ownerBrokerName: string;
 }
 
-
 @Component(
 {
-    selector: 'app-draw',
-    templateUrl: './draw.component.html',
-    styleUrls: ['./draw.component.scss'],
+    selector: 'app-cptp-management',
+    templateUrl: './cptp-management.component.html',
+    styleUrls: ['./cptp-management.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-
-export class DrawComponent implements OnInit
+export class CptpManagementComponent implements OnInit
 {
-    // displayedColumns: string[] = ['id','charterPartyTypeName', 'CharterPartyFormName', 'vesselName', 'ownerName',
-    //  'chartererName', 'charterBrokerName', 'ownerBrokerName',
-    //  'cpDate', 'cpTime', 'cpCity', 'cpSubject', 'cpLiftDate', 'cpLiftTime', 'cpLiftCity', 'action'];
-
     displayedColumns: string[] = ['id','cpDate', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo', 'action'];
 
 

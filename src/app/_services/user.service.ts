@@ -199,6 +199,50 @@ export class UserService {
     getFormdelete(req) {
         return this.http.post(`${config.baseUrl}/cpFromdelete`,req)
     }
+
+    // Draw Form Routes
+    // Draw Form Records Service
+    drawFormRecords()
+    {
+        console.log('here in user services');
+        return this.http.get(`${config.baseUrl}/drawFormRecords`)
+    }
+    // Draw Form Create Service
+    DrawFormCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawFormCreate`, req)
+    }
+    // Draw Form Update Service
+    drawFormUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawFormUpdate`,req)
+    }
+    // Draw Form Remove Service
+    drawDataRemove(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawDataRemove`,req)
+    }
+
+    // CityForm Routes
+    // CityForm Records Service
+    CityRecords()
+    {
+        return this.http.get(`${config.baseUrl}/CityRecords`)
+    }
+    // CityForm Create Service
+    CityCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/CityCreate`, req)
+    }
+    // CityForm Update Service
+    CityUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/CityUpdate`,req)
+    }
+    // CityForm Remove Service
+    CityRemove(req)
+    {
+        return this.http.post(`${config.baseUrl}/CityRemove`,req)
+    }
+
 }
-
-

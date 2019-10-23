@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FuseSharedModule } from '@fuse/shared.module';
+import { DrawComponent } from './draw/draw.component';
+// import { MatRadioModule } from '@angular/material';
+import {MatRadioModule} from '@angular/material/radio';
+import { CptpManagementComponent } from './cptp-management/cptp-management.component';
 
 
 // import{ClauseTermsComponent} from './clause-terms/clause-terms.component';
@@ -84,7 +88,11 @@ const routes = [
     },
     {
         path: 'draw-management',
-        loadChildren: './draw/draw.module#DrawTypeModule',
+        loadChildren: './draw/draw.module#DrawManagementModule',
+    },
+    {
+        path: 'cptp-management',
+        loadChildren: './cptp-management/cptp-management.module#CPTPManagementModule',
     },
     // {
     //     path: 'clauses-terms-management',

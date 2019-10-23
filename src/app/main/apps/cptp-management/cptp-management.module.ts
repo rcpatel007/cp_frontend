@@ -7,10 +7,11 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
-// import { MatDatepickerModule } from '@angular/material/';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
+// import {NgxMaterialTimepickerModule} from '@angular/';
+import { MaterialTimePickerModule } from '@candidosales/material-time-picker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,31 +23,31 @@ import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseConfirmDialogModule, FuseSidebarModule } from '@fuse/components';
 import {MatSelectModule} from '@angular/material/select';
 
-// import { DrawComponent } from 'app/main/apps/draw/draw.component';
+// import { CptpManagementComponent } from 'app/main/apps/draw/draw.component';
 // import { ReviewComponent } from './review/review.component';
 
-import { DrawComponent } from 'app/main/apps/draw/draw.component';
-import { ReviewComponent } from './review/review.component';
-import { AddDrawComponent } from './add-draw/add-draw.component';
-import { EditDrawComponent } from './edit-draw/edit-draw.component';
+import { CptpManagementComponent } from './cptp-management.component';
+import { AddCptpManagementComponent } from './add-cptp-management/add-cptp-management.component'
+import { EditCptpManagementComponent } from './edit-cptp-management/edit-cptp-management.component';
+import { CptpFormManagementComponent } from './cptp-form-management/cptp-form-management.component';
 
 const routes: Routes =
 [  
     {
-        path     : 'review',
-        component: ReviewComponent,
-    },
-    {
         path     : 'add',
-        component: AddDrawComponent,
+        component: AddCptpManagementComponent,
     },
     {
         path     : 'edit',
-        component: EditDrawComponent,
+        component: EditCptpManagementComponent,
+    },
+    {
+        path     : 'form',
+        component: CptpFormManagementComponent,
     },
     {
         path     : '**',
-        component: DrawComponent,
+        component: CptpManagementComponent,
     },
   
 ];
@@ -55,10 +56,10 @@ const routes: Routes =
 {
     declarations:
     [
-        DrawComponent,
-        ReviewComponent,
-        AddDrawComponent,
-        EditDrawComponent
+        CptpManagementComponent,
+        AddCptpManagementComponent,
+        EditCptpManagementComponent,
+        CptpFormManagementComponent
     ],
     
     imports:
@@ -66,6 +67,7 @@ const routes: Routes =
         CommonModule,
         RouterModule.forChild(routes),
         MatPaginatorModule,
+        MaterialTimePickerModule,
         MatButtonModule,
         MatRadioModule,
         MatCheckboxModule,
@@ -86,4 +88,4 @@ const routes: Routes =
         MatProgressBarModule,
     ]
 })
-export class DrawManagementModule { }
+export class CPTPManagementModule { }

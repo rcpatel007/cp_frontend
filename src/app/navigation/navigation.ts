@@ -17,136 +17,160 @@ export const navigation: FuseNavigation[] = [
                 url: '/apps/dashboards/analytics',
             },
             {
-                id: 'role',
-                title: 'Role Management',
-                translate: 'NAV.ROLEMANAGE',
-                type: 'item',
-                icon: 'group',
-                url: '/apps/role-management'
+                id   : 'Draw C/P',
+                title: 'Draw C/P',
+                type : 'item',
+                url  : '/apps/draw-management'
             },
+            {
+                id   : 'Charter Party Trading Platform',
+                title: 'Charter Party Trading Platform',
+                type : 'item',
+                url  : '/apps/cptp-management'
+            }
+            // {
+            //     id: 'role',
+            //     title: 'Role Management',
+            //     translate: 'NAV.ROLEMANAGE',
+            //     type: 'item',
+            //     icon: 'group',
+            //     url: '/apps/role-management'
+            // },
 
-            {
-                id: 'user',
-                title: 'User Management',
-                translate: 'NAV.USERMANAGEMENT',
-                type: 'item',
-                icon: 'account_box',
-                url: '/apps/user-management'
-            },
-            {
-                id: 'master',
-                title: 'Master Management',
-                translate: 'NAV.MASTER',
-                type     : 'collapsable',
-                icon: 'sentiment_satisfied_alt',
-                children : [
-                    {
-                        id   : 'company Management',
-                        title: 'Company Management',
-                        type : 'item',
-                        url  : '/apps/master/company-management'
-                    },
-                    {
-                        id   : 'company Admin',
-                        title: 'Company Admin',
-                        type : 'item',
-                        url  : '/apps/master/company-admin'
-                    },
-                    {
-                        id   : 'Charter Party Type',
-                        title: 'Charter Party Type',
-                        type : 'item',
-                        url  : '/apps/charter-type-management'
-                    },
-                    {
-                        id   : 'Clause Category',
-                        title: 'Clause Category',
-                        type : 'item',
-                        url  : '/apps/clause-category-management'
-                    },
-                    {
-                        id   : 'CP Form',
-                        title: 'CP Form',
-                        type : 'item',
-                        url  : '/apps/cp-form-management'
-                    },
-                    {
-                        id   : 'Clause Category Terms',
-                        title: 'Clause Category Terms',
-                        type : 'item',
-                        url  : '/apps/clause-terms-management'
-                    }
-                ]
-            },
-            {
-                id: 'role-access',
-                title: 'Role Access Management',
-                translate: 'NAV.ROLEACCESSMANAGEMENT',
-                type: 'item',
-                icon: 'account_box',
-                url: '/apps/role-access-management'
-            },
+            // {
+            //     id: 'user',
+            //     title: 'User Management',
+            //     translate: 'NAV.USERMANAGEMENT',
+            //     type: 'item',
+            //     icon: 'account_box',
+            //     url: '/apps/user-management'
+            // },
+            // {
+            //     id: 'master',
+            //     title: 'Master Management',
+            //     translate: 'NAV.MASTER',
+            //     type     : 'collapsable',
+            //     icon: 'sentiment_satisfied_alt',
+            //     children : [
+            //         {
+            //             id   : 'company Management',
+            //             title: 'Company Management',
+            //             type : 'item',
+            //             url  : '/apps/master/company-management'
+            //         },
+            //         {
+            //             id   : 'company Admin',
+            //             title: 'Company Admin',
+            //             type : 'item',
+            //             url  : '/apps/master/company-admin'
+            //         },
+            //         {
+            //             id   : 'Charter Party Type',
+            //             title: 'Charter Party Type',
+            //             type : 'item',
+            //             url  : '/apps/charter-type-management'
+            //         },
+            //         {
+            //             id   : 'Clause Category',
+            //             title: 'Clause Category',
+            //             type : 'item',
+            //             url  : '/apps/clause-category-management'
+            //         },
+            //         {
+            //             id   : 'CP Form',
+            //             title: 'CP Form',
+            //             type : 'item',
+            //             url  : '/apps/cp-form-management'
+            //         },
+            //         {
+            //             id   : 'Clause Category Terms',
+            //             title: 'Clause Category Terms',
+            //             type : 'item',
+            //             url  : '/apps/clause-terms-management'
+            //         },
+            //         {
+            //             id   : 'Draw C/P',
+            //             title: 'Draw C/P',
+            //             type : 'item',
+            //             url  : '/apps/draw-management'
+            //         },
+            //         {
+            //             id   : 'Charter Party Trading Platform',
+            //             title: 'Charter Party Trading Platform',
+            //             type : 'item',
+            //             url  : '/apps/cptp-management'
+            //         }
+            //     ]
+            // },
+            // {
+            //     id: 'role-access',
+            //     title: 'Role Access Management',
+            //     translate: 'NAV.ROLEACCESSMANAGEMENT',
+            //     type: 'item',
+            //     icon: 'account_box',
+            //     url: '/apps/role-access-management'
+            // },
 
-            {
-                id: 'broker',
-                title: 'Broker Management',
-                translate: 'NAV.BROKERMANAGEMENT',
-                type: 'item',
-                icon: 'list_alt',
-                url: '/apps/broker-management'
-            },
+            // {
+            //     id: 'broker',
+            //     title: 'Broker Management',
+            //     translate: 'NAV.BROKERMANAGEMENT',
+            //     type: 'item',
+            //     icon: 'list_alt',
+            //     url: '/apps/broker-management'
+            // },
        
-            {
-                id: 'charter',
-                title: 'Charter Management',
-                translate: 'NAV.CHARTERERMANAGEMENT',
-                type: 'item',
-                icon: 'list_alt',
-                url: '/apps/charterer-management'
-            },
+            // {
+            //     id: 'charter',
+            //     title: 'Charter Management',
+            //     translate: 'NAV.CHARTERERMANAGEMENT',
+            //     type: 'item',
+            //     icon: 'list_alt',
+            //     url: '/apps/charterer-management'
+            // },
         
-            {
-                id: 'alert-management',
-                title: 'Alert Management',
-                translate: 'NAV.ALERT',
-                type: 'item',
-                icon: 'info',
-                url: '/apps/alert-management'
-            },
-            {
-                id: 'vessel-management',
-                title: 'Vessel Management',
-                translate: 'NAV.VESSEL',
-                type: 'item',
-                icon: 'list_alt',
-                url: '/apps/vessel-management'
-            },
-            {
-                id: 'master-management',
-                title: 'Master Management',
-                translate: 'NAV.MASTER',
-                type: 'item',
-                icon: 'list_alt',
-                // url: '/apps/company-admin',
-                children: [
-                        {
-                            id: 'company-admin',
-                            title: 'Company Admin',
-                            translate: 'NAV.COMPANYADMIN',
-                            type: 'item',
-                            icon: 'list_alt',
-                            url: '/apps/company-admin'
-                        },
-                        {
-                            id: 'company',
-                            title: 'Company Management',
-                            translate: 'NAV.COMPANYMANAGEMENT',
-                            type: 'item',
-                            icon: 'list_alt',
-                            url: '/apps/company-management'
-                        }
-                    ]
-                }
+            // {
+            //     id: 'alert-management',
+            //     title: 'Alert Management',
+            //     translate: 'NAV.ALERT',
+            //     type: 'item',
+            //     icon: 'info',
+            //     url: '/apps/alert-management'
+            // },
+            // {
+            //     id: 'vessel-management',
+            //     title: 'Vessel Management',
+            //     translate: 'NAV.VESSEL',
+            //     type: 'item',
+            //     icon: 'list_alt',
+            //     url: '/apps/vessel-management'
+            // },
+            // {
+            //     id: 'master-management',
+            //     title: 'Master Management',
+            //     translate: 'NAV.MASTER',
+            //     type: 'item',
+            //     icon: 'list_alt',
+            //     // url: '/apps/company-admin',
+            //     children: [
+            //             {
+            //                 id: 'company-admin',
+            //                 title: 'Company Admin',
+            //                 translate: 'NAV.COMPANYADMIN',
+            //                 type: 'item',
+            //                 icon: 'list_alt',
+            //                 url: '/apps/company-admin'
+            //             },
+            //             {
+            //                 id: 'company',
+            //                 title: 'Company Management',
+            //                 translate: 'NAV.COMPANYMANAGEMENT',
+            //                 type: 'item',
+            //                 icon: 'list_alt',
+            //                 url: '/apps/company-management'
+            //             }
+            //         ]
+            //     }
             
             // {
             //     id       : 'chat',

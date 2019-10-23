@@ -13,22 +13,39 @@
             <form name="loginForm" [formGroup]="loginForm" novalidate (ngSubmit)="onSubmit()">
 
                 <mat-form-field appearance="outline">
-                    <mat-label>Email</mat-label>
-                    <input type="email" matInput formControlName="email" placeholder="" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                    <mat-label>User Name</mat-label>
+                    <input matInput type="text" formControlName="username" autofocus="true"
+                    [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
                     <mat-icon matSuffix class="secondary-text">mail</mat-icon>
-                    <!-- <div *ngIf="submitted && f.email.errors" class="invalid-feedback"> -->
-                    <mat-error *ngIf="loginForm.get('email').hasError('required')">
-                        Email is required
+                    <!-- <div *ngIf="submitted && f.mobile.errors" class="invalid-feedback"> -->
+                    <mat-error *ngIf="loginForm.get('username').hasError('required')">
+                        username is required
                     </mat-error>
                     <!-- </div> -->
-                    <mat-error *ngIf="!loginForm.get('email').hasError('required') && loginForm.get('email').hasError('email')">
-                        Please enter a valid email address
+                    <mat-error *ngIf="!loginForm.get('username').hasError('required') && loginForm.get('username').hasError('username')">
+                        Please enter a valid username address
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Mobile No</mat-label>
+                    <input matInput type="number" onKeyPress="if(this.value.length==12) return false;" min="10"
+                    formControlName="mobile" [ngClass]="{ 'is-invalid': submitted && f.mobile.errors }" />
+                    <mat-icon matSuffix class="secondary-text">mail</mat-icon>
+                    <!-- <div *ngIf="submitted && f.email.errors" class="invalid-feedback"> -->
+                    <mat-error *ngIf="loginForm.get('mobile').hasError('required')">
+                        Mobile is required
+                    </mat-error>
+                    <!-- </div> -->
+                    <mat-error *ngIf="!loginForm.get('mobile').hasError('required') && loginForm.get('mobile').hasError('mobile')">
+                        Please enter a valid mobile address
                     </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input matInput type="password" formControlName="password">
+                    <input matInput type="password" formControlName="password"
+                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
                     <mat-icon matSuffix class="secondary-text">vpn_key</mat-icon>
                     <mat-error>
                         Password is required
@@ -74,4 +91,42 @@
 
     </div>
 
+</div>
+<div class="cst-modal" [ngClass]="{'cst-modal--active' : showModalStatus}">
+    <div class="cst-modal__overlay"></div>
+    <div class="cst-modal__content">
+        <div class="cst-modal__header">
+            Please Select Your Company 
+        </div>
+        <div class="cst-modal__body">
+          <div class="row">
+          <div class="row-col-3">
+              <label>
+                  <input type="checkbox" class="filled-in" (change)="submit($event)" />
+                  <span>Abc</span>
+                </label>
+          </div>
+
+          <div class="row-col-3">
+              <label>
+                  <input type="checkbox" class="filled-in" (change)="submit($event)"  />
+                  <span>xyz</span>
+                </label>
+          </div>
+
+          <div class="row-col-3">
+              <label>
+                  <input type="checkbox" class="filled-in" (change)="submit($event)" />
+                  <span>demo</span>
+                </label>
+          </div>
+
+            
+          </div>
+        </div>
+        <div class="cst-modal__footer">
+            <button class="cst-modal__button cst-modal__button--delete" (click)="done()">Submit</button>
+            <!-- <button class="cst-modal__button cst-modal__button--cancel" (click)="showDeleteModal()">Cancel</button> -->
+        </div>
+    </div>
 </div>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { LoginModule } from 'app/main/pages/authentication/login/login.module';
-import { RegisterModule } from 'app/main/pages/authentication/register/register.module';
+// import { RegisterModule } from 'app/main/pages/authentication/register/register.module';
 import { ForgotPasswordModule } from 'app/main/pages/authentication/forgot-password/forgot-password.module';
 import { ResetPasswordModule } from 'app/main/pages/authentication/reset-password/reset-password.module';
 import { LockModule } from 'app/main/pages/authentication/lock/lock.module';
@@ -20,7 +20,7 @@ import { FaqModule } from 'app/main/pages/faq/faq.module';
     imports: [
         // Authentication,
         LoginModule,
-        RegisterModule,
+        // RegisterModule,
         ForgotPasswordModule,
         ResetPasswordModule,
         LockModule,

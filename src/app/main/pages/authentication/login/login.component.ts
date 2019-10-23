@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { AlertService, AuthenticationService } from '../../../../_services';
+import { AlertService, AuthenticationService,UserService } from '../../../../_services';
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
 import { first } from 'rxjs/operators';
@@ -23,6 +23,14 @@ export class LoginComponent implements OnInit {
     Email: string;
     Password: string;
     res: any;
+    mobile: Number;
+    userId: String;
+    showModalStatus = false;
+    username: string;
+    title:String;
+    compnaylist =[];
+    // mobile: number;
+    password: number;
     /**
      * Constructor
      *
@@ -36,6 +44,7 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
         private alertService: AlertService,
+        private userService:UserService ,
         private location: Location) {
 
         this.showLoaderImg = false;
@@ -44,7 +53,7 @@ export class LoginComponent implements OnInit {
         // }
 
         let userToken = localStorage.getItem('userToken')
-        if(userToken!=undefined){
+        if (userToken != undefined) {
             this.location.back();
         }
 
@@ -76,7 +85,8 @@ export class LoginComponent implements OnInit {
      */
     ngOnInit(): void {
         this.loginForm = this._formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
+            username: ['', Validators.required],
+            mobile: ['', [Validators.required, Validators.pattern('[6-9]\\d{9}')]],
             password: ['', Validators.required]
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/dashboards/analytics';
@@ -85,35 +95,106 @@ export class LoginComponent implements OnInit {
     get f() { return this.loginForm.controls; }
 
     onSubmit() {
-        this.showLoaderImg = true;
+        this.submitted = true;
+        console.log('log', this.submitted);
         // reset alerts on submit
-        this.alertService.clear();
+        // this.alertService.clear();
 
         // stop here if form is invalid
         if (this.loginForm.invalid) {
             return;
         }
         this.loading = true;
-        this.authenticationService.login(this.f.email.value, this.f.password.value)
+        this.authenticationService.login(this.f.username.value, this.f.mobile.value, this.f.password.value)
             .pipe(first())
             .subscribe(
                 data => {
-                this.showLoaderImg = false;
-                this.res = data;
-                if (data.success === true) {
-                    localStorage.setItem('userToken', this.res.token);
-                    localStorage.setItem('userId', this.res.data.id);
-                    localStorage.setItem('userData', JSON.stringify(this.res.data));
-                    this.router.navigate([this.returnUrl]);
-                } else {
-               
-                    this.alertService.error(data.message, 'Error');
-                }
-                },
-            error => {
-               
-                this.alertService.error(error.message, 'Error');
-                this.loading = false;
-            });
-        }
+                    this.res = data;
+                    console.log(this.res, "res");
+                    if (data.success === true) {
+                        this.userId = this.res.data.id;
+                        this.title = this.res.data.title;
+                        this.showCompnayListModal();
+                        // this.showModalStatus = !this.showModalStatus;
+                        localStorage.setItem('userToken', this.res.token);
+                        localStorage.setItem('userId', this.res.data.id);
+
+                        localStorage.setItem('userData', JSON.stringify(this.res.data));
+                        console.log(this.res.data);
+
+                        // this.router.navigate([this.returnUrl]);
+                        // window.location.href = this.returnUrl; //"/app/dashboard";
+                        //this.router.navigate(['/app/dasboard']);
+                        // this.router.navigate(['/apps/dashboards/analytics']);
+
+                    } else {
+                        this.alertService.error(data.message, '');
+                        this.loading = false;
+                    }
+
+                });
     }
+
+    showCompnayListModal(): void {
+        this.showModalStatus = !this.showModalStatus;
+        this.userService.getCompanyList()
+            .subscribe(res => {
+
+                    for (let index = 0; index < res[0].data.length; index++) {
+                        if(res[0].data[index].owner == this.title){
+                            this.compnaylist.push(res[0].data[index])
+                        }
+                    }
+
+                console.log(res);
+
+            });
+    }
+    submit($event) {
+
+        let companyName = $event.value;
+
+        localStorage.setItem('compnayName', companyName);
+        console.log(companyName);
+
+
+    }
+
+    done() {
+        this.router.navigate(['/apps/dashboards/analytics']);
+
+    }
+
+    // onSubmit() {
+    //     this.showLoaderImg = true;
+    //     // reset alerts on submit
+    //     this.alertService.clear();
+
+    //     // stop here if form is invalid
+    //     if (this.loginForm.invalid) {
+    //         return;
+    //     }
+    //     this.loading = true;
+    //     this.authenticationService.login(this.f.email.value, this.f.password.value)
+    //         .pipe(first())
+    //         .subscribe(
+    //             data => {
+    //             this.showLoaderImg = false;
+    //             this.res = data;
+    //             if (data.success === true) {
+    //                 localStorage.setItem('userToken', this.res.token);
+    //                 localStorage.setItem('userId', this.res.data.id);
+    //                 localStorage.setItem('userData', JSON.stringify(this.res.data));
+    //                 this.router.navigate([this.returnUrl]);
+    //             } else {
+
+    //                 this.alertService.error(data.message, 'Error');
+    //             }
+    //             },
+    //         error => {
+
+    //             this.alertService.error(error.message, 'Error');
+    //             this.loading = false;
+    //         });
+    //     }
+}
