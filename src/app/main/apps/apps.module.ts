@@ -5,6 +5,7 @@ import { DrawComponent } from './draw/draw.component';
 // import { MatRadioModule } from '@angular/material';
 import {MatRadioModule} from '@angular/material/radio';
 import { CptpManagementComponent } from './cptp-management/cptp-management.component';
+import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.component';
 
 
 // import{ClauseTermsComponent} from './clause-terms/clause-terms.component';
@@ -93,6 +94,10 @@ const routes = [
     {
         path: 'cptp-management',
         loadChildren: './cptp-management/cptp-management.module#CPTPManagementModule',
+    },
+    {
+        path: 'drawCp-Clauses-management',
+        loadChildren: './draw-cp-clauses/draw-cp-clauses.module#DrawCpClausesManagementModule',
     },
     // {
     //     path: 'clauses-terms-management',

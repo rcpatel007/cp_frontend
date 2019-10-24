@@ -17,7 +17,11 @@ export class UserService {
         }
     }
 
-
+    clausesCategoryRecords(){
+        console.log('here in clauses Categoory services');
+        return this.http.get(`${config.baseUrl}/clusesCategorylist`)
+    }
+    
     getUserList() {
         return this.http.get(`${config.baseUrl}/userList`);
     }

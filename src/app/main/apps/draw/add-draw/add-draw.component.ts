@@ -122,7 +122,7 @@ export class AddDrawComponent implements OnInit
         
         });
 
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/draw-management';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/drawCp-Clauses-management';
 
         this.cpFormRecords();
         this.vesselRecords();
@@ -322,7 +322,7 @@ export class AddDrawComponent implements OnInit
             };
             console.log('Insert Data Request As Below');
             console.log(req);
-
+                localStorage.setItem('cpFormId',req.formId);
             console.log(req.cpDate);
 
             console.log(this.f.cpDate.value);
