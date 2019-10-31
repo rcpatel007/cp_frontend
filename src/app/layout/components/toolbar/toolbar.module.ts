@@ -14,7 +14,7 @@ import { ToolbarComponent } from 'app/layout/components/toolbar/toolbar.componen
     declarations: [
         ToolbarComponent
     ],
-    imports     : [
+    imports : [
         RouterModule,
         MatButtonModule,
         MatIconModule,

@@ -1,5 +1,23 @@
 @import 'src/@fuse/scss/fuse';
+quick-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    z-index: 99;
 
+    .mat-slide-toggle-content {
+        flex: 1;
+    }
+    .mb-12 {
+        color: #000;
+    }
+    .date__time span {
+        color: #000;
+    }
+}
 #vessel {
     .heading {
         padding: 3rem;
@@ -74,8 +92,17 @@
         font-weight: 700;
         background: #fff;
     }
+    tr{
+        vertical-align: top;
+    height: 59px;
+    }
+    td{
+        padding: 0 0.3% !important ;
+
+    }
     th,td {
-        text-align: center;
+        text-align: left;
+    font-size: 1.3rem;
     }
     .action-button {
         //common

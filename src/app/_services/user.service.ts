@@ -21,7 +21,9 @@ export class UserService {
         console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
     }
-    
+    getclausesList() {
+        return this.http.get(`${config.baseUrl}/cluseslist`);
+    }
     getUserList() {
         return this.http.get(`${config.baseUrl}/userList`);
     }
@@ -205,6 +207,12 @@ export class UserService {
     }
 
     // Draw Form Routes
+        //  Draw Records Server Side
+    drawRecordsServerSide(req)
+    {
+        console.log(req);
+        return this.http.post(`${config.baseUrl}/drawRecordsServerSide`, req)
+    }
     // Draw Form Records Service
     drawFormRecords()
     {

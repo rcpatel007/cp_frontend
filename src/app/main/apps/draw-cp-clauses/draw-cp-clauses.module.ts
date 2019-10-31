@@ -1,4 +1,7 @@
 import { NgModule } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -27,6 +30,7 @@ import {MatSelectModule} from '@angular/material/select';
 
 import { DrawCpClausesComponent } from './draw-cp-clauses.component';
 import { ClausesDetailComponent } from './clauses-detail/clauses-detail.component';
+import { AddDetailClauseComponent } from './add-detail-clause/add-detail-clause.component';
 
 const routes: Routes =
 [  
@@ -54,7 +58,8 @@ const routes: Routes =
     declarations:
     [
         DrawCpClausesComponent,
-        ClausesDetailComponent
+        ClausesDetailComponent,
+        AddDetailClauseComponent
           ],
     
     imports:
@@ -70,6 +75,9 @@ const routes: Routes =
         MatIconModule,
         MatInputModule,
         MatMenuModule,
+        MatDividerModule,
+        MatListModule,
+        MatSlideToggleModule,
         MatRippleModule,
         MatTableModule,
         MatToolbarModule,
