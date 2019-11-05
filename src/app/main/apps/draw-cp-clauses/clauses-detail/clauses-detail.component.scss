@@ -17,8 +17,11 @@ quick-panel {
     .date__time span {
         color: #000;
     }
+ 
 }
 #vessel {
+   
+    
     .heading {
         padding: 3rem;
         h2 {
@@ -244,4 +247,11 @@ quick-panel {
     border-radius: 79%;
     cursor: pointer;
    }
- }
+
+   .angular-editor-textarea{
+       height: 250px;
+   }
+  
+    
+}
+ 

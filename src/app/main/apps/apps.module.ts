@@ -6,6 +6,7 @@ import { DrawComponent } from './draw/draw.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { CptpManagementComponent } from './cptp-management/cptp-management.component';
 import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.component';
+import { SettingsComponent } from './settings/settings.component';
 
 
 // import{ClauseTermsComponent} from './clause-terms/clause-terms.component';
@@ -103,7 +104,10 @@ const routes = [
     //     path: 'clauses-terms-management',
     //     loadChildren: './clause-terms/cluses-terms.module#ClauseTermsModule',
     // }
-
+    {
+        path: 'settings',
+        loadChildren: './settings/settings.module#SettingsManagementModule',
+    },
 ];
 
 @NgModule({

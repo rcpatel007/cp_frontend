@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
@@ -23,7 +24,7 @@ const routes = [
     ],
     imports     : [
         RouterModule.forChild(routes),
-
+        MatRadioModule,
         MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,

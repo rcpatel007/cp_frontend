@@ -99,10 +99,11 @@ clusesId=[];
       }
   }
 
-  clusesAdd(id){
+  clusesAdd(id,name){
     let cid =id;
     let clausesID= {
-      cid:id
+      cid:id,
+      name:name
     }
     this.clusesId.push(clausesID);
   

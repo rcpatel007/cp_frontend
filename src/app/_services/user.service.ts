@@ -21,14 +21,16 @@ export class UserService {
         console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
     }
-    getclausesList() {
-        return this.http.get(`${config.baseUrl}/cluseslist`);
-    }
+    
     getUserList() {
         return this.http.get(`${config.baseUrl}/userList`);
     }
     getCompanyList() {
         return this.http.get(`${config.baseUrl}/companylist`);
+    }
+    getUsersCompanyList(req)
+    {
+        return this.http.post(`${config.baseUrl}/getUsersCompanyList`,req);
     }
     getChartererList() {
         return this.http.get(`${config.baseUrl}/charterlist`);
@@ -207,17 +209,17 @@ export class UserService {
     }
 
     // Draw Form Routes
-        //  Draw Records Server Side
-    drawRecordsServerSide(req)
-    {
-        console.log(req);
-        return this.http.post(`${config.baseUrl}/drawRecordsServerSide`, req)
-    }
     // Draw Form Records Service
     drawFormRecords()
     {
         console.log('here in user services');
         return this.http.get(`${config.baseUrl}/drawFormRecords`)
+    }
+    //  Draw Records Server Side
+    drawRecordsServerSide(req)
+    {
+        console.log(req);
+        return this.http.post(`${config.baseUrl}/drawRecordsServerSide`, req)
     }
     // Draw Form Create Service
     DrawFormCreate(req)
@@ -255,6 +257,29 @@ export class UserService {
     CityRemove(req)
     {
         return this.http.post(`${config.baseUrl}/CityRemove`,req)
+    }
+
+    // Draw Invite Routes
+    // Draw Invite Records Server Side
+    DrawInviteRecordsServerSide(req)
+    {
+        console.log(req);
+        return this.http.post(`${config.baseUrl}/DrawInviteRecordsServerSide`, req)
+    }
+    // Draw Invite Form Create Service
+    DrawInviteCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawInviteCreate`, req)
+    }
+    // Draw Invite Form Update Service
+    DrawInviteUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawInviteUpdate`,req)
+    }
+    // Draw Invite Form Remove Service
+    DrawInviteRemove(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawInviteRemove`,req)
     }
 
 }

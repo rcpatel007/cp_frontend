@@ -20,14 +20,25 @@ export const navigation: FuseNavigation[] = [
                 id   : 'Draw C/P',
                 title: 'Draw C/P',
                 type : 'item',
+                icon: 'tachometer',
                 url  : '/apps/draw-management'
             },
             {
                 id   : 'Charter Party Trading Platform',
                 title: 'Charter Party Trading Platform',
                 type : 'item',
+                icon: 'tachometer',
+
                 url  : '/apps/cptp-management'
-            }
+            },
+            {
+                id: 'setting',
+                title: 'Setting',
+                translate: 'Setting',
+                type: 'item',
+                icon: 'tachometer',
+                url: '/apps/settings',
+            },
             // {
             //     id: 'role',
             //     title: 'Role Management',

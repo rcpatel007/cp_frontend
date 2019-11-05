@@ -41,6 +41,7 @@ export interface UserData
     cpLiftDate: string;
     cpLiftTime: string;
     cpLiftCity: string;
+    companyId: string;
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -72,6 +73,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 export interface PeriodicElement
 {
+    
     id:String;
     CPTypeId:String;
     formId: string;
@@ -87,6 +89,7 @@ export interface PeriodicElement
     cpLiftDate: string;
     cpLiftTime: string;
     cpLiftCity: string;
+    companyId: string;
 
     CharterPartyFormName:String;
     charterPartyTypeName: string;
@@ -115,8 +118,11 @@ export class DrawComponent implements OnInit
 
     displayedColumns: string[] = ['id','cpDate', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo', 'action'];
 
-
     dataSource = new MatTableDataSource<PeriodicElement>();
+
+    dataSourceFilter = new MatTableDataSource<PeriodicElement>();
+
+
     dialogRef: any;
     hasSelectedContacts: boolean;
     searchInput: FormControl;
@@ -126,6 +132,13 @@ export class DrawComponent implements OnInit
     {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
+
+    applyFilterExecuted(filterValue: string)
+    {
+        this.dataSourceFilter.filter = filterValue.trim().toLowerCase();
+    }
+
+
     id: string;
     
     CPTypeId: string;
@@ -142,6 +155,7 @@ export class DrawComponent implements OnInit
     cpLiftDate: string;
     cpLiftTime: string;
     cpLiftCity: string;
+    companyId: string;
 
     alertMessage : string;
 
@@ -151,6 +165,7 @@ export class DrawComponent implements OnInit
     ownerIdSearch: string;
     chartererIdSearch: string;
     cpDateSearch: string;
+    drawCPIDSearch: string;
 
     createdBy: string;
     createdAt: string;
@@ -177,6 +192,9 @@ export class DrawComponent implements OnInit
     clauseTermsRes: any;
     clauseTermsData: any;
 
+    drawCPDataList: any;
+    drawCPDataData: any;
+
     cpFormList: any;
     cpFormData: any;
 
@@ -189,17 +207,31 @@ export class DrawComponent implements OnInit
     ChartereInfoList: any;
     ChartereInfoData=[];
 
+    CharterPartyTypeArray = [];
+
+    charterPartyTypeID : string;
+
     formIdValueForDrawRecords;
     vesselIdValueForDrawRecords;
     cpDateValueForDrawRecords;
     chartererIdValueForDrawRecords;
+    drawCPIDForDrawRecords;
 
     show = false;
+
+    existingDrawCP = true;
+
+    mainDrawCPDiv = false;
+
     drawRecordsFilterShow = false;
     drawRecordsTableShow = false;
 
+    standardOffersFormDivShow = false;
+    standardOffersFormTableShow = false;
+
     drawFormDivShow = false;
 
+    
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -227,6 +259,7 @@ export class DrawComponent implements OnInit
     )
     {
         this.dataSource = new MatTableDataSource(this.drawManagementData);
+        this.dataSourceFilter = new MatTableDataSource(this.drawManagementData);
     }
 
     ngOnInit()
@@ -249,27 +282,58 @@ export class DrawComponent implements OnInit
             formIdSearch: ['0', ''],
             vesselIdSearch: ['0', ''],
             cpDateSearch: ['', ''],
-            chartererIdSearch: ['0', ''],
+            // chartererIdSearch: ['0', ''],
+            drawCPIDSearch: ['0', ''],
         
         });
 
         this.CPTypeId = '1';
 
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        // this.drawManagementRecords();
-        this.cpFormRecords();
+        // this.dataSource.paginator = this.paginator;
+        // this.dataSource.sort = this.sort;
+        this.drawManagementRecords();
+
+        this.cpFormsRecords();
         this.vesselRecords();
         this.CPRecords();
         this.ChartereRecords();
+        this.drawCPRecords();
+
+        // localStorage.setItem('companyId','1');
+
+        this.charterPartyTypeID = '2';
+    }
+    
+
+    drawCPFormView() : void
+    {
+        this.existingDrawCP = false;
+        this.mainDrawCPDiv = true;
+    }
+
+    existingDrawCPView() : void
+    {
+        this.existingDrawCP = true;
+        this.mainDrawCPDiv = false;
+        this.mainDrawCPDiv = false;
+        this.drawRecordsFilterShow = false;
+        this.drawRecordsTableShow = false;
+        this.standardOffersFormDivShow = false;
+        this.standardOffersFormTableShow = false;
+        this.drawFormDivShow = false;
     }
 
     drawManagementRecords(): void
     {
         this.drawManagementData = [];
+        
+        var arrfilterInfo = {};
+
+        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+        
         try
         {
-            this._userService.drawFormRecords()
+            this._userService.drawRecordsServerSide(arrfilterInfo)
                 .pipe(first())
                 .subscribe((res) =>
                 {
@@ -280,6 +344,7 @@ export class DrawComponent implements OnInit
                     {
                         this.drawManagementData = this.drawManagementRes.data;
                         this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
+                        // setTimeout(() => this.dataSource.paginator = this.paginator, 15000);
                         this.dataSource.paginator = this.paginator;
                         this.dataSource.sort = this.sort;
                         console.log("Final Records");
@@ -294,32 +359,54 @@ export class DrawComponent implements OnInit
             } catch (err)
             {
                 console.log(err);
-        }
+            }
     }
 
     drawRecordsServerSide() : void
     {
         this.drawManagementData = [];
-        const filterData =
+
+        var arrfilterInfo = {};
+
+        var isCondition = 0;
+
+        if(this.formIdValueForDrawRecords > 0)
         {
-            formId:this.formIdValueForDrawRecords,
-            vesselId: this.vesselIdValueForDrawRecords,
-            cpDate: this.cpDateValueForDrawRecords,
-            chartererId: this.chartererIdValueForDrawRecords
-        };
+            isCondition = 1;
+            arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
+        }
+        if(this.vesselIdValueForDrawRecords > 0)
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
+        }
+        if(this.cpDateValueForDrawRecords != '')
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
+        }
+        if(this.drawCPIDForDrawRecords > 0)
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.id"] = this.drawCPIDForDrawRecords;
+        }
+
+        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+        
         try
         {
-            this._userService.drawRecordsServerSide(filterData).pipe(first()).subscribe((res) =>
+            this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
                 this.drawManagementRes = res;
+                this.drawFormDivShow = false;
+                this.drawRecordsTableShow = true;
+                this.drawManagementData = this.drawManagementRes.data;
+                this.dataSourceFilter = new MatTableDataSource(this.drawManagementRes.data);
+                this.dataSourceFilter.paginator = this.paginator;
+                this.dataSourceFilter.sort = this.sort;
                 if (this.drawManagementRes.success === true)
                 {
-                    this.drawFormDivShow = false;
-                    this.drawRecordsTableShow = true;
-                    this.drawManagementData = this.drawManagementRes.data;
-                    this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-                    this.dataSource.paginator = this.paginator;
-                    this.dataSource.sort = this.sort;
+                   
                 }
                 this.show = true;
             },
@@ -409,43 +496,102 @@ export class DrawComponent implements OnInit
     get f() { return this.DrawManagementForm.controls; }
     get fSearch() { return this.DrawManagementSearchForm.controls; }
 
-    // CP Form Records Fetch Start
+    // Draw CP Form Records Fetch Start
     
-        cpFormRecords(): void
+        drawCPRecords(): void
         {
+            var arrfilterInfo = {};
+
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+            
             try
             {
-                this.http.get(`${config.baseUrl}/cpFromlist`).subscribe(
-                    res =>
+                this._userService.drawRecordsServerSide(arrfilterInfo)
+                    .pipe(first())
+                    .subscribe((res) =>
                     {
-                        this.cpFormList = res;
-                        if (this.cpFormList.success)
+                        this.drawManagementRes = res;
+                        if (this.drawManagementRes.success === true)
                         {
-                            this.cpFormData = this.cpFormList.data;
+                            this.drawCPDataData = this.drawManagementRes.data;
                         }
                     },
                     err =>
                     {
+                        this.alertService.error(err, 'Error');
                         console.log(err);
+                    });
+                } catch (err)
+                {
+                    console.log(err);
+                }
+            // try
+            // {
+            //     this.http.get(`${config.baseUrl}/drawFormRecords`).subscribe(
+            //         res =>
+            //         {
+            //             this.drawCPDataList = res;
+            //             if (this.drawCPDataList.success)
+            //             {
+            //                 this.drawCPDataData = this.drawCPDataList.data;
+            //             }
+            //         },
+            //         err =>
+            //         {
+            //             console.log(err);
+            //         }
+            //     );
+            // } catch (err)
+            // {
+            //     console.log(err);
+            // }
+            
+        }
+
+        changeDrawCP(event): void
+        {
+            this.formId = event.target.value;
+        }
+
+    // Draw CP Form Records Fetch End
+
+    // CP Records Fetch Start
+    
+    cpFormsRecords(): void
+    {
+        try
+        {
+            this.http.get(`${config.baseUrl}/cpFromlist`).subscribe(
+                res =>
+                {
+                    this.cpFormList = res;
+                    if (this.cpFormList.success)
+                    {
+                        this.cpFormData = this.cpFormList.data;
                     }
-                );
-            } catch (err)
-            {
-                console.log(err);
-            }
-        }
-
-        changeCPForm(event): void
+                },
+                err =>
+                {
+                    console.log(err);
+                }
+            );
+        } catch (err)
         {
-            this.formId = event.target.value;
+            console.log(err);
         }
+    }
 
-        changeCPFormSearch(event): void
-        {
-            this.formId = event.target.value;
-        }
+    changeCPForm(event): void
+    {
+        this.formId = event.target.value;
+    }
 
-    // CP Form Records Fetch End
+    changeCPFormSearch(event): void
+    {
+        this.formId = event.target.value;
+    }
+
+// CP Form Records Fetch End
 
     // Vessel Records Fetch Start
 
@@ -501,6 +647,22 @@ export class DrawComponent implements OnInit
                         {
                             this.CharterPartyTypeData = this.CharterPartyTypeList.data;
                         }
+
+                        this.CharterPartyTypeList = res;
+                        if (this.CharterPartyTypeList.success)
+                        {
+                            this.CharterPartyTypeList.data.forEach(valueData  => 
+                            {
+                                if(valueData.id != 3)
+                                {
+                                    this.CharterPartyTypeArray.push(valueData);
+                                }
+                            });
+                            console.log('Charterer Records');
+                            console.log(this.CharterPartyTypeArray);
+                            
+                        }
+
                     },
                     err =>
                     {
@@ -596,7 +758,7 @@ export class DrawComponent implements OnInit
                 formIdSearch: ['0', ''],
                 vesselIdSearch: ['0', ''],
                 cpDateSearch: ['', ''],
-                chartererIdSearch: ['0', ''],
+                drawCPIDSearch: ['0', ''],
             });
 
             // this.DrawManagementSearchForm.reset(); 
@@ -652,7 +814,7 @@ export class DrawComponent implements OnInit
 
             // localStorage.setItem('userId','1');
 
-            this.drawRecordsServerSide();
+            // this.drawRecordsServerSide();
 
             const req =
             {
@@ -666,9 +828,11 @@ export class DrawComponent implements OnInit
                 ownerBrokerId: localStorage.getItem('userId'),
                 createdBy: localStorage.getItem('userId'),
                 updatedBy: localStorage.getItem('userId'),
+                companyId: localStorage.getItem('companyId'),
             };
             
             localStorage.setItem('cpFormId',req.formId);
+            
             this.loading = true;
             try
             {
@@ -687,13 +851,12 @@ export class DrawComponent implements OnInit
                             this.alertService.success(this.createtypeRes.message, 'Success');
                             this.DrawManagementForm.reset(); 
                             // this.router.navigate([this.returnUrl]);
-                            this.drawRecordsServerSide();
-        this.router.navigate(['/apps/drawCp-Clauses-management']);
+     this.router.navigate(['/apps/drawCp-Clauses-management']);
 
+                            this.drawRecordsServerSide();
                         } else {
                             this.alertService.error(this.createtypeRes.message, 'Error');
                         }
-
                     },
                     err =>
                     {
@@ -709,44 +872,56 @@ export class DrawComponent implements OnInit
     fetchDrawRecords(): void
     {
         this.alertService.clear();
-        this.alertMessage = '';
-
+        
         var isValid = 1;
 
-        if(this.fSearch.formIdSearch.value == 0)
-        {
-            isValid = 0;
-            this.alertMessage = this.alertMessage+'Please Select CP Form';
-        }
+        // if(this.fSearch.drawCPIDSearch.value == 0)
+        // {
+        //     isValid = 0;
+        //     this.alertService.error('Please Select Identifier', 'Required');
+        // }
 
-        if(this.fSearch.vesselIdSearch.value == 0)
-        {
-            isValid = 0;
-            this.alertMessage = this.alertMessage+'Please Select Vessel';
-        }
+        // if(this.fSearch.cpDateSearch.value == '')
+        // {
+        //     isValid = 0;
+        //     this.alertService.error('Please Select CP Date', 'Required');
+        // }
 
-        if(this.fSearch.cpDateSearch.value == '')
-        {
-            isValid = 0;
-            this.alertMessage = this.alertMessage+'Please Select CP Date';
-        }
+        // if(this.fSearch.vesselIdSearch.value == 0)
+        // {
+        //     isValid = 0;
+        //     this.alertService.error('Please Select Vessel', 'Required');
+        // }
 
-        if(this.fSearch.chartererIdSearch.value == 0)
-        {
-            isValid = 0;
-            this.alertMessage = this.alertMessage+'Please Select Charterer';
-        }
+        // if(this.fSearch.formIdSearch.value == 0)
+        // {
+        //     isValid = 0;
+        //     this.alertService.error('Please Select CP Form', 'Required');
+        // }
 
         if(isValid == 0)
         {
-            this.alertService.error(this.alertMessage, 'Required');
             return;
         }  else {
-
-            this.formIdValueForDrawRecords      =       this.fSearch.formIdSearch.value;
-            this.vesselIdValueForDrawRecords    =       this.fSearch.vesselIdSearch.value,
-            this.cpDateValueForDrawRecords      =       this.fSearch.cpDateSearch.value._i.year+"-"+this.fSearch.cpDateSearch.value._i.month+"-"+this.fSearch.cpDateSearch.value._i.date,
-            this.chartererIdValueForDrawRecords =       this.fSearch.chartererIdSearch.value;
+            if(this.fSearch.formIdSearch.value)
+            {
+                this.formIdValueForDrawRecords      =       this.fSearch.formIdSearch.value;
+            }
+            if(this.fSearch.vesselIdSearch.value)
+            {
+                this.vesselIdValueForDrawRecords      =       this.fSearch.vesselIdSearch.value;
+            }
+            if(this.fSearch.cpDateSearch.value)
+            {
+                this.cpDateValueForDrawRecords      =       this.fSearch.cpDateSearch.value._i.year+"-"+this.fSearch.cpDateSearch.value._i.month+"-"+this.fSearch.cpDateSearch.value._i.date;
+            }
+            if(this.fSearch.drawCPIDSearch.value)
+            {
+                this.drawCPIDForDrawRecords      =       this.fSearch.drawCPIDSearch.value;
+            }
+            // this.cpDateValueForDrawRecords      =       this.fSearch.cpDateSearch.value._i.year+"-"+this.fSearch.cpDateSearch.value._i.month+"-"+this.fSearch.cpDateSearch.value._i.date,
+            // this.chartererIdValueForDrawRecords =       this.fSearch.chartererIdSearch.value;
+            // this.drawCPIDForDrawRecords =       this.fSearch.drawCPIDSearch.value;
 
             this.drawRecordsServerSide();
         }

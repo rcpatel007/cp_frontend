@@ -5,6 +5,7 @@ export const locale = {
             'APPLICATIONS': 'Applications',
             'DASHBOARDS'  : 'Dashboards',
             'ROLEMANAGE'  : 'Role Management',
+            'SETTING'  : 'Setting',
             'USERMANAGEMENT' : 'User Management',
             'ROLEACCESSMANAGEMENT' : 'Role Access Management',
             'BROKERMANAGEMENT' : 'Broker Management',

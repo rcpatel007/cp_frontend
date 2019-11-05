@@ -36,7 +36,7 @@
                 <div class="header-row">
                     <div *ngFor="let c of drawcluases; let i=index" class="row-col-3 ">
                         <span class="mat-caption"> {{i+1}} )  </span>
-                        <mat-checkbox value= "{{c.id}}" (change)="clusesAdd(c.id);">{{c.name}}</mat-checkbox>
+                        <mat-checkbox value= "{{c.id}}" (change)="clusesAdd(c.id,c.name);">{{c.name}}</mat-checkbox>
                     </div>
                     
                    
@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="row-col-6 text-right">
-                        <button class="submit-item submit-item--back-button " (click)="nextcomponent();" >Next</button>
+                        <button class="submit-item submit-item--back-button "  (click)="nextcomponent();" >Next</button>
                     </div>
                 </div>
             </div>

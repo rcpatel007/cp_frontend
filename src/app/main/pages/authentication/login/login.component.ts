@@ -31,6 +31,9 @@ export class LoginComponent implements OnInit {
     compnaylist =[];
     // mobile: number;
     password: number;
+    cid:String;
+    compnay:any;
+
     /**
      * Constructor
      *
@@ -114,6 +117,7 @@ export class LoginComponent implements OnInit {
                     if (data.success === true) {
                         this.userId = this.res.data.id;
                         this.title = this.res.data.title;
+                        this.cid = this.res.data.companyId;
                         this.showCompnayListModal();
                         // this.showModalStatus = !this.showModalStatus;
                         localStorage.setItem('userToken', this.res.token);
@@ -136,19 +140,23 @@ export class LoginComponent implements OnInit {
     }
 
     showCompnayListModal(): void {
-        this.showModalStatus = !this.showModalStatus;
-        this.userService.getCompanyList()
-            .subscribe(res => {
 
-                    for (let index = 0; index < res[0].data.length; index++) {
-                        if(res[0].data[index].owner == this.title){
-                            this.compnaylist.push(res[0].data[index])
+        this.showModalStatus = !this.showModalStatus;
+        this.userService.getCompanyList().pipe(first())
+            .subscribe(data => {
+                this.compnay = data;
+                console.log(this.compnay, "res");
+                if (this.compnay.success === true) {
+                    for (let index = 0; index < this.compnay.data.length; index++) {
+                        if(this.compnay.data[index].id === this.cid){
+
+                                this.compnaylist.push(this.compnay.data[index]);
                         }
                     }
-
-                console.log(res);
-
+                }   
+                console.log(this.compnaylist,'cp');
             });
+            
     }
     submit($event) {
 
@@ -160,9 +168,12 @@ export class LoginComponent implements OnInit {
 
     }
 
-    done() {
+    done(id) {
+        localStorage.setItem('companyId',id);
         this.router.navigate(['/apps/dashboards/analytics']);
 
+        console.log(localStorage.getItem('companyId'));
+        
     }
 
     // onSubmit() {

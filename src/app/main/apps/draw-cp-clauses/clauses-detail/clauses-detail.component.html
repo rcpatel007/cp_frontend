@@ -36,15 +36,14 @@
                         <table>
                             <tr *ngFor="let c of clauses">
                                 <td><i class="material-icons" (click)="view(c.id)">remove_red_eye</i></td>
-                                <td><i class="material-icons" (click)="edit('editPanel')"
-                                        aria-label="Toggle quick panel" style="color: #1e88e5;"
-                                        (click)="edit(c.id)">create</i></td>
+                                <td><i class="material-icons" (click)="editToggle('editPanel',c.id)"
+                                        aria-label="Toggle quick panel" style="color: #1e88e5;">create</i></td>
                                 <td>
                                     <mat-checkbox></mat-checkbox>
 
                                 </td>
                                 <td>(a)</td>
-                                <td style="width: 100%;"> {{c.termsName}}
+                                <td style="width: 100%;" [innerHtml]="c.termsName">
                                 </td>
                             </tr>
                             <!-- <tr>
@@ -71,6 +70,45 @@
                             </tr> -->
                         </table>
                     </div>
+                    <div class="row" *ngIf="customCl">
+                        <h4>Custome Amendments</h4>
+                        <table>
+                            <tr *ngFor="let n of newClause;let i=index">
+                                <td><i class="material-icons" (click)="view(n.id)">remove_red_eye</i></td>
+                                <td><i class="material-icons" (click)="customToggle('customPanel',n.id)"
+                                        aria-label="Toggle quick panel" style="color: #1e88e5;">create</i></td>
+                                <td>
+                                    <mat-checkbox></mat-checkbox>
+
+                                </td>
+                                <td>{{i+1}})</td>
+                                <td style="width: 100%;" [innerHtml]="n.termsName">
+                                </td>
+                            </tr>
+                            <!-- <tr>
+                                    <td><i class="material-icons">remove_red_eye</i></td>
+                                    <td><i class="material-icons" style="color: #1e88e5;">create</i></td>
+                                    <td>
+                                            <mat-checkbox></mat-checkbox>
+                                   
+                                    </td>
+                                    <td>(b)</td>
+                                    <td>The Owener agree to let, and the Charterers agree to hire Vessel From the time of
+                                        delivert for,<a>about 3 to about 5 months </a>within below mentioned trading limits
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="material-icons">remove_red_eye</i></td>
+                                    <td><i class="material-icons" style="color: #1e88e5;">create</i></td>
+                                    <td> 
+                                    <mat-checkbox></mat-checkbox></td>
+                                    <td>(c)</td>
+                                    <td>The Owener agree to let, and the Charterers agree to hire Vessel From the time of
+                                        delivert for,<a>about 3 to about 5 months </a>within below mentioned trading limits
+                                    </td>
+                                </tr> -->
+                        </table>
+                    </div>
                     <div class="row" style="    padding: 3% 0;">
                         <!-- <div class="add-button text-left row-col-1">
                                 <i class="material-icons" >add</i> 
@@ -85,16 +123,79 @@
                             <button class="add-item add-item--back-button"
                                 (click)="Previous(previusClause)">Previous</button>
                         </div>
-
+                        
                         <div class="row-col-6 text-right">
-                            <button class="submit-item submit-item--back-button"
-                                (click)="nextClause(nextClause)">Next</button>
+                            <button class="submit-item submit-item--back-button" *ngIf="nextStatus == false"
+                                (click)="next(nextClause)">Next</button>
+                        <button class="submit-item submit-item--back-button " *ngIf="nextStatus == true" >Submit</button>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <fuse-sidebar name="addPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <!-- hello -->
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <div class="">
+                    <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="customClause" name="customClause">
+                    </angular-editor>
+                </div>
+            </div>
+
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="addClause()">Add</button>
+                </div>
+
+
+            </div>
+        </div>
+    </fuse-sidebar>
+
+    <fuse-sidebar name="editPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <div class="">
+                    <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext"
+                        name="editclausetext"></angular-editor>
+                </div>
+            </div>
+
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="editterms(editid)">Edit</button>
+                </div>
+
+
+            </div>
+        </div>
+    </fuse-sidebar>
+
+    <fuse-sidebar name="customPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+            <form>
+                <div class="mat-elevation-z8" style="padding: 2%;">
+                    <div class="">
+                        <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext"
+                            name="editclausetext"></angular-editor>
+                    </div>
+                </div>
+                <div class="header-row text-right">
+                    <div style="width: 100%; padding: 3% 0;">
+                        <button class="submit-item submit-item--back-button" (click)="customEdit(ceditid)" >Edit</button>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </fuse-sidebar>
 </div>
 
 <div class="cst-modal" [ngClass]="{'cst-modal--active' : showModalStatus}">
@@ -115,15 +216,6 @@
 </div>
 
 <!-- Add panel -->
-<fuse-sidebar name="addPanel" style="max-width: 60%; width: 60%;" position="right" class="quick-panel">
-    <!-- <add-detail-clause></add-detail-clause> -->
-    hello
-</fuse-sidebar>
 
 
 <!-- Edit -->
-
-<fuse-sidebar name="addPanel" position="right" class="quick-panel">
-    <!-- <add-detail-clause></add-detail-clause> -->
-    hello
-</fuse-sidebar>

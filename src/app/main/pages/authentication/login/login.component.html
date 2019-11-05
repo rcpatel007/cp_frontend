@@ -96,36 +96,43 @@
     <div class="cst-modal__overlay"></div>
     <div class="cst-modal__content">
         <div class="cst-modal__header">
-            Please Select Your Company 
+            <!-- Please Select Your Company  -->
         </div>
         <div class="cst-modal__body">
           <div class="row">
-          <div class="row-col-3">
+          <!-- <div class="row-col-3">
               <label>
                   <input type="checkbox" class="filled-in" (change)="submit($event)" />
                   <span>Abc</span>
                 </label>
-          </div>
+          </div> -->
 
-          <div class="row-col-3">
+          <!-- <div class="row-col-3">
               <label>
                   <input type="checkbox" class="filled-in" (change)="submit($event)"  />
                   <span>xyz</span>
                 </label>
-          </div>
+          </div> -->
 
-          <div class="row-col-3">
+          <!-- <div class="row-col-3">
               <label>
                   <input type="checkbox" class="filled-in" (change)="submit($event)" />
                   <span>demo</span>
                 </label>
-          </div>
-
+          </div> -->
+          <mat-radio-group  aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
+            <mat-label class="labelCustom">Please select the applicable Company.</mat-label>
+            <br>
+            <br>
+            <br>
+            <mat-radio-button name="CompnayId" style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " class="customFormfullWidth" *ngFor="let cp of compnaylist" [ngClass]="{'d-none': cp.isActive === 'N'}"  [value]="cp.id" (click)="done(cp.id)"> {{cp.companyName}} </mat-radio-button>
+        </mat-radio-group>
+         
             
           </div>
         </div>
         <div class="cst-modal__footer">
-            <button class="cst-modal__button cst-modal__button--delete" (click)="done()">Submit</button>
+            <!-- <button class="cst-modal__button cst-modal__button--delete" (click)="done()">Submit</button> -->
             <!-- <button class="cst-modal__button cst-modal__button--cancel" (click)="showDeleteModal()">Cancel</button> -->
         </div>
     </div>

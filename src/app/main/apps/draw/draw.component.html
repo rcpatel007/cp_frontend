@@ -2,9 +2,10 @@
     <div class="top-bg accent"></div>
     <div class="heading center">
         <div class="header-row">
-            <div class="row-col-3">
+            <div class="row-col-9">
                 <h2>Draw C/P</h2>
             </div>
+            <div class="row-col-6"></div>
             <div class="row-col-3">
                 <div style="float: right;">
                     <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <a
@@ -13,32 +14,105 @@
             </div>
         </div>
         <div class="mat-elevation-z8">
-            <div class="main-tab">
+            <!-- Existing Draw C/P Records -->
+            <div class="main-tab" *ngIf="existingDrawCP">
                 <div class="header-row">
+                    <div class="row-col-9">
+                        <h2 style="padding-bottom: 0;"> Existing Draw C/P </h2>
+                    </div>
+            <div class="row-col-6"></div>
+
                     <div class="row-col-3">
-                        <h2 style="padding-bottom: 0;"> Select Draw C/P </h2>
+                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Draw C/P</button>
                     </div>
                 </div>
             </div>
+            <!-- Existing Draw C/P Records -->
+            <!-- Draw C/P -->
+            <div class="main-tab" *ngIf="mainDrawCPDiv">
+                <div class="header-row">
+                    <div class="row-col-9">
+                        <h2 style="padding-bottom: 0;"> Select Draw C/P </h2>
+                    </div>
+            <div class="row-col-6"></div>
+
+                    <div class="row-col-3">
+                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()"> Existing Draw C/P</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Draw C/P -->
             <hr>
+            <!-- Existing Draw C/P Records -->
+            <table mat-table [dataSource]="dataSource" *ngIf="existingDrawCP">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> Identifier </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container>
+                <ng-container matColumnDef="cpDate">
+                    <th mat-header-cell *matHeaderCellDef> CP Date </th>
+                    <td mat-cell *matCellDef="let element"> {{element.cpDate}} </td>
+                </ng-container>
+                <ng-container matColumnDef="chartererName">
+                    <th mat-header-cell *matHeaderCellDef> Charter </th>
+                    <td mat-cell *matCellDef="let element"> {{element.chartererName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="ownerName">
+                    <th mat-header-cell *matHeaderCellDef> Owner </th>
+                    <td mat-cell *matCellDef="let element"> {{element.ownerName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="vesselName">
+                    <th mat-header-cell *matHeaderCellDef> Vessel </th>
+                    <td mat-cell *matCellDef="let element"> {{element.vesselName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="progress">
+                    <th mat-header-cell *matHeaderCellDef> Progress </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-progress-bar mode="determinate" value="{{element.progress}}"></mat-progress-bar>    
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="statusInfo">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let element" ><h4 class="{{ element.classInfo }}">{{ element.statusInfo }}</h4></td>
+                </ng-container>
+                <!-- Weight Column -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> Action </th>
+                    <td mat-cell *matCellDef="let row" class="action">
+                        <button mat-button class="click-icon click-icon--edit">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="editdrawManagementData(row)">
+                                edit</mat-icon>
+                        </button>
+                        <button mat-button class="click-icon click-icon--delete" (click)="showDeleteModal(row.id)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator #paginator
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 20]" *ngIf="existingDrawCP"   ></mat-paginator>
+            <!-- Existing Draw C/P Records -->
             <!-- Charter Party Type Selection Start -->
-                <mat-radio-group aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
+                <mat-radio-group *ngIf="mainDrawCPDiv" aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
                     <mat-label class="labelCustom">Please select the applicable Charter Party.</mat-label>
                     <br>
-                    <mat-radio-button style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " class="customFormfullWidth" *ngFor="let CharterPartyTypeData of CharterPartyTypeData" [ngClass]="{'d-none': CharterPartyTypeData.isActive === 'N'}"  [value]="CharterPartyTypeData.id" (click)="setApplicabelCharterParty(CharterPartyTypeData.id)"> {{CharterPartyTypeData.name}} </mat-radio-button>
+                    <mat-radio-button name="charterPartyTypeID" style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " class="customFormfullWidth" *ngFor="let CharterPartyTypeArray of CharterPartyTypeArray" [ngClass]="{'d-none': CharterPartyTypeArray.isActive === 'N'}"  [value]="CharterPartyTypeArray.id" (click)="setApplicabelCharterParty(CharterPartyTypeArray.id)"> {{CharterPartyTypeArray.name}} </mat-radio-button>
                 </mat-radio-group>
             <!-- Charter Party Type Selection End -->
                 
             <!-- Draw Filter Start -->
-            <div class="content-card" id="drawcpFormDiv" *ngIf="drawRecordsFilterShow" style="margin-left: -10px !important; margin-top: -20px !important">
+            <div class="content-card" id="drawcpFormDiv" *ngIf="drawRecordsFilterShow" style="margin-left: -10px !important; margin-top: -29px !important">
                 <form [formGroup]="DrawManagementSearchForm" (ngSubmit)="fetchDrawRecords()">
                     <select placeholder="select C/P Form" class="customFormfullWidth" formControlName="formIdSearch" (change)="changeCPForm($event)" required>
-                        <option [value]="0">--- Select ---</option>
+                        <option [value]="0">--- Select CP Form ---</option>
                         <option *ngFor="let cpformData of cpFormData"  [ngClass]="{'d-none': cpformData.isActive === 'N'}" [value]="cpformData.id">{{cpformData.cpformName}}</option>
                     </select>
 
                     <select placeholder="select C/P Form" class="customFormfullWidth" formControlName="vesselIdSearch"  (change)="changeVesselEvent($event)">
-                        <option [value]="0">--- Select ---</option>
+                        <option [value]="0">--- Select Vessel ---</option>
                         <option *ngFor="let VesselData of VesselData"  [ngClass]="{'d-none': VesselData.isActive === 'N'}" [value]="VesselData.id">{{VesselData.vessel_name}}</option>
                     </select>
                     
@@ -52,9 +126,9 @@
                         </mat-error>
                     </mat-form-field>
                     
-                    <select placeholder="select Charter" class="customFormfullWidth" formControlName="chartererIdSearch"  (change)="changeChartererType($event)">
-                        <option [value]="0">--- Select ---</option>
-                        <option *ngFor="let ChartereInfoData of ChartereInfoData"  [ngClass]="{'d-none': ChartereInfoData.isActive === 'N'}"  [value]="ChartereInfoData.id">{{ChartereInfoData.username}}</option>
+                    <select placeholder="select Charter" class="customFormfullWidth" formControlName="drawCPIDSearch"  (change)="changeChartererType($event)">
+                        <option [value]="0">--- Select Identifier ---</option>
+                        <option *ngFor="let drawCPDataData of drawCPDataData"  [ngClass]="{'d-none': drawCPDataData.isActive === 'N'}"  [value]="drawCPDataData.id">{{drawCPDataData.id}}</option>
                     </select>
 
                     <br>
@@ -68,15 +142,19 @@
                 <div class="header-row">
                     <div class="row-col-3" style="float:right">
                         <mat-form-field floatLabel="never" class="custom-search-field">
-                            <mat-icon class="search">search</mat-icon> <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                            <mat-icon class="search">search</mat-icon> <input matInput (keyup)="applyFilterExecuted($event.target.value)" placeholder="Search">
                         </mat-form-field>
                     </div>
                 </div>
             </div>
-            <table mat-table [dataSource]="dataSource" *ngIf="drawRecordsTableShow" >
-                <ng-container matColumnDef="id">
+            <table mat-table [dataSource]="dataSourceFilter" *ngIf="drawRecordsTableShow" >
+                <!-- <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> S NO. </th>
                     <td mat-cell *matCellDef="let row; let i = index;"> {{i+1}} </td>
+                </ng-container> -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> Identifier </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
                 </ng-container>
                 <ng-container matColumnDef="cpDate">
                     <th mat-header-cell *matHeaderCellDef> CP Date </th>
@@ -120,19 +198,6 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
             <mat-paginator  *ngIf="drawRecordsTableShow" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>    
-            <div class="cst-modal" [ngClass]="{'cst-modal--active' : showModalStatus}">
-                <div class="cst-modal__overlay"></div>
-                <div class="cst-modal__content">
-                    <div class="cst-modal__header">
-                        <h4 class="cst-modal__title">"Are you sure you want to delete this record??"</h4>
-                        <button class="cst-modal__close" (click)="showDeleteModal(id)">&times;</button>
-                    </div>
-                    <div class="cst-modal__footer">
-                        <button class="cst-modal__button cst-modal__button--delete" (click)="deletedrawManagementData()">Delete</button>
-                        <button class="cst-modal__button cst-modal__button--cancel" (click)="showDeleteModal(id)">Cancel</button>
-                    </div>
-                </div>
-            </div>
         <!-- Draw Datatable End -->
 
         <!-- Draw Form Div Start -->
@@ -174,94 +239,3 @@
         </div>
     </div>
 </div>
-<!-- <div id="draw" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
-    <div class="top-bg accent"></div>
-    <div class="heading center">
-        <div class="header-row">
-            <div class="row-col-3">
-                <h2>C/P Draw Management</h2>
-            </div>
-            <div class="row-col-6"></div>
-            <div class="row-col-3">
-                <div style="float: right;">
-                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <b> C/P Draw Management </b>
-                </div>
-            </div>
-        </div>
-        <div class="mat-elevation-z8">
-            <div class="main-tab">
-                <div class="header-row">
-                    <div class="row-col-3">
-                        <button class="add-item add-item--main-button" routerLink="/apps/draw-management/add"> Add Draw C/P </button>
-                    </div>
-                    <div class="row-col-6"></div>
-                    <div class="row-col-3">
-                        <mat-form-field floatLabel="never" class="custom-search-field">
-                            <mat-icon class="search">search</mat-icon> <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
-                        </mat-form-field>
-                    </div>
-                </div>
-            </div>
-            <table mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S NO. </th>
-                    <td mat-cell *matCellDef="let row; let i = index;"> {{i+1}} </td>
-                </ng-container>
-                <ng-container matColumnDef="cpDate">
-                    <th mat-header-cell *matHeaderCellDef> CP Date </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cpDate}} </td>
-                </ng-container>
-                <ng-container matColumnDef="chartererName">
-                    <th mat-header-cell *matHeaderCellDef> Charter </th>
-                    <td mat-cell *matCellDef="let element"> {{element.chartererName}} </td>
-                </ng-container>
-                <ng-container matColumnDef="ownerName">
-                    <th mat-header-cell *matHeaderCellDef> Owner </th>
-                    <td mat-cell *matCellDef="let element"> {{element.ownerName}} </td>
-                </ng-container>
-                <ng-container matColumnDef="vesselName">
-                    <th mat-header-cell *matHeaderCellDef> Vessel </th>
-                    <td mat-cell *matCellDef="let element"> {{element.vesselName}} </td>
-                </ng-container>
-                <ng-container matColumnDef="progress">
-                    <th mat-header-cell *matHeaderCellDef> Progress </th>
-                    <td mat-cell *matCellDef="let element">
-                        <mat-progress-bar mode="determinate" value="{{element.progress}}"></mat-progress-bar>    
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="statusInfo">
-                    <th mat-header-cell *matHeaderCellDef> Status </th>
-                    <td mat-cell *matCellDef="let element" ><h4 class="{{ element.classInfo }}">{{ element.statusInfo }}</h4></td>
-                </ng-container>
-                <ng-container matColumnDef="action">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> Action </th>
-                    <td mat-cell *matCellDef="let row" class="action">
-                        <button mat-button class="click-icon click-icon--edit">
-                            <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="editdrawManagementData(row)">
-                                edit</mat-icon>
-                        </button>
-                        <button mat-button class="click-icon click-icon--delete" (click)="showDeleteModal(row.id)">
-                            <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-        </div>
-        <div class="cst-modal" [ngClass]="{'cst-modal--active' : showModalStatus}">
-            <div class="cst-modal__overlay"></div>
-            <div class="cst-modal__content">
-                <div class="cst-modal__header">
-                    <h4 class="cst-modal__title">"Are you sure you want to delete this record??"</h4>
-                    <button class="cst-modal__close" (click)="showDeleteModal(id)">&times;</button>
-                </div>
-                <div class="cst-modal__footer">
-                    <button class="cst-modal__button cst-modal__button--delete" (click)="deletedrawManagementData()">Delete</button>
-                    <button class="cst-modal__button cst-modal__button--cancel" (click)="showDeleteModal(id)">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
