@@ -41,7 +41,6 @@ const appRoutes: Routes = [
         path: 'pages',
         loadChildren: './main/pages/pages.module#PagesModule'
     },
-    
     {
         path: '**',
         redirectTo: 'pages/auth/login'
@@ -62,21 +61,15 @@ const appRoutes: Routes = [
             delay: 0,
             passThruUnknownUrl: true
         }),
-
         // Material moment date module
         MatMomentDateModule,
-
         // Material
         MatButtonModule,
         MatIconModule,
-
-
         // MatFormFieldModule,
         // MatInputModule,
         // MatTableModule,
         // MatSortModule,
-
-
         // Fuse modules
         FuseModule.forRoot(fuseConfig),
         FuseProgressBarModule,

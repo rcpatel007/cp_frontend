@@ -96,7 +96,7 @@ export class ClausesDetailComponent implements OnInit {
   tmpceditclausetext: String;
   parentId: String;
   nextStatus = false;
-
+  tempnos = 1;
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -123,6 +123,55 @@ export class ClausesDetailComponent implements OnInit {
   }
   addModal() {
     this.showModalStatus = true;
+
+  }
+
+  addClauseamendments() {
+    let tempnos = 1;
+    // let temp = {
+    //   companyId: localStorage.getItem('companyId'),
+    //   formId: localStorage.getItem('cpFormId'),
+    //   drawchaterId: localStorage.getItem('drawId'),
+    //   nos: this.tempid,
+    //   status: true,
+    //   parentId: this.parentId,
+    //   termsName: this.customClause,
+    //   createdBy: localStorage.getItem('userId')
+    // }
+    // this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
+    this._userService.getclusesList()
+      .subscribe(res => {
+        console.log(res);
+        this.tempData = res;
+
+        for (let index = 0; index < this.tempData.data.length; index++) {
+
+          if (this.tempData.data[index].parentId == this.clauseCategory[0].cid) {
+            this.clauses.push(this.tempData.data[index]);
+            let temp = {
+              companyId: localStorage.getItem('companyId'),
+              formId: localStorage.getItem('cpFormId'),
+              drawchaterId: localStorage.getItem('drawId'),
+              nos: tempnos,
+              status: true,
+              parentId: this.tempData.data[index].parentId,
+              termsName: this.tempData.data[index].termsName,
+              createdBy: localStorage.getItem('userId')
+            }
+            this._userService.customeClauseadd(temp)
+              .subscribe(res => {
+                console.log(res);
+                this.display();
+              });
+          }
+        }
+        tempnos = tempnos + 1;
+
+        console.log(this.tempData.data);
+        console.log(this.clauses);
+
+      });
+
 
   }
 
@@ -204,6 +253,8 @@ export class ClausesDetailComponent implements OnInit {
     for (let index = 0; index < this.clauseCategory.length; index++) {
       if (this.clauseCategory[index].cid == pid) {
         this.clusename = this.clauseCategory[index].name;
+        this.parentId = this.clauseCategory[index].cid;
+
         let nindex = index + 1;
         let pindex = index - 1;
         if (this.clauseCategory[index] == 0) {
@@ -267,11 +318,15 @@ export class ClausesDetailComponent implements OnInit {
           let nindex = index + 1;
           this.nextClause = this.clauseCategory[nindex].cid;
           this.nextStatus = false;
+
         }
         this.previusClause = this.clauseCategory[pindex].cid;
+
       }
     }
     this.display();
+
+    // this.display();
     // console.log('data', this.clauseCategory);
     // console.log('data', this.clusename);
     // console.log('previus', this.previusClause);
@@ -310,13 +365,23 @@ export class ClausesDetailComponent implements OnInit {
   }
 
   editterms(id) {
-    let eid = id;
-    for (let index = 0; index < this.clauses.length; index++) {
-      if (this.clauses[index].id == eid) {
-        this.clauses[index].termsName = "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext;
-      }
+    let tempupdate = {
+      id: id,
+      termsName: "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext
+
     }
-    this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
+
+
+    this._userService.customeClauseuUpdate(tempupdate)
+      .subscribe(res => {
+        this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
+
+      });
+    // for (let index = 0; index < this.clauses.length; index++) {
+    //   if (this.clauses[index].id == eid) {
+    //     this.clauses[index].termsName = "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext;
+    //   }
+    // }
 
     this.editclausetext = '';
     // this.clausesDetail();
@@ -335,19 +400,31 @@ export class ClausesDetailComponent implements OnInit {
       }
     }
     console.log(this.editclausetext);
-    console.log(this.editclauses);
+    console.log(this.ceditid);
   }
 
 
   customEdit(id) {
     let ceid = id;
-    for (let index = 0; index < this.newClause.length; index++) {
-      if (this.newClause[index].id == id) {
-        this.newClause[index].termsName = "<strike>" + this.tmpceditclausetext + "</strike>" + " " + this.editclausetext;
-        // this.newClause[index].termsName = this.editclausetext;
-      }
-
+    let tempedit = {
+      id: this.ceditid,
+      termsName: "<strike>" + this.tmpceditclausetext + "</strike>" + " " + this.editclausetext,
+      updatedBy: localStorage.getItem('userId')
     }
+    console.log(tempedit);
+    
+    this._userService.customeClauseuUpdate(tempedit)
+      .subscribe(res => {
+        console.log(res);
+      });
+
+    this.display();
+    // for (let index = 0; index < this.newClause.length; index++) {
+    //   if (this.newClause[index].id == id) {
+    //     this.newClause[index].termsName = "<strike>" + this.tmpceditclausetext + "</strike>" + " " + this.editclausetext;
+    //     // this.newClause[index].termsName = this.editclausetext;
+    //   }
+    // }
     this._fuseSidebarService.getSidebar('customPanel').toggleOpen();
 
     this.editclausetext = '';
@@ -358,35 +435,69 @@ export class ClausesDetailComponent implements OnInit {
 
 
   display() {
-    let tempCaluse = JSON.parse(localStorage.getItem('newClause'));
-    // if (this.newClause.length) {
-    for (let index = 0; index < tempCaluse.length; index++) {
+    let tempres: any;
+    this.newClause = [];
+    this._userService.customeClauseList()
+      .subscribe(res => {
+        console.log(res);
+        tempres = res;
+        if (tempres.success == true) {
+          for (let index = 0; index < tempres.data.length; index++) {
+            if (tempres.data[index].parentId == this.parentId) {
+              this.newClause.push(tempres.data[index]);
+            }
+          }
+        }
+        this.customCl = true;
+        console.log(tempres.data);
+        console.log(this.newClause);
+      });
 
-      if (tempCaluse[index].parentId == this.parentId) {
-        this.newClause.push(tempCaluse[index]);
-      }
-    }
-    this.customCl = true;
+    // let tempCaluse = JSON.parse(localStorage.getItem('newClause'));
+    // // if (this.newClause.length) {
+    // for (let index = 0; index < tempCaluse.length; index++) {
+
+    //   if (tempCaluse[index].parentId == this.parentId) {
+    //     this.newClause.push(tempCaluse[index]);
+    //   }
+    // }  
     // }
-    console.log(this.newClause);
   }
 
 
   addClause() {
     // let add = new Array; 
+
+    // let companyId = localStorage.getItem('companyId');
+    // let formId = localStorage.getItem('formId');
+    // let drawchaterId = localStorage.getItem('drawcharterId');
+
     let temp = {
-      id: this.tempid,
+      companyId: localStorage.getItem('companyId'),
+      formId: localStorage.getItem('cpFormId'),
+      drawchaterId: localStorage.getItem('drawId'),
+      nos: this.tempid,
+      status: true,
       parentId: this.parentId,
-      termsName: this.customClause
+      termsName: this.customClause,
+      createdBy: localStorage.getItem('userId')
     }
     this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
 
+    this._userService.customeClauseadd(temp)
+      .subscribe(res => {
+
+        console.log(res);
+        this.display();
+
+
+
+      });
     // this._fuseSidebarService.getSidebar('addpanel').toggleClose();
 
-    this.add.push(temp);
-    localStorage.setItem('newClause', JSON.stringify(this.add));
-    console.log(localStorage.getItem('newClause'));
-    this.display();
+    // this.add.push(temp);
+    // localStorage.setItem('newClause', JSON.stringify(this.add));
+    // console.log(localStorage.getItem('newClause'));
     this.tempid = this.tempid + 1;
   }
 }

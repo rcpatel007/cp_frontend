@@ -282,4 +282,46 @@ export class UserService {
         return this.http.post(`${config.baseUrl}/DrawInviteRemove`,req)
     }
 
+
+
+//  ********************   // clause amendment
+
+// clause amendment  add
+    customeClauseadd(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseamendmentCreate`,req)
+    }
+    customeClauseuUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseamendmentUpdate`,req)
+    }
+    customeClauseremove(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseamendmentRemove`,req)
+    }
+    
+    customeClauseList()
+    {
+        return this.http.get(`${config.baseUrl}/clauseamendmentlist`)
+    }
+
+
+    clauseCategoryServerSideRecordsServerSide(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseCategoryServerSideRecords`,req)
+    }
+
+    // Clause Terms Data Records Server Side
+
+    clauseTermsDetailsRecordsServerSide(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseTermsDetailsRecordsServerSide`,req)
+    }
+
+    // Clause Reviews Records Server Side
+    clauseTermsReviewsRecordsServerSide(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseTermsReviewsRecordsServerSide`,req)
+    }
+
 }

@@ -7,6 +7,8 @@ import {MatRadioModule} from '@angular/material/radio';
 import { CptpManagementComponent } from './cptp-management/cptp-management.component';
 import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.component';
 import { SettingsComponent } from './settings/settings.component';
+// import { DrawFirstCounterManagementComponent } from './draw-first-counter-management/draw-first-counter-management.component';
+// import { DrawCpCounterComponent } from './draw-cp-counter/draw-cp-counter.component';
 
 
 // import{ClauseTermsComponent} from './clause-terms/clause-terms.component';
@@ -107,6 +109,14 @@ const routes = [
     {
         path: 'settings',
         loadChildren: './settings/settings.module#SettingsManagementModule',
+    },
+    {
+        path: 'ofcm',
+        loadChildren: './owners-first-counter-management/owners-first-counter-management.module#OFCManagementModule',
+    },
+    {
+        path: 'dfcm',
+        loadChildren: './draw-first-counter-management/draw-first-counter-management.module#DFCManagementModule',
     },
 ];
 

@@ -362,6 +362,73 @@ export class DrawComponent implements OnInit
             }
     }
 
+
+    drawIdServerSide() : void
+    {
+        this.drawManagementData = [];
+
+        var arrfilterInfo = {};
+
+        var isCondition = 0;
+
+        if(this.formIdValueForDrawRecords > 0)
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
+        }
+        if(this.vesselIdValueForDrawRecords > 0)
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
+        }
+        if(this.cpDateValueForDrawRecords != '')
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
+        }
+        if(this.drawCPIDForDrawRecords > 0)
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.chartererBrokerId"] = this.chartererIdValueForDrawRecords;
+        }
+
+        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+        
+        console.log("arr",arrfilterInfo);
+        
+        try
+        {
+            this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
+            {
+                this.drawManagementRes = res;
+                this.drawFormDivShow = false;
+                this.drawRecordsTableShow = true;
+                this.drawManagementData = this.drawManagementRes.data;
+                this.dataSourceFilter = new MatTableDataSource(this.drawManagementRes.data);
+                this.dataSourceFilter.paginator = this.paginator;
+                this.dataSourceFilter.sort = this.sort;
+                console.log(this.drawManagementRes);
+                if (this.drawManagementRes.success === true)
+                {
+                   
+                    console.log(this.drawManagementRes);
+                    localStorage.setItem('drawId',this.drawManagementRes.data[0].id);
+                    console.log(localStorage.getItem('drawId'));
+
+                }
+                this.show = true;
+            },
+            err =>
+            {
+                this.alertService.error(err, 'Error');
+            });
+        } catch (err)
+        {
+            console.log(err);
+        }
+    }
+
+
     drawRecordsServerSide() : void
     {
         this.drawManagementData = [];
@@ -851,6 +918,9 @@ export class DrawComponent implements OnInit
                             this.alertService.success(this.createtypeRes.message, 'Success');
                             this.DrawManagementForm.reset(); 
                             // this.router.navigate([this.returnUrl]);
+                                console.log("tesst",this.createtypeRes);
+                         this.drawIdServerSide();
+                                
      this.router.navigate(['/apps/drawCp-Clauses-management']);
 
                             this.drawRecordsServerSide();
@@ -868,6 +938,7 @@ export class DrawComponent implements OnInit
             } 
         }
     }
+    
 
     fetchDrawRecords(): void
     {
