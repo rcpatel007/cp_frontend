@@ -120,6 +120,8 @@ export class ClausesDetailComponent implements OnInit {
   ngOnInit() {
     this.clausesDetail();
     this.display();
+
+    console.log('HERE IN FUNCTION');
   }
   addModal() {
     this.showModalStatus = true;

@@ -89,6 +89,10 @@ export class DrawCpClausesComponent implements OnInit {
   viewCustomData = [];
   pageTitle: String;
   notifiactionres: any;
+
+
+
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -201,79 +205,93 @@ export class DrawCpClausesComponent implements OnInit {
     try {
       this._userService.clauseCategoryServerSideRecords(clauseCategoryFilterCondition)
         .pipe(first())
-        .subscribe((res) => {
-          this.termsReviewRecordsResponse = res;
-          if (this.termsReviewRecordsResponse.success === true) {
-            this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
+        .subscribe((res) =>
+        {
+            this.termsReviewRecordsResponse = res;
+            if (this.termsReviewRecordsResponse.success === true)
+            {
+                this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
+                
+                for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+                {
+                    this.clauseCategoryTermsData = [];
 
-            for (let index = 0; index < this.termsReviewRecordsData.length; index++) {
-              this.clauseCategoryTermsData = [];
-              var clauseCategoryID = this.termsReviewRecordsData[index].id;
+                    console.log(this.termsReviewRecordsData[index].id);
 
-              var clauseTermsDetailsFilterCondition = {};
-              clauseTermsDetailsFilterCondition["parentId"] = clauseCategoryID;
-              
-              this._userService.clauseTermsDetailsRecordsServerSide(clauseTermsDetailsFilterCondition).pipe(first()).subscribe((res) => {
-                this.clauseCategoryTermsResponse = res;
-                if (this.clauseCategoryTermsResponse.success === true) {
-                  this.clauseCategoryTermsData = this.clauseCategoryTermsResponse.data;
+                    var clauseTermsDetailsFilterCondition = {};
+                    clauseTermsDetailsFilterCondition["parentId"] = this.termsReviewRecordsData[index].id;
+                    
+                    this._userService.clauseTermsDetailsRecordsServerSide(clauseTermsDetailsFilterCondition).pipe(first()).subscribe((res) =>
+                    {
+                        console.log(this.termsReviewRecordsData[index].id);
+                        this.clauseCategoryTermsResponse = res;
+                        // console.log(this.termsReviewRecordsData[index].id);
+                        // console.log(this.clauseCategoryTermsResponse);
+                        if (this.clauseCategoryTermsResponse.success === true)
+                        {
+                            this.clauseCategoryTermsData = this.clauseCategoryTermsResponse.data;
 
-                  for (let subIndex = 0; subIndex < this.clauseCategoryTermsData.length; subIndex++) {
-                    var clauseTermsID = this.clauseCategoryTermsData[subIndex].id;
-                    var parentID = this.clauseCategoryTermsData[subIndex].parentId;
+                            for (let subIndex = 0; subIndex < this.clauseCategoryTermsData.length; subIndex++)
+                            {
+                                var clauseTermsID = this.clauseCategoryTermsData[subIndex].id;
+                                var parentID = this.termsReviewRecordsData[index].id;
 
-                    this.clauseCategoryTermsReviewData = [];
-                    this.clauseCategoryTermsData[subIndex].clauseCategoryTermsUpdate = this.clauseCategoryTermsReviewData;
+                                this.clauseCategoryTermsReviewData = [];
+                                this.clauseCategoryTermsData[subIndex].clauseCategoryTermsUpdate = this.clauseCategoryTermsReviewData;
+
+                                var clauseTermsReviewFilter = {};
+                                clauseTermsReviewFilter["tu.companyId"] = companyId;
+                                clauseTermsReviewFilter["tu.drawId"] = drawId;
+                                clauseTermsReviewFilter["tu.formId"] = formID;
+                                clauseTermsReviewFilter["tu.clauseCategoryId"] = this.termsReviewRecordsData[index].id;
+                                clauseTermsReviewFilter["tu.clauseTermsId"] = this.clauseCategoryTermsData[subIndex].id;
+                                clauseTermsReviewFilter["tu.isCustom"] = 'N';
+                                // console.log(clauseTermsReviewFilter);
+
+                                this._userService.clauseTermsReviewsRecordsServerSide(clauseTermsReviewFilter).pipe(first()).subscribe((res) =>
+                                {
+                                    this.clauseCategoryTermsReviewResponse = res;
+                                    // console.log(this.clauseCategoryTermsReviewResponse);
+                                    if (this.clauseCategoryTermsReviewResponse.success === true)
+                                    {
+                                        this.clauseCategoryTermsReviewData = this.clauseCategoryTermsReviewResponse.data;
+                                        this.clauseCategoryTermsData[subIndex].clauseCategoryTermsUpdate = this.clauseCategoryTermsReviewData;
+                                    }
+                                });
+                            }
+                            this.termsReviewRecordsData[index].clauseCategoryTerms = this.clauseCategoryTermsData;
+                        }
+                    });
+
+                    this.clauseCategoryTermsReviewDataCustom = [];
+                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom = this.clauseCategoryTermsReviewDataCustom;
 
                     var clauseTermsReviewFilter = {};
                     clauseTermsReviewFilter["tu.companyId"] = companyId;
                     clauseTermsReviewFilter["tu.drawId"] = drawId;
                     clauseTermsReviewFilter["tu.formId"] = formID;
-                    clauseTermsReviewFilter["tu.clauseCategoryId"] = parentID;
-                    clauseTermsReviewFilter["tu.clauseTermsId"] = clauseTermsID;
+                    clauseTermsReviewFilter["tu.clauseCategoryId"] = this.termsReviewRecordsData[index].id;
+                    clauseTermsReviewFilter["tu.isCustom"] = 'Y';
 
-                    this._userService.clauseTermsReviewsRecordsServerSide(clauseTermsReviewFilter).pipe(first()).subscribe((res) => {
-                      this.clauseCategoryTermsReviewResponse = res;
-                      if (this.clauseCategoryTermsReviewResponse.success === true) {
-                        this.clauseCategoryTermsReviewData = this.clauseCategoryTermsReviewResponse.data;
-                        this.clauseCategoryTermsData[subIndex].clauseCategoryTermsUpdate = this.clauseCategoryTermsReviewData;
-                      }
+                    this._userService.clauseTermsReviewsRecordsServerSideCustom(clauseTermsReviewFilter).pipe(first()).subscribe((res) =>
+                    {
+                        this.clauseCategoryTermsReviewResponseCustom = res;
+                        if (this.clauseCategoryTermsReviewResponseCustom.success === true)
+                        {
+                            if (this.termsReviewRecordsData[index])
+                            {
+                                this.clauseCategoryTermsReviewDataCustom = this.clauseCategoryTermsReviewResponseCustom.data;
+                                this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom = this.clauseCategoryTermsReviewResponseCustom.data;
+                            }
+                        }
                     });
-                  }
-                  this.termsReviewRecordsData[index].clauseCategoryTerms = this.clauseCategoryTermsData;
                 }
-              });
-
-              this.clauseCategoryTermsReviewDataCustom = [];
-              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom = this.clauseCategoryTermsReviewDataCustom;
-
-              var clauseTermsReviewFilter = {};
-              clauseTermsReviewFilter["tu.companyId"] = companyId;
-              clauseTermsReviewFilter["tu.drawId"] = drawId;
-              clauseTermsReviewFilter["tu.formId"] = formID;
-              clauseTermsReviewFilter["tu.clauseCategoryId"] = clauseCategoryID;
-              clauseTermsReviewFilter["tu.isCustom"] = 'Y';
-
-              this._userService.clauseTermsReviewsRecordsServerSideCustom(clauseTermsReviewFilter).pipe(first()).subscribe((res) => {
-                this.clauseCategoryTermsReviewResponseCustom = res;
-                if (this.clauseCategoryTermsReviewResponseCustom.success === true) {
-                  if (this.termsReviewRecordsData[index]) {
-                    console.log(this.clauseCategoryTermsReviewResponseCustom.data);
-                    
-                    this.clauseCategoryTermsReviewDataCustom = this.clauseCategoryTermsReviewResponseCustom.data;
-                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom = this.clauseCategoryTermsReviewResponseCustom.data;
-                  }
-                }
-              });
             }
-            console.log(this.termsReviewRecordsData);
-          }
         },
-          err => {
-            this.alertService.error(err, 'Error');
-          });
-    } catch (err) {
-    }
+        err => {
+        this.alertService.error(err, 'Error');
+        });
+    } catch (err) {}
   }
   // custome terms add toggle
   toggleOpen(key, id): void {
@@ -315,8 +333,8 @@ export class DrawCpClausesComponent implements OnInit {
     {
       mainUserId: mainUserId,
       companyId: companyId,
-      drawId: '48',
-      formId: '1',
+      drawId: drawId,
+      formId: formId,
       clauseCategoryId: clauseCategoryId,
       nos: nos,
       termsNameOrginal: termsNameOrginal,
@@ -334,7 +352,7 @@ export class DrawCpClausesComponent implements OnInit {
       {
         headers: header
       }
-      this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(
+      this.http.post(`${config.baseUrl}/claueseDetailCustomInsertUpdate`, req, headerOptions).subscribe(
         res => {
           this.termsUpdateRes = res;
           console.log("HERE OUT RESPONSE");
@@ -427,8 +445,8 @@ export class DrawCpClausesComponent implements OnInit {
     {
       mainUserId: mainUserId,
       companyId: companyId,
-      drawId: '48',
-      formId: '1',
+      drawId: drawId,
+      formId: formId,
       clauseCategoryId: clauseCategoryId,
       clauseTermsId: clauseTermsId,
       nos: nos,
@@ -436,7 +454,7 @@ export class DrawCpClausesComponent implements OnInit {
       termsName: termsName,
       createdBy: localStorage.getItem('userId'),
       updatedBy: localStorage.getItem('userId'),
-      isCustom: 'N'
+      isCustom: 'Y'
     };
     console.log("check request", req);
 
@@ -497,7 +515,7 @@ export class DrawCpClausesComponent implements OnInit {
     clauseTermsReviewFilter["tu.clauseCategoryId"] = this.parentId;
     // clauseTermsReviewFilter["tu.clauseTermsId"] = clauseTermsID;
 
-    this._userService.clauseTermsReviewsRecordsServerSide(clauseTermsReviewFilter)
+    this._userService.clauseTermsReviewsRecordsServerSideCustom(clauseTermsReviewFilter)
       .subscribe(res => {
         this.tempedit = res;
         for (let index = 0; index < this.tempedit.data.length; index++) {
@@ -573,8 +591,8 @@ export class DrawCpClausesComponent implements OnInit {
     {
       mainUserId: mainUserId,
       companyId: companyId,
-      drawId: '48',
-      formId: '1',
+      drawId: drawId,
+      formId: formId,
       clauseCategoryId: clauseCategoryId,
       clauseTermsId: clauseTermsId,
       nos: nos,
@@ -593,7 +611,7 @@ export class DrawCpClausesComponent implements OnInit {
       {
         headers: header
       }
-      this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(
+      this.http.post(`${config.baseUrl}/claueseDetailCustomInsertUpdate`, req, headerOptions).subscribe(
         res => {
           this.termsUpdateRes = res;
           console.log("HERE OUT RESPONSE");
