@@ -10,10 +10,10 @@ export class AlertService {
     constructor(private router: Router, private toastr: ToastrService) {
         // clear alert messages on route change unless 'keepAfterRouteChange' flag is true
         // this.router.events.subscribe(event => {
-        //     console.log(event)
+        //    // console.log(event)
         //     if (event instanceof NavigationStart) {
         //         if (this.keepAfterRouteChange) {
-        //         console.log(this.keepAfterRouteChange)
+        //        // console.log(this.keepAfterRouteChange)
         //             // only keep for a single route change
         //             this.keepAfterRouteChange = false;
         //         } else {
@@ -35,14 +35,14 @@ export class AlertService {
     }
 
     error(message: string, title: string) {
-        console.log(message);
+       // console.log(message);
         this.toastr.error(message, title);
         // this.keepAfterRouteChange = keepAfterRouteChange;
         // this.subject.next({ type: 'error', text: message });
     }
 
     info(message: string, title: string) {
-        console.log(message);
+       // console.log(message);
         this.toastr.info(message, title);
         // this.keepAfterRouteChange = keepAfterRouteChange;
         // this.subject.next({ type: 'error', text: message });

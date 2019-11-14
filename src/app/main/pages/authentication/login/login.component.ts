@@ -118,10 +118,12 @@ export class LoginComponent implements OnInit {
                         this.userId = this.res.data.id;
                         this.title = this.res.data.title;
                         this.cid = this.res.data.companyId;
+
                         this.showCompnayListModal();
                         // this.showModalStatus = !this.showModalStatus;
                         localStorage.setItem('userToken', this.res.token);
                         localStorage.setItem('userId', this.res.data.id);
+                        localStorage.setItem('userRoleId', this.res.data.userRoleId);
 
                         localStorage.setItem('userData', JSON.stringify(this.res.data));
                         console.log(this.res.data);
@@ -145,12 +147,15 @@ export class LoginComponent implements OnInit {
         this.userService.getCompanyList().pipe(first())
             .subscribe(data => {
                 this.compnay = data;
+                console.log(this.cid);
+                
                 console.log(this.compnay, "res");
                 if (this.compnay.success === true) {
                     for (let index = 0; index < this.compnay.data.length; index++) {
-                        if(this.compnay.data[index].id === this.cid){
+                        if(this.compnay.data[index].id == this.cid){
+                            console.log(this.cid);
 
-                                this.compnaylist.push(this.compnay.data[index]);
+                            this.compnaylist.push(this.compnay.data[index]);
                         }
                     }
                 }   

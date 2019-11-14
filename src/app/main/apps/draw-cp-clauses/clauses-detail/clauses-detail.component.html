@@ -39,12 +39,12 @@
                                 <td><i class="material-icons" (click)="editToggle('editPanel',c.id)"
                                         aria-label="Toggle quick panel" style="color: #1e88e5;">create</i></td>
                                 <td>
-                                    <mat-checkbox></mat-checkbox>
+                                    <mat-checkbox ><span [innerHtml]="c.termsName">(a)</span></mat-checkbox>
 
                                 </td>
                                 <td>(a)</td>
-                                <td style="width: 100%;" [innerHtml]="c.termsName">
-                                </td>
+                                <!-- <td style="width: 100%;" [innerHtml]="c.termsName"> -->
+                                <!-- </td> -->
                             </tr>
                             <!-- <tr>
                                 <td><i class="material-icons">remove_red_eye</i></td>

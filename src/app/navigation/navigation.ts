@@ -23,14 +23,14 @@ export const navigation: FuseNavigation[] = [
                 icon: 'tachometer',
                 url  : '/apps/draw-management'
             },
-            {
-                id   : 'Charter Party Trading Platform',
-                title: 'Charter Party Trading Platform',
-                type : 'item',
-                icon: 'tachometer',
+            // {
+            //     id   : 'Charter Party Trading Platform',
+            //     title: 'Charter Party Trading Platform',
+            //     type : 'item',
+            //     icon: 'tachometer',
 
-                url  : '/apps/cptp-management'
-            },
+            //     url  : '/apps/cptp-management'
+            // },
             {
                 id: 'setting',
                 title: 'Setting',

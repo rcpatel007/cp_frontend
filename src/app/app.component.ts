@@ -14,6 +14,8 @@ import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.
 import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationTurkish } from 'app/navigation/i18n/tr';
+import { UserService } from './_services/user.service';
+    import { first } from 'rxjs/operators';
 
 @Component({
     selector   : 'app',
@@ -25,6 +27,10 @@ export class AppComponent implements OnInit, OnDestroy
     fuseConfig: any;
     navigation: any;
 
+    notificationResponse : any;
+    notificationData = [];
+
+    
     // Private
     private _unsubscribeAll: Subject<any>;
 
@@ -42,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy
      */
     constructor(
         @Inject(DOCUMENT) private document: any,
+        private _userService: UserService,
         private _fuseConfigService: FuseConfigService,
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
@@ -178,5 +185,44 @@ export class AppComponent implements OnInit, OnDestroy
     toggleSidebarOpen(key): void
     {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
+    }
+
+
+
+    checkNotification(): void
+    {
+        var filterCondition = {};
+            filterCondition["toUserId"] = localStorage.getItem('userId');
+            filterCondition["is_read"] = 'N';
+            try
+            {
+                this._userService.notificationRecords(filterCondition).pipe(first()).subscribe((res) =>
+                {
+                    this.notificationResponse = res;
+                    if (this.notificationResponse.success === true)
+                    {
+                        console.log(this.notificationResponse.data);
+                    }
+                });
+            }
+            catch (err){}
+        setInterval(() =>
+        {
+            // var filterCondition = {};
+            // filterCondition["toUserId"] = localStorage.getItem('userId');
+            // filterCondition["is_read"] = 'N';
+            // try
+            // {
+            //     this._userService.notificationRecords(filterCondition).pipe(first()).subscribe((res) =>
+            //     {
+            //         this.notificationResponse = res;
+            //         if (this.notificationResponse.success === true)
+            //         {
+            //             console.log(this.notificationResponse.data);
+            //         }
+            //     });
+            // }
+            // catch (err){}
+        }, 10000);
     }
 }

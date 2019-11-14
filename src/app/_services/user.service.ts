@@ -10,15 +10,28 @@ export class UserService {
     userToken: any;
     constructor(private http: HttpClient, private router: Router) {
         const token = JSON.parse(localStorage.getItem('currentUser'));
-        console.log(token);
+       // console.log(token);
         if (token == null) {
             //this.userToken = token.token;
             this.router.navigate(['/pages/auth/login'])
         }
     }
 
+
+    
+    // Notification Create
+    notificationCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/notificationCreate`,req)
+    }
+
+    // Notification Records
+    notificationRecords(req)
+    {
+        return this.http.post(`${config.baseUrl}/notificationRecords`,req)
+    }
     clausesCategoryRecords(){
-        console.log('here in clauses Categoory services');
+       // console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
     }
     
@@ -212,13 +225,13 @@ export class UserService {
     // Draw Form Records Service
     drawFormRecords()
     {
-        console.log('here in user services');
+       // console.log('here in user services');
         return this.http.get(`${config.baseUrl}/drawFormRecords`)
     }
     //  Draw Records Server Side
     drawRecordsServerSide(req)
     {
-        console.log(req);
+       // console.log(req);
         return this.http.post(`${config.baseUrl}/drawRecordsServerSide`, req)
     }
     // Draw Form Create Service
@@ -263,7 +276,7 @@ export class UserService {
     // Draw Invite Records Server Side
     DrawInviteRecordsServerSide(req)
     {
-        console.log(req);
+       // console.log(req);
         return this.http.post(`${config.baseUrl}/DrawInviteRecordsServerSide`, req)
     }
     // Draw Invite Form Create Service
@@ -324,4 +337,31 @@ export class UserService {
         return this.http.post(`${config.baseUrl}/clauseTermsReviewsRecordsServerSide`,req)
     }
 
+    // Clause Reviews Records Server Side Custom
+    clauseTermsReviewsRecordsServerSideCustom(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseTermsReviewsRecordsServerSideCustom`,req)
+    }
+    
+    clauseTermsUpdate (req)
+    {
+        return this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`,req)
+    }
+
+    clauseCustomeTermsUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/claueseDetailCustomInsertUpdate`,req)
+    }
+
+    // Clause Terms Review Insert Update
+    claueseDetailInsertUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`,req)
+    }
+
+    // Clause Category Records Server Side
+    clauseCategoryServerSideRecords(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseCategoryServerSideRecords`,req)
+    }
 }

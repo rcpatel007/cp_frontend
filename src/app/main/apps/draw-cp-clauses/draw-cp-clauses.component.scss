@@ -1,6 +1,80 @@
 @import 'src/@fuse/scss/fuse';
+quick-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    z-index: 99;
 
+    .mat-slide-toggle-content {
+        flex: 1;
+    }
+    .mb-12 {
+        color: #000;
+    }
+    .date__time span {
+        color: #000;
+    }
+ 
+}
+
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: #f5f5f5;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}
 #vessel {
+   
+    
+    .plusIconInfo span
+    {
+        font-size: 70px !important; padding: 7px 0px !important;
+    }
+
     .heading {
         padding: 3rem;
         h2 {
@@ -74,8 +148,17 @@
         font-weight: 700;
         background: #fff;
     }
+    tr{
+        vertical-align: top;
+    height: 59px;
+    }
+    td{
+        padding: 0 0.3% !important ;
+
+    }
     th,td {
-        text-align: center;
+        text-align: left;
+    font-size: 1.3rem;
     }
     .action-button {
         //common
@@ -209,4 +292,19 @@
     font-weight: bold;
     color: #000;
    }
- }
+   .add-button{
+    background: #1e88e5;
+    color: #fff;
+    padding: 2%;
+    width:7%;
+    border-radius: 79%;
+    cursor: pointer;
+   }
+
+   .angular-editor-textarea{
+       height: 250px;
+   }
+  
+    
+}
+ 

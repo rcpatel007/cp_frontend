@@ -111,10 +111,6 @@ const routes = [
         loadChildren: './settings/settings.module#SettingsManagementModule',
     },
     {
-        path: 'ofcm',
-        loadChildren: './owners-first-counter-management/owners-first-counter-management.module#OFCManagementModule',
-    },
-    {
         path: 'dfcm',
         loadChildren: './draw-first-counter-management/draw-first-counter-management.module#DFCManagementModule',
     },

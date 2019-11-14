@@ -137,9 +137,9 @@ export class DrawFirstCounterManagementComponent implements OnInit {
       this.clausesDetail();
       this.display();
     }
+    
     addModal() {
       this.showModalStatus = true;
-  
     }
   
     addClauseamendments() {
@@ -359,14 +359,12 @@ export class DrawFirstCounterManagementComponent implements OnInit {
           console.log(res);
           this.tempData = res;
           for (let index = 0; index < this.tempData.data.length; index++) {
-            if (this.tempData.data[index].parentId == nextClause) {
+            if (this.tempData.data[index].parentId == nc) {
               this.clauses.push(this.tempData.data[index]);
             }
           }
-  
           console.log(this.tempData.data);
           console.log(this.clauses);
-  
         });
   
       for (let index = 0; index < this.clauseCategory.length; index++) {
@@ -374,19 +372,18 @@ export class DrawFirstCounterManagementComponent implements OnInit {
           this.clusename = this.clauseCategory[index].name;
           this.parentId = this.clauseCategory[index].id;
           let pindex = index - 1;
-          if (nextClause == this.clauseCategory[this.clauseCategory.length - 1].id) {
+          if (nc == this.clauseCategory[this.clauseCategory.length - 1].id) {
             this.nextStatus = true;
           }
           else {
             let nindex = index + 1;
             this.nextClause = this.clauseCategory[nindex].id;
             this.nextStatus = false;
-  
           }
           this.previusClause = this.clauseCategory[pindex].id;
-  
         }
       }
+
       this.display();
   
       // this.display();
@@ -431,21 +428,18 @@ export class DrawFirstCounterManagementComponent implements OnInit {
       let tempupdate = {
         id: id,
         termsName: "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext
-  
       }
   
   
       this._userService.customeClauseuUpdate(tempupdate)
         .subscribe(res => {
           this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
-  
         });
       // for (let index = 0; index < this.clauses.length; index++) {
       //   if (this.clauses[index].id == eid) {
       //     this.clauses[index].termsName = "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext;
       //   }
       // }
-  
       this.editclausetext = '';
       // this.clausesDetail();
     }
@@ -533,34 +527,32 @@ export class DrawFirstCounterManagementComponent implements OnInit {
   
       // let companyId = localStorage.getItem('companyId');
       // let formId = localStorage.getItem('formId');
-      // let drawchaterId = localStorage.getItem('drawcharterId');
+      // l et drawchaterId = localStorage.getItem('drawcharterId');
   
       let temp = {
+        mainUserId:localStorage.getItem('userId'),
         companyId: localStorage.getItem('companyId'),
         formId: localStorage.getItem('cpFormId'),
-        drawchaterId: localStorage.getItem('drawId'),
-        nos: this.tempid,
+        drawId: localStorage.getItem('drawId'),
+        clauseCategoryId: this.parentId,
+        nos: 1,
         status: true,
-        parentId: this.parentId,
         termsName: this.customClause,
         createdBy: localStorage.getItem('userId')
       }
+
+      console.log(temp);
       this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
-  
-      this._userService.customeClauseadd(temp)
+      this._userService.clauseCustomeTermsUpdate(temp)
         .subscribe(res => {
-  
-          console.log(res);
-          this.display();
-  
-  
-  
+        console.log(res);
+        this.display()
         });
       // this._fuseSidebarService.getSidebar('addpanel').toggleClose();
-  
       // this.add.push(temp);
       // localStorage.setItem('newClause', JSON.stringify(this.add));
       // console.log(localStorage.getItem('newClause'));
       this.tempid = this.tempid + 1;
+
     }
 }

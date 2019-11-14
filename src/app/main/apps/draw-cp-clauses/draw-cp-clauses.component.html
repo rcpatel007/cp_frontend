@@ -1,22 +1,11 @@
 <div id="vessel" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
     <div class="top-bg accent"></div>
     <div class="heading center">
-        <!-- <div class="header-row">
-            <div class="col m3 l3">
-                <h2 class="text-left" >Draw C/P</h2>
-            </div>
-            <div class="col l6 m6"></div>
-            <div class="col s3 m3">
-                <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <b>Draw
-                    C/P </b>
-            </div>
-        </div> -->
         <div class="header-row">
             <div class="row-col-3">
-                <h2 style="float: left;">Draw C/P</h2>
+                <h2 style="float: left;">{{pageTitle}}</h2>
             </div>
             <div class="row-col-6"></div>
-
             <div class="row-col-3">
                 <div style="float: right;">
                     <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <b>
@@ -25,32 +14,206 @@
             </div>
         </div>
         <div class="mat-elevation-z8">
-
             <div class="main-tab">
-                <div class="header-row">
-                    <div style="text-align:left;" class="row-col-3">
-                        <span>Edit Caluses</span>
+                <ng-container  *ngFor="let c of termsReviewRecordsData;let i= index" >
+                    <div style="padding: 3%;" class="row" *ngIf="flag == i+1" id = "{{i+1}}">
+                        <div class="text-left col l12 m12 s12">
+                            <div class="text-blue" style="color: #2196f3; margin-bottom:3%;"><b>1. {{c.name}}</b></div>
+                        </div>
+                        <div class="row">
+                            <table>
+                                <tr *ngFor="let ct of termsReviewRecordsData[i].clauseCategoryTerms;let si=index">
+                                    <td><i class="material-icons" (click)="view('viewMainClausePanel',ct.id,c.id)">remove_red_eye</i></td>
+                                    <td>
+                                        <i class="material-icons" (click)="editToggle('editPanel',ct.id,c.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
+                                    </td>
+                                    <td><mat-checkbox></mat-checkbox></td>
+                                    <td style="width:100%" >
+                                        <span>{{si+1}}) </span><span [innerHtml]="ct.termsName"></span>
+                                    </td>
+                                    <!-- <ng-container *ngIf="termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate">
+                                        <td style="width:100%" *ngFor="let ot of termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate;let ti=index">
+                                            <span>{{ti+1}})</span>
+                                            <span><s>{{ot.originalTermsName}}</s></span>
+                                            <br/>
+                                            <span>{{ot.termsName}}</span>
+                                            <br>
+                                            <br>
+                                            <br>
+                                        </td>
+                                    </ng-container> -->
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <h4>Custom Amendments</h4>
+                            <table>
+                                <tr
+                                    *ngFor="let n of termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                    <td><i class="material-icons" (click)="viewCustom('viewcustomclausePanel',n.id,c.id)">remove_red_eye</i></td>
+                                    <td><i class="material-icons" (click)="customToggle('customPanel',n.id,c.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i></td>
+                                    <td><mat-checkbox></mat-checkbox></td>
+                                    <td>{{i+1}})</td>
+                                    <td style="width: 100%;" [innerHtml]="n.termsName"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    <div class="row" style="padding: 3% 0;">
+                        <button class="mat-fab mat-accent" (click)="toggleOpen('addPanel',c.id)" aria-label="Toggle quick panel"><span class="mat-button-wrapper" style="font-size: 36px; color: #fff;">+</span></button>
                     </div>
-                    <hr />
+                    <div class="header-row">
+                        <div class="row-col-6 text-left">
+                            <button class="add-item add-item--back-button"(click)="Previous(flag-1)">Previous</button>
+                        </div>
+                        <div class="row-col-6 text-right">
+                            <button class="submit-item submit-item--back-button" (click)="next(flag+1)" *ngIf="nextStatus == true">Next</button>
+                            <button class="submit-item submit-item--back-button" (click)="submit()" *ngIf="nextStatus == false">Submit</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="header-row">
-                    <div *ngFor="let c of drawcluases; let i=index" class="row-col-3 ">
-                        <span class="mat-caption"> {{i+1}} )  </span>
-                        <mat-checkbox value= "{{c.id}}" (change)="clusesAdd(c.id,c.name);">{{c.name}}</mat-checkbox>
-                    </div>
-                    
-                   
-                </div>
-                <div class="header-row">
-                    <div class="row-col-6 text-left">
-                        <button class="add-item add-item--back-button" routerLink="/apps/drawCp-Clauses-management">Previous</button>
-                    </div>
-
-                    <div class="row-col-6 text-right">
-                        <button class="submit-item submit-item--back-button "  (click)="nextcomponent();" >Next</button>
-                    </div>
-                </div>
+                
+            </ng-container>
             </div>
         </div>
     </div>
+    <fuse-sidebar name="addPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <!-- hello -->
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <div class="">
+                    <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="customClause" name="customClause">
+                    </angular-editor>
+                </div>
+            </div>
+
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="addClause()">Add</button>
+                </div>
+
+            </div>
+        </div>
+    </fuse-sidebar>
+    
+    <fuse-sidebar name="editPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <div class="">
+                    <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext"
+                        name="editclausetext"></angular-editor>
+                </div>
+            </div>
+
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="editterms(editid)">Edit</button>
+                </div>
+
+
+            </div>
+        </div>
+    </fuse-sidebar>
+
+    <fuse-sidebar name="customPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+            <form>
+                <div class="mat-elevation-z8" style="padding: 2%;">
+                    <div class="">
+                        <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext"
+                            name="editclausetext"></angular-editor>
+                    </div>
+                </div>
+                <div class="header-row text-right">
+                    <div style="width: 100%; padding: 3% 0;">
+                        <button class="submit-item submit-item--back-button" (click)="customEdit(ceditid)">Edit</button>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </fuse-sidebar>
+    
+
+    <!-- view custome terms  -->
+    <fuse-sidebar name="viewcustomclausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+                <div class="mat-elevation-z8" style="padding: 2%;">
+                    <table mat-table [dataSource]="dataSourcecustom" >
+                           
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Name </th>
+                            <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Date">
+                            <th mat-header-cell *matHeaderCellDef>  Date </th>
+                            <td mat-cell *matCellDef="let element"> {{element.updatedDateInfo}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="clauseTracker">
+                            <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                            <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+              
+                </div>
+            
+        </div>
+    </fuse-sidebar>
+
+    
+    <!-- view main terms  -->
+    <fuse-sidebar name="viewMainClausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <table mat-table [dataSource]="dataSource" >
+                           
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Date">
+                        <th mat-header-cell *matHeaderCellDef>  Date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.updatedDateInfo}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="clauseTracker">
+                        <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                        <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+          
+                </div>
+                
+        </div>
+    </fuse-sidebar>
 </div>
+
+<div class="cst-modal" [ngClass]="{'cst-modal--active' : showModalStatus}">
+    <div class="cst-modal__overlay"></div>
+    <div class="cst-modal__content">
+        <div class="cst-modal__header">
+            Add New Clause
+        </div>
+        <div class="cst-modal__body">
+            <div class="row">
+            </div>
+        </div>
+        <div class="cst-modal__footer">
+            <button class="cst-modal__button cst-modal__button--delete">ADD</button>
+            <!-- <button class="cst-modal__button cst-modal__button--cancel" (click)="showDeleteModal()">Cancel</button> -->
+        </div>
+    </div>
+</div>
+
+<!-- Add panel -->
+
+
+<!-- Edit -->

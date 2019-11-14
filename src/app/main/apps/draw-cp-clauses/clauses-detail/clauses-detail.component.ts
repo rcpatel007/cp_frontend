@@ -13,7 +13,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { UserService } from '../../../../_services/user.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { config } from '../../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../../_services';
@@ -97,7 +97,7 @@ export class ClausesDetailComponent implements OnInit {
   parentId: String;
   nextStatus = false;
   tempnos = 1;
-
+  termsUpdateRes: any;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -125,6 +125,7 @@ export class ClausesDetailComponent implements OnInit {
     this.showModalStatus = true;
 
   }
+
 
   addClauseamendments() {
     let tempnos = 1;
@@ -364,24 +365,26 @@ export class ClausesDetailComponent implements OnInit {
       });
   }
 
+
   editterms(id) {
+    this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
+
     let tempupdate = {
       id: id,
       termsName: "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext
 
     }
 
+    // this._userService.customeClauseuUpdate(tempupdate)
+    //   .subscribe(res => {
+    //     this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
 
-    this._userService.customeClauseuUpdate(tempupdate)
-      .subscribe(res => {
-        this._fuseSidebarService.getSidebar('editPanel').toggleOpen();
-
-      });
-    // for (let index = 0; index < this.clauses.length; index++) {
-    //   if (this.clauses[index].id == eid) {
-    //     this.clauses[index].termsName = "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext;
-    //   }
-    // }
+    //   });
+    for (let index = 0; index < this.clauses.length; index++) {
+      if (this.clauses[index].id == id) {
+        this.clauses[index].termsName = "<strike>" + this.tmpeditclausetext + "</strike>" + " " + this.editclausetext;
+      }
+    }
 
     this.editclausetext = '';
     // this.clausesDetail();
@@ -412,19 +415,19 @@ export class ClausesDetailComponent implements OnInit {
       updatedBy: localStorage.getItem('userId')
     }
     console.log(tempedit);
-    
-    this._userService.customeClauseuUpdate(tempedit)
-      .subscribe(res => {
-        console.log(res);
-      });
+
+    // this._userService.customeClauseuUpdate(tempedit)
+    //   .subscribe(res => {
+    //     console.log(res);
+    //   });
 
     this.display();
-    // for (let index = 0; index < this.newClause.length; index++) {
-    //   if (this.newClause[index].id == id) {
-    //     this.newClause[index].termsName = "<strike>" + this.tmpceditclausetext + "</strike>" + " " + this.editclausetext;
-    //     // this.newClause[index].termsName = this.editclausetext;
-    //   }
-    // }
+    for (let index = 0; index < this.newClause.length; index++) {
+      if (this.newClause[index].id == id) {
+        this.newClause[index].termsName = "<strike>" + this.tmpceditclausetext + "</strike>" + " " + this.editclausetext;
+        // this.newClause[index].termsName = this.editclausetext;
+      }
+    }
     this._fuseSidebarService.getSidebar('customPanel').toggleOpen();
 
     this.editclausetext = '';
@@ -452,52 +455,115 @@ export class ClausesDetailComponent implements OnInit {
         console.log(tempres.data);
         console.log(this.newClause);
       });
-
-    // let tempCaluse = JSON.parse(localStorage.getItem('newClause'));
-    // // if (this.newClause.length) {
+    let tempCaluse = [];
+    tempCaluse = JSON.parse(localStorage.getItem('newClause'));
+    // if (this.newClause.length) {
     // for (let index = 0; index < tempCaluse.length; index++) {
 
     //   if (tempCaluse[index].parentId == this.parentId) {
     //     this.newClause.push(tempCaluse[index]);
     //   }
-    // }  
     // }
   }
 
-
   addClause() {
-    // let add = new Array; 
+    var mainUserId = localStorage.getItem('userId');
+    // console.log(mainUserId +" Main User ID");
 
-    // let companyId = localStorage.getItem('companyId');
-    // let formId = localStorage.getItem('formId');
-    // let drawchaterId = localStorage.getItem('drawcharterId');
+    var companyId = localStorage.getItem('companyId');
+    // console.log(companyId + " Company ID");
 
-    let temp = {
-      companyId: localStorage.getItem('companyId'),
-      formId: localStorage.getItem('cpFormId'),
-      drawchaterId: localStorage.getItem('drawId'),
-      nos: this.tempid,
-      status: true,
-      parentId: this.parentId,
-      termsName: this.customClause,
-      createdBy: localStorage.getItem('userId')
+    var drawId = localStorage.getItem('drawId');
+    // console.log(drawId + " Draw ID");
+
+    var formId = localStorage.getItem('cpFormId');
+    // console.log(formId + " CP Form ID");
+
+    var clauseCategoryId = this.parentId;
+    // console.log(clauseCategoryId + " Clause Category ID");
+
+    // var clauseTermsId = this.parentId;
+    // console.log(clauseTermsId + " Clause Terms ID");
+
+    var nos = '1';
+    // console.log(nos + " Nos");
+
+    var termsNameOrginal = this.customClause;
+    // console.log(termsNameOrginal + " Terms Orginal Name");
+
+    var termsName = this.customClause;
+    // console.log(termsName + " Terms Name");
+
+    const req =
+    {
+      mainUserId: mainUserId,
+      companyId: companyId,
+      drawId: drawId,
+      formId: formId,
+      clauseCategoryId: clauseCategoryId,
+      nos: nos,
+      termsNameOrginal: termsNameOrginal,
+      termsName: termsName,
+      createdBy: localStorage.getItem('userId'),
+      updatedBy: localStorage.getItem('userId'),
+      isCustom: 'Y'
+    };
+    console.log("check request", req);
+
+    try {
+      const header = new HttpHeaders();
+      header.append('Content-Type', 'application/json');
+      const headerOptions =
+      {
+        headers: header
+      }
+      this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(
+        res => {
+          this.termsUpdateRes = res;
+          console.log("HERE OUT RESPONSE");
+          console.log(this.termsUpdateRes);
+          if (this.termsUpdateRes.success === true) {
+            // console.log("HERE IN RESPONSE");
+            // console.log(this.termsUpdateRes);
+            this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
+
+          }
+        }
+      );
+    } catch (err) {
     }
-    this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
-
-    this._userService.customeClauseadd(temp)
-      .subscribe(res => {
-
-        console.log(res);
-        this.display();
-
-
-
-      });
-    // this._fuseSidebarService.getSidebar('addpanel').toggleClose();
-
-    // this.add.push(temp);
-    // localStorage.setItem('newClause', JSON.stringify(this.add));
-    // console.log(localStorage.getItem('newClause'));
-    this.tempid = this.tempid + 1;
   }
+
+
+
+  // addClause() {
+  //   // let add = new Array; 
+
+  //   // let companyId = localStorage.getItem('companyId');
+  //   // let formId = localStorage.getItem('formId');
+  //   // let drawchaterId = localStorage.getItem('drawcharterId');
+
+  //   let temp = {
+  //     companyId: localStorage.getItem('companyId'),
+  //     formId: localStorage.getItem('cpFormId'),
+  //     drawchaterId: localStorage.getItem('drawId'),
+  //     nos: this.tempid,
+  //     status: true,
+  //     parentId: this.parentId,
+  //     termsName: this.customClause,
+  //     createdBy: localStorage.getItem('userId')
+  //   }
+  //   this._fuseSidebarService.getSidebar('addPanel').toggleOpen();
+  //   this._userService.customeClauseadd(temp)
+  //     .subscribe(res => {
+  //       console.log(res);
+  //       this.display();
+  //     });
+  //   // this._fuseSidebarService.getSidebar('addpanel').toggleClose();
+
+  //   // this.add.push(temp);
+  //   localStorage.setItem('newClause', JSON.stringify(temp));
+  //   // console.log(localStorage.getItem('newClause'));
+  //   this.tempid = this.tempid + 1;
+  // }
 }

@@ -33,7 +33,7 @@ export class AuthenticationService {
         .pipe(map(user => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem('userData', JSON.stringify(user));
-          console.log('t',localStorage);
+         // console.log('t',localStorage);
           this.currentUserSubject.next(user);
           return user;
         }));
@@ -56,8 +56,8 @@ export class AuthenticationService {
         // }
       
         forgotPassword(email) {
-          console.log(email);
-          console.log(config.baseUrl);
+         // console.log(email);
+         // console.log(config.baseUrl);
           let headers = new HttpHeaders();
           headers = headers.set('Content-Type', 'application/json; charset=utf-8');
           return this.http.post<any>(`${this.baseUrl}/userforgotpassword`, {  email }, {
@@ -71,9 +71,9 @@ export class AuthenticationService {
               }));        
         }
         resetPasswordData(resetToken, resetpassword ) {
-          console.log(resetToken);
-          console.log(resetpassword);
-          console.log(config.baseUrl);
+         // console.log(resetToken);
+         // console.log(resetpassword);
+         // console.log(config.baseUrl);
           let headers = new HttpHeaders();
           headers = headers.set('Content-Type', 'application/json; charset=utf-8');
           return this.http.post<any>(`${this.baseUrl}/resetPassword`, { resetToken, resetpassword }, {
@@ -129,7 +129,7 @@ export class AuthenticationService {
       
 
     // login(email, password) {
-    //     console.log(config.baseUrl);
+    //    // console.log(config.baseUrl);
     //     let headers = new HttpHeaders();
     //     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
         
@@ -137,7 +137,7 @@ export class AuthenticationService {
     //         headers: headers
     //     })
     //         .pipe(map(user => {
-    //             console.log(user);
+    //            // console.log(user);
     //             // store user details and jwt token in local storage to keep user logged in between page refreshes
     //             localStorage.setItem('currentUser', JSON.stringify(user));
     //             this.currentUserSubject.next(user);
@@ -164,8 +164,8 @@ export class AuthenticationService {
     
 
     // forgotPassword(email) {
-    //     console.log(email);
-    //     console.log(config.baseUrl);
+    //    // console.log(email);
+    //    // console.log(config.baseUrl);
     //     let headers = new HttpHeaders();
     //     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
     //     return this.http.post<any>(`${this.baseUrl}/forgotpassword`, {  email }, {
@@ -200,8 +200,8 @@ export class AuthenticationService {
     //   }
 
     // // changepassword(email) {
-    // //     console.log(email);
-    // //     console.log(config.baseUrl);
+    // //    // console.log(email);
+    // //    // console.log(config.baseUrl);
     // //     let headers = new HttpHeaders();
     // //     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
     // //     return this.http.post<any>(`${this.baseUrl}/changepassword`, {  email }, {
