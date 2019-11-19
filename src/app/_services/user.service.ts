@@ -16,20 +16,6 @@ export class UserService {
             this.router.navigate(['/pages/auth/login'])
         }
     }
-
-
-    
-    // Notification Create
-    notificationCreate(req)
-    {
-        return this.http.post(`${config.baseUrl}/notificationCreate`,req)
-    }
-
-    // Notification Records
-    notificationRecords(req)
-    {
-        return this.http.post(`${config.baseUrl}/notificationRecords`,req)
-    }
     clausesCategoryRecords(){
        // console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
@@ -244,6 +230,21 @@ export class UserService {
     {
         return this.http.post(`${config.baseUrl}/drawFormUpdate`,req)
     }
+
+    drawFormUpdateByCharter(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawFormUpdateByCharterCheck`,req)
+    } 
+    
+    drawFormUpdateBybroker(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawFormUpdateByBrokerCheck`,req)
+    } 
+    
+    drawFormUpdateByowner(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawFormUpdateByOwnerCheck`,req)
+    }
     // Draw Form Remove Service
     drawDataRemove(req)
     {
@@ -364,4 +365,106 @@ export class UserService {
     {
         return this.http.post(`${config.baseUrl}/clauseCategoryServerSideRecords`,req)
     }
+
+    // Notification Create
+    notificationCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/notificationCreate`,req)
+    }
+
+    // Notification Records
+    notificationRecords(req)
+    {
+        return this.http.post(`${config.baseUrl}/notificationRecords`,req)
+    }
+
+    // Charter Data Accept / Reject
+    CharterDrawAcceptReject(req)
+    {
+        return this.http.post(`${config.baseUrl}/CharterDrawAcceptReject`,req)
+    }
+
+    // Charter Data Accept / Reject Status Update
+    charterPartyRequestStatusUpdate(req)
+    {
+        return this.http.post(`${config.baseUrl}/charterPartyRequestStatusUpdate`,req)
+    }
+
+    // Draw Setver Side Records For Charterer
+    drawRecordsServerSideCharterer(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawRecordsServerSideCharterer`,req)
+    }
+
+    // Draw Request Create
+    DrawRequestToChartererCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawRequestToChartererCreate`,req)
+    }
+
+    // Clause Category Upload
+    clauseCategoryUpload(req)
+    {
+        return this.http.post(`${config.baseUrl}/clauseCategoryUpload`,req)
+    }
+
+    // Draw Request Create
+    mainClauseScreenDataRecords(req)
+    {
+        return this.http.post(`${config.baseUrl}/mainClauseScreenDataRecords`,req)
+    }
+
+    
+    // Draw Request Create
+    mainClauseScreenDataRecordsTrading(req)
+    {
+        return this.http.post(`${config.baseUrl}/mainClauseScreenDataRecordsTrading`,req)
+    }
+
+        // Trading Platform Routes
+        TradingFormRecords()
+        {
+            return this.http.get(`${config.baseUrl}/TradingFormRecords`)
+        }
+    
+        TradingFormCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingFormCreate`,req)
+        }
+    
+        TradingFormRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingFormRecordsServerSide`,req)
+        }
+    
+        TradingFormUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingFormUpdate`,req)
+        }
+    
+        TradingPlatformDataRemove(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformDataRemove`,req)
+        }
+    
+        TradingPlatformAcceptReject(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformAcceptReject`,req)
+        }
+    
+        TradingPlatformRequestToChartererCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformRequestToChartererCreate`,req)
+        }
+    
+        TradingPlatformRequestStatusUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformRequestStatusUpdate`,req)
+        }
+    
+        TradingPlatformRecordsServerSideCharterer(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformRecordsServerSideCharterer`,req)
+        }
+    
 }

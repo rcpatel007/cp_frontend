@@ -44,33 +44,6 @@ export interface UserData
     companyId: string;
 }
 
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-    }
-  }
-
-  export class SelectErrorStateMatcherExample {
-    selected = new FormControl('valid', [
-      Validators.required,
-      Validators.pattern('valid'),
-    ]);
-  
-    selectFormControl = new FormControl('valid', [
-      Validators.required,
-      Validators.pattern('valid'),
-    ]);
-  
-    nativeSelectFormControl = new FormControl('valid', [
-      Validators.required,
-      Validators.pattern('valid'),
-    ]);
-  
-    matcher = new MyErrorStateMatcher();
-  }
-
 export interface PeriodicElement
 {
     
@@ -100,7 +73,6 @@ export interface PeriodicElement
     ownerBrokerName: string;
 }
 
-
 @Component(
 {
     selector: 'app-draw',
@@ -112,7 +84,7 @@ export interface PeriodicElement
 
 export class DrawComponent implements OnInit
 {
-    displayedColumns: string[] = ['action','id','cpDate', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo'];
+    displayedColumns: string[] = ['action','id','cpDate', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
 
@@ -138,12 +110,12 @@ export class DrawComponent implements OnInit
     id: string;
     
     drawId : string;
+    chartererId: string;
 
     CPTypeId: string;
     formId: string;
     vesselId: string;
     ownerId: string;
-    chartererId: string;
     chartererBrokerId: string;
     ownerBrokerId: string;
     cpDate: string;
@@ -228,6 +200,10 @@ export class DrawComponent implements OnInit
 
     show = false;
 
+    brokerDivShow = true;
+
+    chartererDivShow : any;
+
     existingDrawCP = true;
     existingDrawCPButton = false;
 
@@ -244,6 +220,18 @@ export class DrawComponent implements OnInit
 
     drawFormDivShow = false;
 
+    drawCharteAcceptRejectResponse : any;
+    drawCharteAcceptRejectResponseData = [];
+
+    activeModalStatus = false;
+    inActiveModalStatus = false;
+
+    dataID : string;
+    statusAction : string;
+
+    updateDataReqeust : any;
+
+    buttonInfo : any;
     
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -297,7 +285,22 @@ export class DrawComponent implements OnInit
 
         this.CPTypeId = '1';
 
-        this.drawManagementRecords();
+        this.chartererDivShow = 'N';
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            this.chartererDivShow = 'Y';
+            this.drawManagementRecordsCharterer();
+            
+        } else {
+            this.drawManagementRecords();
+        }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            this.buttonInfo = 'View / Update Clause';
+        } else {
+            this.buttonInfo = 'View Recap';
+        }
 
         this.cpFormsRecords();
         this.vesselRecords();
@@ -307,21 +310,72 @@ export class DrawComponent implements OnInit
 
         this.charterPartyTypeID = '2';
 
-        this.termsReviewRecords();
+        if(localStorage.getItem('userRoleId') != '3')
+        {
+            this.brokerDivShow = false;
+        }
+
+        // this.clauseCategoryDummyData();
+
+    }
+
+    clauseCategoryDummyData() : void
+    {
+        for (let index = 1; index < 200; index++)
+        {
+            const req = {
+      
+                name: 'Clause Category '+index,
+                cpFormId:'3',
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+                
+            };
+    
+            this.loading = true;
+            try {
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions = {
+                    headers: header
+                }
+                this.http.post(`${config.baseUrl}/clusesCategorycreate`, req, headerOptions).subscribe(
+                    res => {
+                        console.log(res);
+                        this.createtypeRes = res;
+                        if (this.createtypeRes.success === true) {
+                            this.alertService.success(this.createtypeRes.message, 'Success');
+                        } else {
+                            this.alertService.error(this.createtypeRes.message, 'Error');
+                        }
+                    },
+                    err => {
+                        this.alertService.error(err, 'Error');
+                        console.log(err);
+                    }
+                );
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        
     }
 
     setDrawID(drawID,formId,chartererId) : void
     {
         this.drawId = drawID;
         this.formId = formId;
-        localStorage.setItem('charter_id',chartererId)
+        this.chartererId = chartererId;
+        localStorage.setItem('charter_id',chartererId);
         this.existingDrawCPButton = true;
     }
 
-    setDrawIDExecuted(drawID,formId) : void
+    setDrawIDExecuted(drawID,formId,chartererId) : void
     {
         this.drawId = drawID;
         this.formId = formId;
+        this.chartererId = chartererId;
+        console.log(this.chartererId);
         this.drawRecordsTableShowButton = true;
     }
 
@@ -333,10 +387,19 @@ export class DrawComponent implements OnInit
             companyId: localStorage.getItem('companyId'),
             drawId: this.drawId,
             formId : this.formId,
+            chartererId : this.chartererId,
+            isTrading : '2',
         };
         console.log(reqData);
         localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-        this.router.navigate(['/apps/drawCp-Clauses-management']);
+        // this.router.navigate(['/apps/drawCp-Clauses-management']);
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            this.router.navigate(['/apps/drawCp-Clauses-management']);
+        } else {
+            this.router.navigate(['/apps/recap-management']);
+        }
+        
     }
     
     claueseDetailInsertUpdate() : void
@@ -416,86 +479,10 @@ export class DrawComponent implements OnInit
     }
 
 
-    termsReviewRecords(): void
-    {
-        this.termsReviewRecordsData = [];
-        var clauseCategoryFilterCondition = {};
-            clauseCategoryFilterCondition["cpFormId"] = '1';
-        try
-        {
-            this._userService.clauseCategoryServerSideRecords(clauseCategoryFilterCondition)
-                .pipe(first())
-                .subscribe((res) =>
-                {
-                    this.termsReviewRecordsResponse = res;
-                    if (this.termsReviewRecordsResponse.success === true)
-                    {
-                        this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
-                        for (let index = 0; index < this.termsReviewRecordsData.length; index++)
-                        {
-                            var clauseCategoryID = this.termsReviewRecordsData[index].id;
-
-                            
-                            var clauseTermsDetailsFilterCondition = {};
-                                clauseTermsDetailsFilterCondition["parentId"] = clauseCategoryID;
-
-                            this._userService.clauseTermsDetailsRecordsServerSide(clauseTermsDetailsFilterCondition).pipe(first()).subscribe((res) =>
-                            {
-                                this.clauseCategoryTermsResponse = res;
-                                if (this.clauseCategoryTermsResponse.success === true)
-                                {
-                                    for (let subIndex = 0; subIndex < this.clauseCategoryTermsResponse.data.length; subIndex++)
-                                    {
-                                        var termsNameUpdate = '';
-                                        var clauseTermsID = this.clauseCategoryTermsResponse.data[subIndex].id;
-                                        var parentID = this.clauseCategoryTermsResponse.data[subIndex].id;
-                                        var clauseTermsReviewFilter = {};
-                                            clauseTermsReviewFilter["tu.companyId"] = '1';
-                                            clauseTermsReviewFilter["tu.drawId"] = '48';
-                                            clauseTermsReviewFilter["tu.formId"] = '1';
-                                            clauseTermsReviewFilter["tu.clauseCategoryId"] = parentID;
-                                            clauseTermsReviewFilter["tu.clauseTermsId"] = clauseTermsID;
-
-                                        this._userService.clauseTermsReviewsRecordsServerSide(clauseTermsReviewFilter).pipe(first()).subscribe((res) =>
-                                        {
-                                            this.clauseCategoryTermsReviewResponse = res;
-                                            if (this.clauseCategoryTermsReviewResponse.success === true)
-                                            {
-                                                var termsReviewDataID = '';
-                                                for (let verySubIndex = 0; verySubIndex < this.clauseCategoryTermsReviewResponse.data.length; verySubIndex++)
-                                                {
-                                                    var currentData = this.clauseCategoryTermsReviewResponse.data[verySubIndex];
-                                                    console.log(currentData);
-                                                    console.log(currentData.id);
-                                                    termsReviewDataID = currentData.id;
-                                                }
-                                                console.log(termsReviewDataID);
-                                                this.clauseCategoryTermsResponse.data[subIndex].termsReviewDataID = termsReviewDataID;
-                                                console.log(this.clauseCategoryTermsResponse.data[subIndex] + " Clause Category Terms");
-                                                // console.log(this.clauseCategoryTermsReviewResponse.data + " Clause Category Terms Review");
-                                            }
-                                        });
-                                        console.log(this.clauseCategoryTermsResponse.data + " Clause Category Terms Review");
-                                    }
-                                    // this.termsReviewRecordsData[index].clauseCategoryTerms = this.clauseCategoryTermsResponse.data;
-                                    // console.log(this.termsReviewRecordsData + " Clause Category Terms Review");
-                                }
-                            });
-                        }
-                        // console.log(this.termsReviewRecordsData + " Clause Category Terms Review");
-                    }
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                });
-            } catch (err)
-            {
-            }
-    }
 
     drawCPFormView() : void
     {
+        this.brokerDivShow = false;
         this.existingDrawCP = false;
         this.existingDrawCPButton = false;
         this.mainDrawCPDiv = true;
@@ -503,6 +490,7 @@ export class DrawComponent implements OnInit
 
     existingDrawCPView() : void
     {
+        this.brokerDivShow = true;
         this.existingDrawCP = true;
         this.mainDrawCPDiv = false;
         this.mainDrawCPDiv = false;
@@ -517,11 +505,8 @@ export class DrawComponent implements OnInit
     drawManagementRecords(): void
     {
         this.drawManagementData = [];
-        
         var arrfilterInfo = {};
-
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        
         try
         {
             this._userService.drawRecordsServerSide(arrfilterInfo)
@@ -529,18 +514,14 @@ export class DrawComponent implements OnInit
                 .subscribe((res) =>
                 {
                     this.drawManagementRes = res;
-                    
                     if (this.drawManagementRes.success === true)
                     {
                         this.drawManagementData = this.drawManagementRes.data;
+                        console.log(this.drawManagementData);
                         this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-                        // setTimeout(() => this.dataSource.paginator = this.paginator, 15000);
                         this.dataSource.paginator = this.paginator;
                         this.dataSource.sort = this.sort;
-                        
                     }
-
-                    console.log(this.drawManagementData);
                 },
                 err =>
                 {
@@ -1093,5 +1074,96 @@ export class DrawComponent implements OnInit
             }
             this.drawRecordsServerSide();
         }
+    }
+
+    drawManagementRecordsCharterer(): void
+    {
+        this.drawManagementData = [];
+        var arrfilterInfo = {};
+        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+        arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+        arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
+        try
+        {
+            this._userService.drawRecordsServerSideCharterer(arrfilterInfo)
+                .pipe(first())
+                .subscribe((res) =>
+                {
+                    this.drawManagementRes = res;
+                    if (this.drawManagementRes.success === true)
+                    {
+                        this.drawManagementData = this.drawManagementRes.data;
+                        this.dataSource = new MatTableDataSource(this.drawManagementData);
+                        this.dataSource.paginator = this.paginator;
+                        this.dataSource.sort = this.sort;
+                    }
+                },
+                err =>
+                {
+                    this.alertService.error(err, 'Error');
+                });
+            } catch (err)
+            {
+            }
+    }
+
+    updateDataStatus(): void
+    {
+        const req =
+        {
+            id: this.dataID,
+            isAccepted: this.statusAction,
+            updatedBy: localStorage.getItem('userId'),
+        };
+        this._userService.charterPartyRequestStatusUpdate(req)
+            .pipe(first())
+            .subscribe(
+            data =>
+            {
+                this.updateDataReqeust = data;
+                if (this.updateDataReqeust.success === true)
+                {
+                    this.alertService.success(this.updateDataReqeust.message, 'Success');
+                    if(req.isAccepted == 'Y')
+                    {
+                        this.activeModalStatus = !this.activeModalStatus;
+                    } else {
+                        this.inActiveModalStatus = !this.inActiveModalStatus;
+                    }
+                    this.drawManagementRecordsCharterer();
+                } else {
+                    this.alertService.error(this.updateDataReqeust.message, 'Error');
+                }
+            },
+            error =>
+            {
+                this.alertService.error(error.message, 'Error');
+            });
+    }
+
+    showActiveModal(status,id): void
+    {
+        this.dataID = id;
+        this.statusAction = status;
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+
+    hideActiveModal(): void
+    {
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+
+    showInActiveModal(status,id): void
+    {
+        console.log(status);
+        console.log(id);
+        this.dataID = id;
+        this.statusAction = status;
+        this.inActiveModalStatus = !this.inActiveModalStatus;
+    }
+
+    hideInActiveModal(): void
+    {
+        this.inActiveModalStatus = !this.inActiveModalStatus;
     }
 }

@@ -23,6 +23,20 @@ export const navigation: FuseNavigation[] = [
                 icon: 'tachometer',
                 url  : '/apps/draw-management'
             },
+            {
+                id   : 'Trading Platform',
+                title: 'Trading Platform',
+                type : 'item',
+                icon: 'tachometer',
+                url  : '/apps/trading-platform-management'
+            },
+            {
+                id   : 'Notification',
+                title: 'Notification',
+                type : 'item',
+                icon: 'tachometer',
+                url  : '/apps/notification'
+            },
             // {
             //     id   : 'Charter Party Trading Platform',
             //     title: 'Charter Party Trading Platform',

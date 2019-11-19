@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -25,7 +26,9 @@ import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseConfirmDialogModule, FuseSidebarModule } from '@fuse/components';
 import {MatSelectModule} from '@angular/material/select';
 import { AngularEditorModule } from '@kolkov/angular-editor';
-
+// import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatExpansionModule } from '@angular/material/expansion';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 // import { DrawComponent } from 'app/main/apps/draw/draw.component';
 // import { ReviewComponent } from './review/review.component';
 
@@ -81,6 +84,8 @@ const routes: Routes =
         MatSlideToggleModule,
         MatRippleModule,
         MatTableModule,
+        MatExpansionModule,
+        NgxMaterialTimepickerModule,
         MatToolbarModule,
         MatSelectModule,
         FuseSharedModule,

@@ -7,6 +7,8 @@ import {MatRadioModule} from '@angular/material/radio';
 import { CptpManagementComponent } from './cptp-management/cptp-management.component';
 import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.component';
 import { SettingsComponent } from './settings/settings.component';
+import { NotificationComponent } from './notification/notification.component';
+import { DrawcpComponent } from './drawcp/drawcp.component';
 // import { DrawFirstCounterManagementComponent } from './draw-first-counter-management/draw-first-counter-management.component';
 // import { DrawCpCounterComponent } from './draw-cp-counter/draw-cp-counter.component';
 
@@ -95,6 +97,10 @@ const routes = [
         loadChildren: './draw/draw.module#DrawManagementModule',
     },
     {
+        path: 'drawcp-management',
+        loadChildren: './drawcp/drawcp.module#DrawCPManagementModule',
+    },
+    {
         path: 'cptp-management',
         loadChildren: './cptp-management/cptp-management.module#CPTPManagementModule',
     },
@@ -114,6 +120,19 @@ const routes = [
         path: 'dfcm',
         loadChildren: './draw-first-counter-management/draw-first-counter-management.module#DFCManagementModule',
     },
+    {
+        path: 'notification',
+        loadChildren: './notification/notification.module#NotificationManagementModule',
+    },
+    {
+        path: 'trading-platform-management',
+        loadChildren: './trading-platform-management/trading-platform-management.module#TradingManagementModule',
+    },
+    {
+        path: 'recap-management',
+        loadChildren: './recap/recap.module#RecapManagementModule',
+    },
+
 ];
 
 @NgModule({

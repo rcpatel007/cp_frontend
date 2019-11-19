@@ -1,0 +1,95 @@
+<div id="vessel" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+    <div class="top-bg accent"></div>
+    <div class="heading center">
+        <div class="header-row">
+            <div class="row-col-3">
+                <h2 style="float: left;">{{pageTitle}}</h2>
+            </div>
+            <div class="row-col-6"></div>
+            <div class="row-col-3">
+                <div style="float: right;">
+                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <b>
+                        {{pageTitle}} </b>
+                </div>
+            </div>
+        </div>
+        <div class="mat-elevation-z8">
+            <div class="main-tab">
+                <ng-container  *ngFor="let c of termsReviewRecordsData;let i=index;" >
+                    <div style="padding: 3%;" class="row" id="{{i+1}}">
+                        <div class="text-left col l12 m12 s12">
+                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;"><b>{{ i + 1 }}. {{c.name}}</b></div>
+                        </div>
+                        <div class="row">
+                            <table>
+                                <tr *ngFor="let ct of termsReviewRecordsData[i].clauseCategoryTerms;let si=index">
+                                    <td style="width:100%" >
+                                        <span>{{ct.identifier}}) </span><span [innerHtml]="ct.mainTermRecord"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <h4 style="margin-top: -10px; font-weight: bold;">Custom Amendments</h4>
+                            <table>
+                                <tr *ngFor="let n of termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                    <td class="customFontWeight">{{n.identifier}})</td>
+                                    <td class="customFontWeight" style="width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <!-- view custome terms  -->
+    <fuse-sidebar name="viewcustomclausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <!-- <add-detail-clause></add-detail-clause> -->
+        <div class="heading center">
+                <div class="mat-elevation-z8" style="padding: 2%;">
+                    <table mat-table [dataSource]="dataSourcecustom" >
+                           
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Name </th>
+                            <td mat-cell *matCellDef="let element"> {{element.mainUserName}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Date">
+                            <th mat-header-cell *matHeaderCellDef>  Date </th>
+                            <td mat-cell *matCellDef="let element"> {{element.updateDateTime}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="clauseTracker">
+                            <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                            <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+              
+                </div>
+            
+        </div>
+    </fuse-sidebar>
+    <fuse-sidebar name="viewMainClausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <table mat-table [dataSource]="dataSource" >
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.mainUserName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Date">
+                        <th mat-header-cell *matHeaderCellDef>  Date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.updateDateTime}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="clauseTracker">
+                        <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                        <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div>
+    </fuse-sidebar>
+</div>
