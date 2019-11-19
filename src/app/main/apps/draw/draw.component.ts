@@ -1023,10 +1023,26 @@ export class DrawComponent implements OnInit
                         this.createtypeRes = res;
                         if (this.createtypeRes.success === true)
                         {
+                            this.drawId = this.createtypeRes.data[0];
+                            console.log(this.drawId);
+
                             this.alertService.success(this.createtypeRes.message, 'Success');
                             this.DrawManagementForm.reset();
-                         this.drawIdServerSide();
-                                
+                            this.drawIdServerSide();
+                            
+                            
+                            const reqData =
+                            {
+                                mainUserId: localStorage.getItem('userId'),
+                                companyId: localStorage.getItem('companyId'),
+                                drawId: this.drawId,
+                                formId : req.formId,
+                                chartererId : this.chartererIdValueForDrawRecords,
+                                isTrading : '2',
+                            };
+                            console.log(reqData);
+                            localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+                            // this.router.navigate(['/apps/drawCp-Clauses-management']);
                             this.router.navigate(['/apps/drawCp-Clauses-management']);
 
                             this.drawRecordsServerSide();

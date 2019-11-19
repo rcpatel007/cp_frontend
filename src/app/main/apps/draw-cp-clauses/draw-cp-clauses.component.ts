@@ -369,18 +369,22 @@ export class DrawCpClausesComponent implements OnInit {
             this._userService.drawRecordsServerSide(drawCondition).pipe(first()).subscribe((res) =>
             {
                 this.drawResponse = res;
-                console.log(this.drawResponse);
-                console.log(this.drawResponse.data);
-                console.log(this.drawResponse.data[0]);
-                console.log(this.drawResponse.data[0].common_clauses);
-                console.log(res[0]);
+                if (this.drawResponse.success === true)
+                {
+                    console.log(this.drawResponse);
+                    console.log(this.drawResponse.data);
+                    console.log(this.drawResponse.data[0]);
+                    console.log(this.drawResponse.data[0].common_clauses);
+                    console.log(res[0]);
 
-                var commonClauses = this.drawResponse.data[0].common_clauses;
-                console.log(commonClauses);
+                    var commonClauses = this.drawResponse.data[0].common_clauses;
+                    console.log(commonClauses);
+                    
+                    this.commonClausesArray = commonClauses.split(',');
+
+                    localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
+                }
                 
-                this.commonClausesArray = commonClauses.split(',');
-
-                localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
             });
         } catch (err) { }
 
