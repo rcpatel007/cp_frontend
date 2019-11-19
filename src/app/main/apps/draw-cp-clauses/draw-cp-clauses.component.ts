@@ -91,28 +91,28 @@ export class DrawCpClausesComponent implements OnInit {
     isActive: string;
     isDelete: string;
 
-    drawResponse : any;
+    drawResponse: any;
     commonClausesArray = [];
 
     counterIdInfo: any;
 
     reviewData = [];
 
-    tradingId:String;
-    customClause:String;
-    isTrading:String;
-    termsUpdateRes:any;
+    tradingId: String;
+    customClause: String;
+    isTrading: String;
+    termsUpdateRes: any;
 
-    editclauses=[];
-    tempedit:any;
-    editid:string;
-    editclausetext:String;
-    tmpeditclausetext:String;
-    submitResponse:any;
-    notifiactionres:any;
-    viewData =[];
-    viewCustomData =[]
-        check=[];
+    editclauses = [];
+    tempedit: any;
+    editid: string;
+    editclausetext: String;
+    tmpeditclausetext: String;
+    submitResponse: any;
+    notifiactionres: any;
+    viewData = [];
+    viewCustomData = []
+    check = [];
     // Review Table End
 
     showReviewModal = false;
@@ -134,7 +134,7 @@ export class DrawCpClausesComponent implements OnInit {
     cityId: string;
     cpDate: string;
     formId: string;
-    pageTitle:String;
+    pageTitle: String;
     OwnersFirstCounterForm: FormGroup;
     drawcluases = [];
     drawManagementRes: any;
@@ -143,11 +143,11 @@ export class DrawCpClausesComponent implements OnInit {
     // panelOpenState = false;
     termsReviewRecordsResponse: any;
     termsReviewRecordsData = [];
-    chartererId:String;
+    chartererId: String;
     clauseCategoryTermsReviewResponseCustom: any;
     clauseCategoryTermsReviewDataCustom = [];
     mainScreen = true;
-    drawId:String;
+    drawId: String;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -200,7 +200,7 @@ export class DrawCpClausesComponent implements OnInit {
         // this.clausesAndTermsRecords();
         // this.clauseReviewsRecordsServerSide();
 
-          if (JSON.parse(localStorage.getItem('userRoleId')) == '3') {
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '3') {
             this.pageTitle = 'Draw C/P Clauses';
         }
 
@@ -212,7 +212,7 @@ export class DrawCpClausesComponent implements OnInit {
             this.pageTitle = 'Owner First Counter';
         }
         this.termsReviewRecords();
-     
+
 
     }
 
@@ -242,8 +242,8 @@ export class DrawCpClausesComponent implements OnInit {
     // Fetch City Records End
 
     // Fetch Clauses And Its Terms Details Records Start
- 
-    
+
+
     // clausesAndTermsRecords(): void {
     //     this.clauseCategoryData = [];
     //     var filterCondition = {};
@@ -317,41 +317,40 @@ export class DrawCpClausesComponent implements OnInit {
     //     clauseCategoryFilterCondition["drawId"] = drawId;
     //     clauseCategoryFilterCondition["companyId"] = companyId;
     //     console.log(clauseCategoryFilterCondition);
-        
+
     //     try {
     //         this._userService.mainClauseScreenDataRecords(clauseCategoryFilterCondition).pipe(first()).subscribe((res) => {
     //             this.termsReviewRecordsResponse = res;
     //             console.log(this.termsReviewRecordsResponse);
-                
+
     //             if (this.termsReviewRecordsResponse.success === true) {
 
     //                 this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
     //                 // for (let index = 0; index < this.termsReviewRecordsData.length; index++)
-	// 				// 	{
-	// 				// 		for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
-	// 				// 		{
-	// 				// 			this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-	// 				// 		}
-	// 				// 		for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
-	// 				// 		{
-	// 				// 			this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-	// 				// 		}
-	// 				// 	}
+    // 				// 	{
+    // 				// 		for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+    // 				// 		{
+    // 				// 			this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+    // 				// 		}
+    // 				// 		for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+    // 				// 		{
+    // 				// 			this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+    // 				// 		}
+    // 				// 	}
 
     //                 this.mainScreen = true;
     //     console.log('hello',this.termsReviewRecordsData);
-               
+
     //             }
     //         },
     //             err => {
     //                 this.alertService.error(err, 'Error');
     //             });
     //     } catch (err) { }
- 
+
     // }
 
-    termsReviewRecords(): void
-    {
+    termsReviewRecords(): void {
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         console.log(filter);
         var drawId = filter.drawId;
@@ -363,11 +362,13 @@ export class DrawCpClausesComponent implements OnInit {
 
         var drawCondition = {};
 
-        
+        this.commonClausesArray = [];
+
+        localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
+
         drawCondition["drawId"] = drawId;
         try {
-            this._userService.drawRecordsServerSide(drawCondition).pipe(first()).subscribe((res) =>
-            {
+            this._userService.drawRecordsServerSide(drawCondition).pipe(first()).subscribe((res) => {
                 this.drawResponse = res;
                 if (this.drawResponse.success === true)
                 {
@@ -375,35 +376,31 @@ export class DrawCpClausesComponent implements OnInit {
                     console.log(this.drawResponse.data);
                     console.log(this.drawResponse.data[0]);
                     console.log(this.drawResponse.data[0].common_clauses);
-                    console.log(res[0]);
 
                     var commonClauses = this.drawResponse.data[0].common_clauses;
                     console.log(commonClauses);
-                    
-                    this.commonClausesArray = commonClauses.split(',');
 
+                    this.commonClausesArray = commonClauses.split(',');
                     localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
                 }
-                
             });
         } catch (err) { }
 
         var commonClausesArray = JSON.parse(localStorage.getItem('commonClausesArray'));
         console.log(commonClausesArray, "Common Clause Value Info");
 
-        localStorage.setItem('tradingId',tradingId);
-        localStorage.setItem('drawId',drawId);
-        localStorage.setItem('cpFormId',formID);
+        localStorage.setItem('tradingId', tradingId);
+        localStorage.setItem('drawId', drawId);
+        localStorage.setItem('cpFormId', formID);
 
         this.tradingId = tradingId;
         this.drawId = drawId;
-        this.formId = formID; 
-        this.chartererId = chartererId; 
+        this.formId = formID;
+        this.chartererId = chartererId;
 
         this.termsReviewRecordsData = [];
 
-        if(isTrading == '2')
-        {
+        if (isTrading == '2') {
             var clauseCategoryFilterCondition = {};
             clauseCategoryFilterCondition["cpFormId"] = formID;
             clauseCategoryFilterCondition["drawId"] = drawId;
@@ -438,7 +435,7 @@ export class DrawCpClausesComponent implements OnInit {
                     });
             } catch (err) { }
         }
-        
+
     }
 
 
@@ -522,7 +519,7 @@ export class DrawCpClausesComponent implements OnInit {
     }
 
 
-    
+
     // custome terms add toggle
     toggleOpen(key, id): void {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
@@ -574,8 +571,7 @@ export class DrawCpClausesComponent implements OnInit {
             updatedBy: localStorage.getItem('userId'),
             isCustom: 'Y'
         };
-        if(this.isTrading == '1')
-        {
+        if (this.isTrading == '1') {
             const req =
             {
                 id: '',
@@ -619,8 +615,7 @@ export class DrawCpClausesComponent implements OnInit {
     }
 
     // edit toggle open      
-    editToggle(key, id, clauseid): void
-    {
+    editToggle(key, id, clauseid): void {
         let cid = id;
         this.parentId = clauseid;
         this.editclauses = [];
@@ -711,8 +706,7 @@ export class DrawCpClausesComponent implements OnInit {
             isCustom: 'Y'
         };
 
-        if(this.isTrading == '1')
-        {
+        if (this.isTrading == '1') {
             const req =
             {
 
@@ -788,8 +782,7 @@ export class DrawCpClausesComponent implements OnInit {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
         var clauseTermsReviewFilter = {};
 
-        if(isTrading == '2')
-        {
+        if (isTrading == '2') {
             clauseTermsReviewFilter["tu.companyId"] = companyId;
             clauseTermsReviewFilter["tu.drawId"] = drawId;
             clauseTermsReviewFilter["tu.formId"] = formID;
@@ -804,14 +797,14 @@ export class DrawCpClausesComponent implements OnInit {
                         if (this.tempedit.data[index].id == id) {
                             this.editclauses.push(this.tempedit.data[index]);
                             this.editid = this.tempedit.data[index].id;
-                            console.log(this.editid,'Custom Edit ID Info');
+                            console.log(this.editid, 'Custom Edit ID Info');
                             this.editclausetext = this.tempedit.data[index].termsName;
                             this.tmpeditclausetext = this.tempedit.data[index].termsName;
                         }
                     }
                     console.log(this.editclausetext);
                     console.log(this.editclauses);
-                });    
+                });
         } else {
             clauseTermsReviewFilter["tu.companyId"] = companyId;
             clauseTermsReviewFilter["tu.tradingId"] = tradingId;
@@ -827,17 +820,17 @@ export class DrawCpClausesComponent implements OnInit {
                         if (this.tempedit.data[index].id == id) {
                             this.editclauses.push(this.tempedit.data[index]);
                             this.editid = this.tempedit.data[index].id;
-                            console.log(this.editid,'Custom Edit ID Info');
+                            console.log(this.editid, 'Custom Edit ID Info');
                             this.editclausetext = this.tempedit.data[index].termsName;
                             this.tmpeditclausetext = this.tempedit.data[index].termsName;
                         }
                     }
                     console.log(this.editclausetext);
                     console.log(this.editclauses);
-                });    
+                });
         }
-        
-        
+
+
     }
 
     // custome terms edit    
@@ -896,7 +889,7 @@ export class DrawCpClausesComponent implements OnInit {
 
         var termsName = this.editclausetext;
         // console.log(termsName + " Terms Name");
-        
+
         const req =
         {
             id: id,
@@ -948,7 +941,7 @@ export class DrawCpClausesComponent implements OnInit {
         this.parentId = clauseid;
         this.editclauses = [];
 
-        console.log(cid , this.parentId, this.editclauses);
+        console.log(cid, this.parentId, this.editclauses);
         this._fuseSidebarService.getSidebar(key).toggleOpen();
         this.viewData = [];
         for (let index = 0; index < this.termsReviewRecordsData.length; index++) {
@@ -1018,99 +1011,92 @@ export class DrawCpClausesComponent implements OnInit {
         var notification = 'New Draw C/p Available';
         var toUserId = this.chartererId;
 
-        if(this.isTrading == '2')
-        {
+        if (this.isTrading == '2') {
             const reqData =
             {
-                drawId:this.drawId,
+                drawId: this.drawId,
                 chartererId: toUserId,
                 createdBy: localStorage.getItem('userId'),
                 updatedBy: localStorage.getItem('userId'),
             }
             console.log(reqData);
             this._userService.DrawRequestToChartererCreate(reqData).pipe(first()).subscribe(
-            data =>
-            {
-                this.submitResponse = data;
-                const req =
-                {
-                    fromUserId: localStorage.getItem('userId'),
-                    toUserId: toUserId,
-                    notification: 'New Notification',
-                    createdBy: localStorage.getItem('userId'),
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
+                data => {
+                    this.submitResponse = data;
+                    const req =
                     {
-                        headers: header
-                    }
-                    this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
-                        res => {
-                            this.notifiactionres = res;
-                            console.log(this.notifiactionres);
-                            if (this.notifiactionres.success === true)
-                            {
-                                console.log(this.notifiactionres);
-                            }
+                        fromUserId: localStorage.getItem('userId'),
+                        toUserId: toUserId,
+                        notification: 'New Notification',
+                        createdBy: localStorage.getItem('userId'),
+                        updatedBy: localStorage.getItem('userId')
+                    };
+                    try {
+                        const header = new HttpHeaders();
+                        header.append('Content-Type', 'application/json');
+                        const headerOptions =
+                        {
+                            headers: header
                         }
-                    );
-                } catch (err) {
-                }
-                if (this.submitResponse.success === true)
-                {
-                
-                }
-            });
+                        this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
+                            res => {
+                                this.notifiactionres = res;
+                                console.log(this.notifiactionres);
+                                if (this.notifiactionres.success === true) {
+                                    console.log(this.notifiactionres);
+                                }
+                            }
+                        );
+                    } catch (err) {
+                    }
+                    if (this.submitResponse.success === true) {
+
+                    }
+                });
         } else {
             const reqData =
             {
-                tradingId:this.tradingId,
+                tradingId: this.tradingId,
                 chartererId: toUserId,
                 createdBy: localStorage.getItem('userId'),
                 updatedBy: localStorage.getItem('userId'),
             }
             console.log(reqData);
             this._userService.TradingPlatformRequestToChartererCreate(reqData).pipe(first()).subscribe(
-            data =>
-            {
-                this.submitResponse = data;
-                const req =
-                {
-                    fromUserId: localStorage.getItem('userId'),
-                    toUserId: toUserId,
-                    notification: 'New Notification For Trading Platform',
-                    createdBy: localStorage.getItem('userId'),
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
+                data => {
+                    this.submitResponse = data;
+                    const req =
                     {
-                        headers: header
-                    }
-                    this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
-                        res => {
-                            this.notifiactionres = res;
-                            console.log(this.notifiactionres);
-                            if (this.notifiactionres.success === true)
-                            {
-                                console.log(this.notifiactionres);
-
-                                
-                            }
+                        fromUserId: localStorage.getItem('userId'),
+                        toUserId: toUserId,
+                        notification: 'New Notification For Trading Platform',
+                        createdBy: localStorage.getItem('userId'),
+                        updatedBy: localStorage.getItem('userId')
+                    };
+                    try {
+                        const header = new HttpHeaders();
+                        header.append('Content-Type', 'application/json');
+                        const headerOptions =
+                        {
+                            headers: header
                         }
-                    );
-                } catch (err) {
-                }
-                if (this.submitResponse.success === true)
-                {
-                
-                }
-            });
+                        this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
+                            res => {
+                                this.notifiactionres = res;
+                                console.log(this.notifiactionres);
+                                if (this.notifiactionres.success === true) {
+                                    console.log(this.notifiactionres);
+
+
+                                }
+                            }
+                        );
+                    } catch (err) {
+                    }
+                    if (this.submitResponse.success === true) {
+
+                    }
+                });
         }
 
 
@@ -1120,8 +1106,8 @@ export class DrawCpClausesComponent implements OnInit {
             // this.pageTitle = 'Draw C/P Clauses';
             const req =
             {
-                broker_clauses:JSON.stringify(this.check),
-                common_clauses:JSON.stringify(this.check),
+                broker_clauses: JSON.stringify(this.check),
+                common_clauses: JSON.stringify(this.check),
                 updatedBy: localStorage.getItem('userId')
             };
             try {
@@ -1135,11 +1121,10 @@ export class DrawCpClausesComponent implements OnInit {
                     res => {
                         this.notifiactionres = res;
                         console.log(this.notifiactionres);
-                        if (this.notifiactionres.success === true)
-                        {
+                        if (this.notifiactionres.success === true) {
                             console.log(this.notifiactionres);
 
-                            
+
                         }
                     }
                 );
@@ -1151,8 +1136,8 @@ export class DrawCpClausesComponent implements OnInit {
         if (JSON.parse(localStorage.getItem('userRoleId')) == '4') {
             const req =
             {
-                charterer_clauses:JSON.stringify(this.check),
-                common_clauses:JSON.stringify(this.check),
+                charterer_clauses: JSON.stringify(this.check),
+                common_clauses: JSON.stringify(this.check),
                 updatedBy: localStorage.getItem('userId')
             };
             try {
@@ -1166,29 +1151,28 @@ export class DrawCpClausesComponent implements OnInit {
                     res => {
                         this.notifiactionres = res;
                         console.log(this.notifiactionres);
-                        if (this.notifiactionres.success === true)
-                        {
+                        if (this.notifiactionres.success === true) {
                             console.log(this.notifiactionres);
 
-                            
+
                         }
                     }
                 );
             } catch (err) {
             }
-     // this.pageTitle = 'Charterer First Counter';
-       
-       
-       
-       
+            // this.pageTitle = 'Charterer First Counter';
+
+
+
+
         }
 
         if (JSON.parse(localStorage.getItem('userRoleId')) == '6') {
             // this.pageTitle = 'Owner First Counter';
             const req =
             {
-                owner_clauses:JSON.stringify(this.check),
-                common_clauses:JSON.stringify(this.check),
+                owner_clauses: JSON.stringify(this.check),
+                common_clauses: JSON.stringify(this.check),
                 updatedBy: localStorage.getItem('userId')
             };
             try {
@@ -1202,17 +1186,16 @@ export class DrawCpClausesComponent implements OnInit {
                     res => {
                         this.notifiactionres = res;
                         console.log(this.notifiactionres);
-                        if (this.notifiactionres.success === true)
-                        {
+                        if (this.notifiactionres.success === true) {
                             console.log(this.notifiactionres);
 
-                            
+
                         }
                     }
                 );
             } catch (err) {
-            }   
-   
+            }
+
         }
 
     }
@@ -1222,14 +1205,14 @@ export class DrawCpClausesComponent implements OnInit {
 
     // check box    click and add
 
-    checkclick(id){
+    checkclick(id) {
 
-       let cid = id ;
+        let cid = id;
 
-            this.check.push(cid);
-        
+        this.check.push(cid);
+
         console.log(this.check);
         console.log(JSON.stringify(this.check));
-        
-    } 
+
+    }
 }
