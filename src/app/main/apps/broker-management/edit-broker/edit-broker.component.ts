@@ -44,7 +44,7 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
     // repassword: string;
      firstName: string;
      lastName: string;
-    companyName: any;
+    // companyName: any;
     businessPhone: string;
     userRole: string;
     email: string;
@@ -114,8 +114,7 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
         this.filterValue = '';
         this.userListData = [];
         this.roleListData = [];
-        this.userRoleId = '3';
-        
+
         this._unsubscribeAll = new Subject();
         this.chartererData = [];
         this.companyListData = [];
@@ -147,17 +146,15 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
         this.updatechartererForm = this._formBuilder.group({
             username: ['', Validators.required],
             email: ['', [Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")]],
-            companyName: ['', Validators.required],
             address: ['', Validators.required],
             businessPhone: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             mobileNo: ['', Validators.required],
-            userRoleId: ['', Validators.required],
-
+        
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/broker-management';
-        this.roleList();
+        // this.roleList();
         this.companyList();
         this.roleAccessList(); 
         this.brokererdDetail(brokerdID);
@@ -187,9 +184,9 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
             const req = {        
             "id": localStorage.getItem('brokerId'),
             "username": this.f.username.value,
-            "companyId" : this.companyName,
+            "companyId" : localStorage.getItem('companyId'),
             "businessPhone" : this.f.businessPhone.value,             
-            "userRoleId": this.userRole,
+            "userRoleId": 3,
             "mobileNo" : this.f.mobileNo.value,
             "email" : this.f.email.value,
             "address" : this.f.address.value,  
@@ -253,14 +250,14 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
         }
     }
 
-    changecompany(event): void {
-        console.log(event.target.name)
+    // changecompany(event): void {
+    //     console.log(event.target.name)
         
-        console.log(event.target)
+    //     console.log(event.target)
         
-        console.log(event)
-        this.companyName = event.target.value;
-    }
+    //     console.log(event)
+    //     this.companyName = event.target.value;
+    // }
 
 
     numberOnly(event): boolean {
@@ -302,14 +299,14 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
         }
     }
 
-    doFilter(value): void {
+    // doFilter(value): void {
 
-        this.userListData = this.tempUserListData.filter((item) => {
-            return item.userRoleId === value;
-        });
-        console.log(this.userListData);
+    //     this.userListData = this.tempUserListData.filter((item) => {
+    //         return item.userRoleId === value;
+    //     });
+    //     console.log(this.userListData);
         
-    }
+    // }
 
     
     //Checkbox Role List
@@ -348,13 +345,11 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
                     this.updatechartererForm.setValue({  
                         username: this.brokererdDetailData.username,  
                         email: this.brokererdDetailData.email,  
-                        companyName: this.brokererdDetailData.companyId,
                         address: this.brokererdDetailData.address,
                         businessPhone: this.brokererdDetailData.businessPhone,
                         firstName: this.brokererdDetailData.firstName,
                         lastName: this.brokererdDetailData.lastName,
                         mobileNo: this.brokererdDetailData.mobileNo,
-                        userRoleId: this.brokererdDetailData.userRoleId,
                     }); 
                     
                     if (this.brokererdDetailData.alertdata.length > 0) {
@@ -392,36 +387,36 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
     }
 
     // Role List
-    roleList(): void {
-        try {
-            this.http.post(`${config.baseUrl}/userroleread`, {}, {}).subscribe(
-                res => {
-                    console.log(res);
-                    this.roleListRes = res;
-                    if (this.roleListRes.success) {
-                        this.roleListData = this.roleListRes.data;
-                        for(let roleName1 of this.roleListData) {
-                            if(roleName1.id === 3)  {
-                                this.brokerRol = roleName1.roleName;
-                            }
-                        }
-                    }
-                },
-                err => {
-                    console.log(err);
-                }
-            );
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    // roleList(): void {
+    //     try {
+    //         this.http.post(`${config.baseUrl}/userroleread`, {}, {}).subscribe(
+    //             res => {
+    //                 console.log(res);
+    //                 this.roleListRes = res;
+    //                 if (this.roleListRes.success) {
+    //                     this.roleListData = this.roleListRes.data;
+    //                     for(let roleName1 of this.roleListData) {
+    //                         if(roleName1.id === 3)  {
+    //                             this.brokerRol = roleName1.roleName;
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             err => {
+    //                 console.log(err);
+    //             }
+    //         );
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
 
     
 
-    changeRole(event): void {
-        console.log(event.target.value);
-        this.userRoleId = event.target.value;
-    }
+    // changeRole(event): void {
+    //     console.log(event.target.value);
+    //     this.userRoleId = event.target.value;
+    // }
 
 
     changeSelectAccessPush(event,item, categoryName  ){
@@ -437,7 +432,7 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
     }
 
 
-    public selectedRoleList = [];
+    // public selectedRoleList = [];
     public innerSelectData = [];
     changeSelectAccess(event, data): void {
         const checked = event.checked;
@@ -452,11 +447,11 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
                         innerLoop.selected = true;
                     }
                 } else {
-                    var index = this.selectedRoleList.indexOf(selectitem);
-                    this.selectedRoleList.splice(index, 1);
-                    for (let innerLoop of selectitem.alertdata) {
-                        innerLoop.selected = false;
-                    }
+                    // var index = this.selectedRoleList.indexOf(selectitem);
+                    // this.selectedRoleList.splice(index, 1);
+                    // for (let innerLoop of selectitem.alertdata) {
+                    //     innerLoop.selected = false;
+                    // }
                 }
 
             } else {
@@ -465,8 +460,8 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
                     if (selectitem.id === innerList.parentId) {
                         if (selectitem.selected === true) {
                             selectitem.selected = false;
-                            var index = this.selectedRoleList.indexOf(selectitem);
-                            this.selectedRoleList.splice(index, 1);
+                            // var index = this.selectedRoleList.indexOf(selectitem);
+//                            this.selectedRoleList.splice(index, 1);
 
                         } else {
                             console.log('inner');

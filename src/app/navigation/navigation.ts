@@ -16,26 +16,47 @@ export const navigation: FuseNavigation[] = [
                 icon: 'tachometer',
                 url: '/apps/dashboards/analytics',
             },
+
             {
-                id   : 'Draw C/P',
+                id: 'broker ',
+                title: 'Broker Management',
+                translate: 'NAV.BROKERMANAGEMENT',
+                type: 'item',
+                icon: 'list_alt',
+                url: '/apps/broker-management'
+            },
+
+            {
+                id: 'charter',
+                title: 'Charter Management',
+                translate: 'NAV.CHARTERERMANAGEMENT',
+                type: 'item',
+                icon: 'list_alt',
+                url: '/apps/charterer-management'
+            },
+
+
+            {
+                id: 'Draw C/P',
                 title: 'Draw C/P',
-                type : 'item',
+                type: 'item',
                 icon: 'tachometer',
-                url  : '/apps/draw-management'
+                url: '/apps/draw-management'
             },
             {
-                id   : 'Trading Platform',
+                id: 'Trading Platform',
                 title: 'Trading Platform',
-                type : 'item',
+                type: 'item',
                 icon: 'tachometer',
-                url  : '/apps/trading-platform-management'
+                url: '/apps/trading-platform-management'
             },
             {
-                id   : 'Notification',
+                
+                id: 'Notificatixxon',
                 title: 'Notification',
-                type : 'item',
+                type: 'item',
                 icon: 'tachometer',
-                url  : '/apps/notification'
+                url: '/apps/notification'
             },
             // {
             //     id   : 'Charter Party Trading Platform',
@@ -45,14 +66,14 @@ export const navigation: FuseNavigation[] = [
 
             //     url  : '/apps/cptp-management'
             // },
-            {
-                id: 'setting',
-                title: 'Setting',
-                translate: 'Setting',
-                type: 'item',
-                icon: 'tachometer',
-                url: '/apps/settings',
-            },
+            // {
+            //     id: 'setting',
+            //     title: 'Setting',
+            //     translate: 'Setting',
+            //     type: 'item',
+            //     icon: 'tachometer',
+            //     url: '/apps/settings',
+            // },
             // {
             //     id: 'role',
             //     title: 'Role Management',
@@ -144,7 +165,7 @@ export const navigation: FuseNavigation[] = [
             //     icon: 'list_alt',
             //     url: '/apps/broker-management'
             // },
-       
+
             // {
             //     id: 'charter',
             //     title: 'Charter Management',
@@ -153,7 +174,7 @@ export const navigation: FuseNavigation[] = [
             //     icon: 'list_alt',
             //     url: '/apps/charterer-management'
             // },
-        
+
             // {
             //     id: 'alert-management',
             //     title: 'Alert Management',
@@ -196,7 +217,7 @@ export const navigation: FuseNavigation[] = [
             //             }
             //         ]
             //     }
-            
+
             // {
             //     id       : 'chat',
             //     title    : 'Chat',

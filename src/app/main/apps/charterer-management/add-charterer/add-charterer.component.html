@@ -48,10 +48,10 @@
                             Please enter a valid User Name
                         </mat-error>
                     </mat-form-field>
-                    <select placeholder="select role" id="inputState" (change)="changecompany($event)" formControlName="companyName">
+                    <!-- <select placeholder="select role" id="inputState" (change)="changecompany($event)" formControlName="companyName">
                         <option value="" hidden>Select Company</option>
                         <option *ngFor="let company of companyListData" [value]="company.id">{{company.companyName}}</option>
-                    </select> 
+                    </select>  -->
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>First Name *</mat-label>
                         <input matInput formControlName="firstName">
@@ -102,12 +102,12 @@
                             Please enter a valid business phone number
                         </mat-error>
                     </mat-form-field>
-                    <select class=""  placeholder="select role" (change)="changeRole($event)" formControlName="userRoleId">
+                    <!-- <select class=""  placeholder="select role" (change)="changeRole($event)" formControlName="userRoleId">
                         <option value="" hidden>Select Role</option>
-                        <!-- <option *ngFor="let role of roleListData" [value]="role.id">{{role.roleName}}</option> -->
+                     
                         <option value="4">{{charterRol}}</option>
 
-                    </select>
+                    </select> -->
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>Mobile Number *</mat-label>
                         <input type="text" (keypress)="numberOnly($event)" onKeyPress="if(this.value.length==12) return false;" min="10" matInput formControlName="mobileNo">
@@ -139,7 +139,7 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <div class="sc">
+                    <!-- <div class="sc">
                         <div  class="section" *ngFor="let userMangeName of roleAccessListData">
                             <div class="head">
                                 <mat-label>{{userMangeName.categoryName}}</mat-label>
@@ -149,7 +149,7 @@
                                     {{item.categoryName}} </mat-checkbox>
                             </div>
                         </div>    
-                    </div>
+                    </div> -->
 
                     
 

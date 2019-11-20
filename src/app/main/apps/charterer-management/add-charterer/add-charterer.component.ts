@@ -160,13 +160,11 @@ export class AddChartererComponent implements OnInit, OnDestroy {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             repassword: ['', [Validators.required, confirmPasswordValidator]],
-            companyName: ['', Validators.required],
             address: ['', Validators.required],
             businessPhone: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             mobileNo: ['',  [Validators.required, Validators.minLength(10), Validators.maxLength(12)]],
-            userRoleId: ['', Validators.required]
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/charterer-management';
         this.addChartererForm.get('password').valueChanges
@@ -211,9 +209,9 @@ export class AddChartererComponent implements OnInit, OnDestroy {
             const req = {      
             
             "username": this.f.username.value,
-            "companyId" : this.companyName,
+            "companyId" : localStorage.getItem('companyId'),
             "businessPhone" : this.f.businessPhone.value,             
-            "userRoleId": this.userRoleId,
+            "userRoleId": this.charterRol,
             "mobileNo" : this.f.mobileNo.value,
             "email" : this.f.email.value,
             "password" : this.f.password.value,    
@@ -357,7 +355,7 @@ export class AddChartererComponent implements OnInit, OnDestroy {
                         //charterRol: any;
                         for(let roleName1 of this.roleListData) {
                             if(roleName1.id === 4)  {
-                                this.charterRol = roleName1.roleName;
+                                this.charterRol = roleName1.id;
                                 //console.log("rol", this.charterRol);
                             }
                         }

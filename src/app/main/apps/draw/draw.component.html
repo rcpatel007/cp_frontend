@@ -145,21 +145,21 @@
                 <form [formGroup]="DrawManagementSearchForm" (ngSubmit)="fetchDrawRecords()">
                     
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>CP Form</mat-label>
+                        <mat-label>Select NYPE Form</mat-label>
                         <mat-select formControlName="formIdSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let cpFormData of cpFormData" [ngClass]="{'d-none': cpFormData.isActive === 'N'}" [value]="cpFormData.id"> {{cpFormData.cpformName}} </mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>Vessel</mat-label>
+                        <mat-label>Select Vessel</mat-label>
                         <mat-select formControlName="vesselIdSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let VesselData of VesselData" [ngClass]="{'d-none': VesselData.isActive === 'N'}" [value]="VesselData.id"> {{VesselData.vessel_name}} </mat-option>
                         </mat-select>
                     </mat-form-field>
                     
                     <mat-form-field  class="full-width" appearance="outline" class="customFormfullWidth">
-                        <mat-label>C/P Date* </mat-label>
+                        <mat-label>Select C/P Date* </mat-label>
                         <input formControlName="cpDateSearch" matInput [matDatepicker]="cpDateSearch" placeholder="C/P Date">
                         <mat-datepicker-toggle matSuffix [for]="cpDateSearch"></mat-datepicker-toggle>
                         <mat-datepicker #cpDateSearch></mat-datepicker>
@@ -169,7 +169,7 @@
                     </mat-form-field>
                     
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>Identifier</mat-label>
+                        <mat-label>Select Identifier</mat-label>
                         <mat-select formControlName="drawCPIDSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let drawCPDataData of drawCPDataData" [ngClass]="{'d-none': drawCPDataData.isActive === 'N'}" [value]="drawCPDataData.id"> {{drawCPDataData.id}} </mat-option>
                         </mat-select>

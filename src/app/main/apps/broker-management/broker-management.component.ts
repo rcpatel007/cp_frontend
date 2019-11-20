@@ -37,7 +37,7 @@ export interface UserData {
     animations: fuseAnimations
 })
 export class BrokerManagementComponent implements OnInit, OnDestroy {
-    displayedColumns: string[] = ['id', 'name', 'mobileno', 'email', 'company',  'action'];
+    displayedColumns: string[] = ['id', 'name', 'phone', 'email', 'company',  'action'];
     dialogRef: any;
     hasSelectedContacts: boolean;
     searchInput: FormControl;
@@ -64,7 +64,7 @@ export class BrokerManagementComponent implements OnInit, OnDestroy {
     userListData:any;
     roleId: any;
     deleteRoleRes: any;
-
+    userId:String;
     status = 'Y';
     
 
@@ -181,10 +181,10 @@ export class BrokerManagementComponent implements OnInit, OnDestroy {
     }
     
     // Delete Role
-    deletebroker(id): void {
+    deletebroker(): void {
         const req = {
             isDelete: 'Y',      
-            id: this.userRoleId,
+            id: this.userId,
         };
         try {
             this.http
@@ -215,7 +215,7 @@ export class BrokerManagementComponent implements OnInit, OnDestroy {
         this.userRoleId = event.target.value;
     }
     showDeleteModal(id): void {
-        this.userRoleId = id;
+        this.userId = id;
         this.showModaldeleteStatus = !this.showModaldeleteStatus;
     }
     hideDeleteModal(): void {

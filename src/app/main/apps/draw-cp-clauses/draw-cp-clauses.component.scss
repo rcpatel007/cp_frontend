@@ -823,9 +823,15 @@ float: left;
 background: #f7a000;
 }
 }
+.matCheckboxCustom{
+    font-size: 16px !important;
+    color:#1e88e5 !important;
+    font-weight: 600 !important;
+}
 span {
-font-weight: bold;
+font-weight: 100;
 color: #000;
+font-size: 12px;
 }
 .add-button{
 background: #1e88e5;
@@ -835,3 +841,4 @@ width:7%;
 border-radius: 79%;
 cursor: pointer;
 }
+

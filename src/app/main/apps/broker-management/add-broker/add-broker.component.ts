@@ -190,13 +190,11 @@ export class AddBrokerComponent implements OnInit, OnDestroy {
             password: ['', Validators.required],
             email: new FormControl('', [ Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")] ),
             repassword: ['', [Validators.required, confirmPasswordValidator]],
-            companyName: ['', Validators.required],
             address: ['', Validators.required],
             businessPhone: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             mobileNo: ['', Validators.required],
-            userRoleId: ['', Validators.required]
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/broker-management';
         this.addChartererForm.get('password').valueChanges
@@ -238,9 +236,9 @@ export class AddBrokerComponent implements OnInit, OnDestroy {
              const req = {        
              
              "username": this.f.username.value,
-             "companyId" : this.companyName,
+             "companyId" : localStorage.getItem('companyId'),
              "businessPhone" : this.f.businessPhone.value,             
-             "userRoleId": this.userRoleId,
+             "userRoleId": this.brokerRol,
              "mobileNo" : this.f.mobileNo.value,
              "email" : this.f.email.value,
              "password" : this.f.password.value,    
@@ -299,6 +297,7 @@ export class AddBrokerComponent implements OnInit, OnDestroy {
                    // console.log(res);
                     this.companyListRes = res;
                     if (this.companyListRes.success) {
+
                         this.companyListData = this.companyListRes.data;
                     }
                 },
@@ -378,7 +377,7 @@ export class AddBrokerComponent implements OnInit, OnDestroy {
                         this.roleListData = this.roleListRes.data;
                         for(let roleName1 of this.roleListData) {
                             if(roleName1.id === 3)  {
-                                this.brokerRol = roleName1.roleName;
+                                this.brokerRol = roleName1.id;
                                 //console.log("rol", this.brokerRol);
                             }
                         }

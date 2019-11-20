@@ -129,41 +129,15 @@ export class LoginComponent implements OnInit {
                         localStorage.setItem('userRoleId', this.res.data.userRoleId);
                         localStorage.setItem('ownerId', this.res.data.ownerId);
                         
-
-                        this.userRoleID = this.res.data.userRoleId;
+                        localStorage.setItem('companyId',this.res.data.companyId);
+                
 
                         localStorage.setItem('userData', JSON.stringify(this.res.data));
+                        this.router.navigate(['/apps/dashboards/analytics']);
 
-                        if(this.res.data.userRoleId == 3)
-                        {
-                            this.showCompnayListModal();
-                        }
-
-                        if(this.res.data.userRoleId == 4)
-                        {
-                            this.showCompnayListModal();
-                        }
-                        
-                        if(this.res.data.userRoleId == 6)
-                        {
-                            this.userService.getCompanyList().pipe(first())
-                            .subscribe(data => {
-                                this.compnay = data;
-                                console.log(this.cid);
-                                
-                                console.log(this.compnay, "res");
-                                if (this.compnay.success === true) {
-                                    for (let index = 0; index < this.compnay.data.length; index++) {
-                                        if(this.compnay.data[index].id == this.cid){
-                                            this.compnaylist.push(this.compnay.data[index]);
-                                        }
-                                    }
-                                }   
-                                console.log(this.compnaylist,'cp');
-                            });
-                            this.router.navigate(['/apps/dashboards/analytics']);
-                        }
-                        
+                   
+                     console.log(localStorage.getItem('companyId'));
+                     
                         console.log(this.res.data);
 
                         // this.router.navigate([this.returnUrl]);
@@ -179,45 +153,45 @@ export class LoginComponent implements OnInit {
                 });
     }
 
-    showCompnayListModal(): void {
+    // showCompnayListModal(): void {
 
-        this.showModalStatus = !this.showModalStatus;
-        this.userService.getCompanyList().pipe(first())
-            .subscribe(data => {
-                this.compnay = data;
-                console.log(this.cid);
+    //     this.showModalStatus = !this.showModalStatus;
+    //     this.userService.getCompanyList().pipe(first())
+    //         .subscribe(data => {
+    //             this.compnay = data;
+    //             console.log(this.cid);
                 
-                console.log(this.compnay, "res");
-                if (this.compnay.success === true) {
-                    for (let index = 0; index < this.compnay.data.length; index++) {
-                        if(this.compnay.data[index].id == this.cid){
-                            console.log(this.cid);
+    //             console.log(this.compnay, "res");
+    //             if (this.compnay.success === true) {
+    //                 for (let index = 0; index < this.compnay.data.length; index++) {
+    //                     if(this.compnay.data[index].id == this.cid){
+    //                         console.log(this.cid);
 
-                            this.compnaylist.push(this.compnay.data[index]);
-                        }
-                    }
-                }   
-                console.log(this.compnaylist,'cp');
-            });
+    //                         this.compnaylist.push(this.compnay.data[index]);
+    //                     }
+    //                 }
+    //             }   
+    //             console.log(this.compnaylist,'cp');
+    //         });
             
-    }
-    submit($event) {
+    // }
+    // submit($event) {
 
-        let companyName = $event.value;
+    //     let companyName = $event.value;
 
-        localStorage.setItem('compnayName', companyName);
-        console.log(companyName);
+    //     localStorage.setItem('compnayName', companyName);
+    //     console.log(companyName);
 
 
-    }
+    // }
 
-    done(id) {
-        localStorage.setItem('companyId',id);
-        this.router.navigate(['/apps/dashboards/analytics']);
+    // done(id) {
+    //     localStorage.setItem('companyId',id);
+    //     this.router.navigate(['/apps/dashboards/analytics']);
 
-        console.log(localStorage.getItem('companyId'));
+    //     console.log(localStorage.getItem('companyId'));
         
-    }
+    // }
 
     // onSubmit() {
     //     this.showLoaderImg = true;

@@ -147,18 +147,15 @@ export class EditChartererComponent implements OnInit, OnDestroy {
         this.updatechartererForm = this._formBuilder.group({
             username: ['', Validators.required],
             email: ['', [Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")]],
-            companyName: ['', Validators.required],
             address: ['', Validators.required],
             businessPhone: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             mobileNo: ['', Validators.required],
-            userRoleId: ['', Validators.required],
-
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/charterer-management';
-        this.roleList();
-        this.companyList();
+        // this.roleList();
+        // this.companyList();
         this.roleAccessList(); 
         this.charteredDetail(charteredID);
     }
@@ -187,9 +184,9 @@ export class EditChartererComponent implements OnInit, OnDestroy {
             const req = {        
             "id": localStorage.getItem('chartererId'),
             "username": this.f.username.value,
-            "companyId" : this.companyName,
+            "companyId" : localStorage.getItem('companyId'),
             "businessPhone" : this.f.businessPhone.value,             
-            "userRoleId": this.userRole,
+            "userRoleId": 4,
             "mobileNo" : this.f.mobileNo.value,
             "email" : this.f.email.value,
             "address" : this.f.address.value,  
@@ -234,33 +231,33 @@ export class EditChartererComponent implements OnInit, OnDestroy {
 
 
     //companylist
-    companyList(): void {
-        try {
-            this.http.get(`${config.baseUrl}/companylist`, {}).subscribe(
-                res => {
-                   // console.log(res);
-                    this.companyListRes = res;
-                    if (this.companyListRes.success) {
-                        this.companyListData = this.companyListRes.data;
-                    }
-                },
-            err => {
-                console.log(err);
-            });
+    // companyList(): void {
+    //     try {
+    //         this.http.get(`${config.baseUrl}/companylist`, {}).subscribe(
+    //             res => {
+    //                // console.log(res);
+    //                 this.companyListRes = res;
+    //                 if (this.companyListRes.success) {
+    //                     this.companyListData = this.companyListRes.data;
+    //                 }
+    //             },
+    //         err => {
+    //             console.log(err);
+    //         });
             
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
 
-    changecompany(event): void {
-        console.log(event.target.name)
+    // changecompany(event): void {
+    //     console.log(event.target.name)
         
-        console.log(event.target)
+    //     console.log(event.target)
         
-        console.log(event)
-        this.companyName = event.target.value;
-    }
+    //     console.log(event)
+    //     this.companyName = event.target.value;
+    // }
 
 
     numberOnly(event): boolean {
@@ -353,13 +350,13 @@ export class EditChartererComponent implements OnInit, OnDestroy {
                         email: this.charteredDetailData.email,  
                         // password: this.charteredDetailData.password,  
                         // repassword: this.charteredDetailData.password,
-                        companyName: this.charteredDetailData.companyId,
+                        // companyName: this.charteredDetailData.companyId,
                         address: this.charteredDetailData.address,
                         businessPhone: this.charteredDetailData.businessPhone,
                         firstName: this.charteredDetailData.firstName,
                         lastName: this.charteredDetailData.lastName,
                         mobileNo: this.charteredDetailData.mobileNo,
-                        userRoleId: this.charteredDetailData.userRoleId,
+                        // userRoleId: this.charteredDetailData.userRoleId,
                     }); 
                     
                     if (this.charteredDetailData.alertdata.length > 0) {
@@ -398,30 +395,30 @@ export class EditChartererComponent implements OnInit, OnDestroy {
     }
 
     // Role List
-    roleList(): void {
-        try {
-            this.http.post(`${config.baseUrl}/userroleread`, {}, {}).subscribe(
-                res => {
-                    console.log(res);
-                    this.roleListRes = res;
-                    if (this.roleListRes.success) {
-                        this.roleListData = this.roleListRes.data;
-                        for(let roleName1 of this.roleListData) {
-                            if(roleName1.id === 4)  {
-                                this.charterRol = roleName1.roleName;
-                                //console.log("rol", this.charterRol);
-                            }
-                        }
-                    }
-                },
-                err => {
-                    console.log(err);
-                }
-            );
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    // roleList(): void {
+    //     try {
+    //         this.http.post(`${config.baseUrl}/userroleread`, {}, {}).subscribe(
+    //             res => {
+    //                 console.log(res);
+    //                 this.roleListRes = res;
+    //                 if (this.roleListRes.success) {
+    //                     this.roleListData = this.roleListRes.data;
+    //                     for(let roleName1 of this.roleListData) {
+    //                         if(roleName1.id === 4)  {
+    //                             this.charterRol = roleName1.roleName;
+    //                             //console.log("rol", this.charterRol);
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             err => {
+    //                 console.log(err);
+    //             }
+    //         );
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
 
     
 
@@ -444,7 +441,7 @@ export class EditChartererComponent implements OnInit, OnDestroy {
     }
 
 
-    public selectedRoleList = [];
+    // public selectedRoleList = [];
     public innerSelectData = [];
     changeSelectAccess(event, data): void {
         const checked = event.checked;
@@ -459,8 +456,8 @@ export class EditChartererComponent implements OnInit, OnDestroy {
                         innerLoop.selected = true;
                     }
                 } else {
-                    var index = this.selectedRoleList.indexOf(selectitem);
-                    this.selectedRoleList.splice(index, 1);
+                    // var index = this.selectedRoleList.indexOf(selectitem);
+                    // this.selectedRoleList.splice(index, 1);
                     for (let innerLoop of selectitem.alertdata) {
                         innerLoop.selected = false;
                     }
@@ -472,8 +469,8 @@ export class EditChartererComponent implements OnInit, OnDestroy {
                     if (selectitem.id === innerList.parentId) {
                         if (selectitem.selected === true) {
                             selectitem.selected = false;
-                            var index = this.selectedRoleList.indexOf(selectitem);
-                            this.selectedRoleList.splice(index, 1);
+                            // var index = this.selectedRoleList.indexOf(selectitem);
+                            // this.selectedRoleList.splice(index, 1);
 
                         } else {
                             console.log('inner');

@@ -1035,7 +1035,7 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         this.drawManagementData = this.drawManagementRes.data;
                         this.dataSource = new MatTableDataSource(this.drawManagementData);
-                        this.dataSource.paginator = this.paginator;
+                        // this.dataSource.paginator = this.paginator;
                         this.dataSource.sort = this.sort;
                     }
                 },
