@@ -1315,7 +1315,7 @@ export class DrawComponent implements OnInit
         });
 
         var chartererAccept = (req.isAccepted == 'Y') ? 20 : 0;
-
+        let charterName =localStorage.getItem('userId'),
         const newReq =
         {
             id: this.drawId,
@@ -1332,7 +1332,7 @@ export class DrawComponent implements OnInit
                 {
                     fromUserId: localStorage.getItem('userId'),
                     toUserId: localStorage.getItem('userId'),
-                    notification: this.charterName+'Accepts charter party form '+ this.formName + 'request',
+                    notification: this.charterName+'Accepts charter party form NYPE Form 2015 request',
                     createdBy: localStorage.getItem('userId'),
                     updatedBy: localStorage.getItem('userId')
                 };

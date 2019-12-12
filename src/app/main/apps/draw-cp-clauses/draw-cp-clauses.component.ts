@@ -2541,7 +2541,7 @@ export class DrawCpClausesComponent implements OnInit
         var isTrading = filter.isTrading;
         this.isTrading = filter.isTrading;
         let borkerName: 'broker3';
-        let formName :'NYPE 2015'
+        let formName :'NYPE Form 2015'
         this.drawId = filter.drawId;
 
         var checkedCheckBox = this.checkedCheckBox.join();
