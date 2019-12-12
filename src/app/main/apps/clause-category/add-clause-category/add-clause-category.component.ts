@@ -16,156 +16,143 @@ import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 
-export interface UserData {
-  id: string;
-  name: string; 
+export interface UserData 
+{
+    id: string;
+    name: string; 
 }
 
-@Component({
-  selector: 'app-add-clause-category',
-  templateUrl: './add-clause-category.component.html',
-  styleUrls: ['./add-clause-category.component.scss']
+@Component(
+{
+    selector: 'app-add-clause-category',
+    templateUrl: './add-clause-category.component.html',
+    styleUrls: ['./add-clause-category.component.scss']
 })
-export class AddClauseCategoryComponent implements OnInit {
 
-  name:String;
-  typeManagementForm: FormGroup;
-  loading = false;
-  submitted = false;
-  createtypeRes :any;
-  returnUrl: string;
-  cpFormId:String;
-  chartertypelist :any;
-  chartertypeListRes: any;
-  chartertypeListData: any;
-
-  // Private
-private _unsubscribeAll: Subject<any>;
-@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-@ViewChild(MatSort, { static: true }) sort: MatSort;
-
-
-/**
- * Constructor
- *
- * @param {ContactsService} _contactsService
- * @param {FuseSidebarService} _fuseSidebarService
- * @param {FormBuilder} _formBuilder
- * @param {MatDialog} _matDialog
- */
-constructor(
-    private _formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private authenticationService: AuthenticationService,
-    private _userService: UserService,
-    private _fuseSidebarService: FuseSidebarService,
-    private http: HttpClient,
-    private alertService: AlertService
-) {
-    // Set the defaults
-   
-    this._unsubscribeAll = new Subject();
-
-    // let userToken = localStorage.getItem('userToken')
-    // if(userToken==undefined){
-    //     this.router.navigate(['/']);
-    // }
-
+export class AddClauseCategoryComponent implements OnInit
+{
+    name:String;
+    typeManagementForm: FormGroup;
+    loading = false;
+    submitted = false;
+    createtypeRes :any;
+    returnUrl: string;
+    cpFormId:String;
     
-}
+    chartertypelist :any;
 
-ngOnInit() {
-  this.typeManagementForm = this._formBuilder.group({
-    name: ['', Validators.required],
-   
-   
-});
-this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/clause-category-management';
-this.fromList()
-}
-get f() { return this.typeManagementForm.controls; }
+    cpFormRes: any;
+    cpFormData: any;
 
-fromList(): void {
-    try {
-        this._userService.getFormList()
-            .pipe(first())
-            .subscribe((res) => {
-                this.chartertypeListRes = res;
-                console.log(res);
-                if (this.chartertypeListRes.success === true) {
-                    this.chartertypeListData = this.chartertypeListRes.data;
-                    console.log(this.chartertypeListData);
-                }
-            },
-                err => {
-                    this.alertService.error(err, 'Error');
-                    console.log(err);
-                });
+    // Private
+    private _unsubscribeAll: Subject<any>;
+    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-    } catch (err) {
-        console.log(err);
+    /**
+     * Constructor
+     *
+     * @param {ContactsService} _contactsService
+     * @param {FuseSidebarService} _fuseSidebarService
+     * @param {FormBuilder} _formBuilder
+     * @param {MatDialog} _matDialog
+     */
+
+    constructor(
+        private _formBuilder: FormBuilder,
+        private router: Router,
+        private route: ActivatedRoute,
+        private authenticationService: AuthenticationService,
+        private _userService: UserService,
+        private _fuseSidebarService: FuseSidebarService,
+        private http: HttpClient,
+        private alertService: AlertService
+    ){
+        this._unsubscribeAll = new Subject();
     }
-}
 
- onSubmit(): void {
-    console.log('add category');
-    this.submitted = true;
+    ngOnInit()
+    {
+        this.typeManagementForm = this._formBuilder.group(
+        {
+            cpFormId: ['', Validators.required],
+            name: ['', Validators.required],
+        });
+        
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/clause-category-management';
+        this.fromList()
+    }
+    
+    get f() { return this.typeManagementForm.controls; }
 
-    // reset alerts on submit
-    this.alertService.clear();
-
-    // stop here if form is invalid
-    if (this.typeManagementForm.invalid) {
-        console.log('add user invalid');
-        return;
-    } else {
-        console.log('add');
-        const req = {
-      
-            name: this.f.name.value,
-            cpFormId:this.cpFormId,
-            createdBy: localStorage.getItem('userId'),
-            updatedBy: localStorage.getItem('userId'),
-            
-        };
-        console.log(req);
-
-        this.loading = true;
-        try {
-            console.log('sadd')
-            const header = new HttpHeaders();
-            header.append('Content-Type', 'application/json');
-            const headerOptions = {
-                headers: header
-            }
-            this.http.post(`${config.baseUrl}/clusesCategorycreate`, req, headerOptions).subscribe(
-                res => {
-                    console.log(res);
-                    this.createtypeRes = res;
-                    if (this.createtypeRes.success === true) {
-                        this.alertService.success(this.createtypeRes.message, 'Success');
-                  
-                    
-                        this.typeManagementForm.reset();
-                        this.router.navigate([this.returnUrl]);
-                    } else {
-                        this.alertService.error(this.createtypeRes.message, 'Error');
+    fromList(): void
+    {
+        try
+        {
+            this._userService.getFormList()
+                .pipe(first())
+                .subscribe((res) =>
+                {
+                    this.cpFormRes = res;
+                    if (this.cpFormRes.success === true)
+                    {
+                        this.cpFormData = this.cpFormRes.data;
                     }
                 },
-                err => {
+                err =>
+                {
                     this.alertService.error(err, 'Error');
-                    console.log(err);
-                }
-            );
-        } catch (err) {
-            console.log(err);
+                });
+        } catch (err)
+        {
         }
     }
-}
 
-selectCpType(event){
-this.cpFormId =event.target.value;
-}
-
+    onSubmit(): void
+    {
+        this.submitted = true;
+        this.alertService.clear();
+        if (this.typeManagementForm.invalid)
+        {
+            return;
+        } else {
+            const req =
+            {
+                name: this.f.name.value,
+                cpFormId:this.f.cpFormId.value,
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+            };
+            this.loading = true;
+            try
+            {
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions =
+                {
+                    headers: header
+                }
+                this.http.post(`${config.baseUrl}/clusesCategorycreate`, req, headerOptions).subscribe(
+                    res =>
+                    {
+                        this.createtypeRes = res;
+                        if (this.createtypeRes.success === true)
+                        {
+                            this.alertService.success(this.createtypeRes.message, 'Success');
+                            this.typeManagementForm.reset();
+                            this.router.navigate([this.returnUrl]);
+                        } else {
+                            this.alertService.error(this.createtypeRes.message, 'Error');
+                        }
+                    },
+                    err =>
+                    {
+                        this.alertService.error(err, 'Error');
+                    }
+                );
+            } catch (err)
+            {
+            }
+        }
+    }
 }

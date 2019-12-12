@@ -131,19 +131,13 @@ export class LoginComponent implements OnInit {
                         
                         localStorage.setItem('companyId',this.res.data.companyId);
                 
-
                         localStorage.setItem('userData', JSON.stringify(this.res.data));
                         this.router.navigate(['/apps/dashboards/analytics']);
 
                    
-                     console.log(localStorage.getItem('companyId'));
-                     
+                        console.log(localStorage.getItem('companyId'));
                         console.log(this.res.data);
 
-                        // this.router.navigate([this.returnUrl]);
-                        // window.location.href = this.returnUrl; //"/app/dashboard";
-                        //this.router.navigate(['/app/dasboard']);
-                        // this.router.navigate(['/apps/dashboards/analytics']);
 
                     } else {
                         this.alertService.error(data.message, '');

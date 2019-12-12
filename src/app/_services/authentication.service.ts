@@ -87,6 +87,22 @@ export class AuthenticationService {
               }));
               
         }
+
+        userChangePassword(resetToken, resetpassword )
+        {
+            let headers = new HttpHeaders();
+            headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+            return this.http.post<any>(`${this.baseUrl}/resetPassword`, { resetToken, resetpassword }, {
+                headers: headers
+            })
+                .pipe(map(user => {
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    
+                    return user;
+                    
+                }));
+                
+        }
       
         changePassword(oldpassword, newpassword, id ) {
           //console.log(oldpassword);

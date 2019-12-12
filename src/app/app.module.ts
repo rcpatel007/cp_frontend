@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { TranslateModule } from '@ngx-translate/core';
+import { SignaturePadModule } from 'angular2-signaturepad';
+// import { AngularSignaturePadModule } from 's';
 // import { NgxPaginationModule } from 'ngx-pagination';
 // import { MatTableDataSource } from '@angular/material/table';
 // import { MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule } from '@angular/material';
@@ -53,6 +55,7 @@ const appRoutes: Routes = [
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        SignaturePadModule,
         RouterModule.forRoot(appRoutes),
         ToastrModule.forRoot(), // ToastrModule added
 

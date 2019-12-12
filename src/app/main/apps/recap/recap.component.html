@@ -15,34 +15,282 @@
         </div>
         <div class="mat-elevation-z8">
             <div class="main-tab">
-                <ng-container  *ngFor="let c of termsReviewRecordsData;let i=index;" >
-                    <div style="padding: 3%;" class="row" id="{{i+1}}">
-                        <div class="text-left col l12 m12 s12">
-                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;"><b>{{ i + 1 }}. {{c.name}}</b></div>
-                        </div>
-                        <div class="row">
-                            <table>
-                                <tr *ngFor="let ct of termsReviewRecordsData[i].clauseCategoryTerms;let si=index">
-                                    <td style="width:100%" >
-                                        <span>{{ct.identifier}}) </span><span [innerHtml]="ct.mainTermRecord"></span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <h4 style="margin-top: -10px; font-weight: bold;">Custom Amendments</h4>
-                            <table>
-                                <tr *ngFor="let n of termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom;let ti=index">
-                                    <td class="customFontWeight">{{n.identifier}})</td>
-                                    <td class="customFontWeight" style="width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
-                                </tr>
-                            </table>
-                        </div>
+                <div>
+                    <div class="divHeaderMainScreen" style="float:left">
+                        <img src="http://18.219.59.88/Charter/Logo/logo1.png" height="100" width="100" style="margin-left: 20px">
+                        <img src="http://18.219.59.88/Charter/Logo/logo2.png" height="100" width="100" style="margin-left: 20px">
+                        <img src="http://18.219.59.88/Charter/Logo/logo3.png" height="200" width="200" style="margin-left: 20px">
                     </div>
-                </ng-container>
+                    <div class="divHeaderMainScreen" style="float: right;">
+                        <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="printPage()">Print</button>
+                    </div>
+                </div>
+                <div id="printDiv">
+                    <table class="report-container">
+                        <thead class="report-header">
+                            <tr>
+                                <th class="report-header-cell">
+                                    <div class="header-info divHeader" style="float: left; margin-bottom: 20px;">
+                                        <img src="http://18.219.59.88/Charter/Logo/logo1.png" height="50" width="50" style="margin-left: 20px">
+                                        <img src="http://18.219.59.88/Charter/Logo/logo2.png" height="50" width="50" style="margin-left: 20px">
+                                        <img src="http://18.219.59.88/Charter/Logo/logo3.png" height="50" width="50" style="margin-left: 20px">
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <br>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot class="report-footer">
+                            <tr>
+                                <td class="report-footer-cell">
+                                    <div class="footer-info"></div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        <tbody class="report-content" style="clear: both;">
+                            <tr>
+                                <td class="report-content-cell">
+                                    <div class="main" style="width: 100% !important;">
+                                        <table style="margin-top: 40px; clear: both;">
+                                            <tr>
+                                                <td class="customFontWeight" style="width: 25%;"></td>
+                                                <td class="customFontWeight" style="width: 33%; text-align: center; font-size: 25px; font-weight: bold;">{{ cpFormName }}<br><br></td>
+                                                <td class="customFontWeight" style="width: 33%;;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">THIS CHARTER PARTY, made and concluded in {{ cityName }} on {{ dateMonthYearString }} </h4>
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                        as *Registered Owners/*Disponent Owners/*Time Chartered Owners (the “Owners”) of the Vessel described below *delete as applicable
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;"> Name : {{ vesselName }} </h4> </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;"> IMO : {{ imoNumber }} </h4> </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;"> Flag : {{ vesselFlag }} </h4> </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;"> Built (year) : {{ vesselYear }} </h4> </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;" *ngIf="nonPrintView">
+                                                        Deadweight All Told : <input matInput class="inputPrintCustom" [(ngModel)]="metricTonValue" [value]="metricTonValue"  placeholder="_______________"> metric tons
+                                                    </h4>
+                                                    <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;" *ngIf="printView">
+                                                        Deadweight All Told : {{ metricTonValue }} metric tons
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                        (For Vessel’s charter party description see Appendix A (Vessel Description)), 
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;" *ngIf="nonPrintView">
+                                                        and <input matInput class="inputPrintCustom" [(ngModel)]="customInput1" [value]="customInput1" placeholder="_______________"> Charterers of <input matInput class="inputPrintCustom" [(ngModel)]="customInput2" [value]="customInput2"  placeholder="_______________"> (the “Charterers”)
+                                                    </h4>
+                                                    <h4 class="tableTDFont" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;"  *ngIf="printView">
+                                                        and {{ customInput1 }} Charterers of {{ customInput2 }} (the “Charterers”)
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                            This Charter Party shall be performed subject to all the terms and conditions here in 
+                                                            consisting of this main body including any additional clauses and addenda, 
+                                                            if applicable, as well as Appendix A attached hereto. 
+                                                            In the event of any conflict of conditions, the provisions of any additional 
+                                                            clauses and Appendix A shall prevail over those of the main body to the 
+                                                            extent of such conflict, but no further. 
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <ng-container *ngFor="let c of termsReviewRecordsData;let i=index;" >
+                                            <div style="padding: 3%; margin-top: -40px; margin-bottom: -50px" class="row" id="{{i+1}}">
+                                                <div class="text-left col l12 m12 s12">
+                                                    <div class="text-blue" style="color: #2196f3; margin-bottom:1%; margin-top: 20px;">
+                                                        <b style="font-size: 18px;">{{ i + 1 }}.</b>
+                                                        <b style="font-size: 18px;text-decoration: underline; margin-left: 10px;">{{c.name}}</b>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-left: 20px;">
+                                                    <table>
+                                                        <tr *ngFor="let ct of termsReviewRecordsData[i].clauseCategoryTerms;let si=index">
+                                                            <td style="width:100%; font-size: 16px; font-weight: bold; margin-bottom: 20px;" >
+                                                                <span>{{ct.identifier}}) </span><span [innerHtml]="ct.mainTermRecord"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="row" *ngIf="termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom !=0" style="clear: both; margin-top:20px">
+                                                    <h4 style="margin-top: -10px; font-weight: bold; font-size: 18px; margin-left: 25px; margin-bottom: 15px;">Custom Amendments</h4>
+                                                    <table style="margin-left: 20px;">
+                                                        <tr *ngFor="let n of termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                                            <td class="customFontWeight" style="font-size: 16px;">{{n.identifier}})</td>
+                                                            <td class="customFontWeight" style="font-size: 16px;width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngFor="let c of customClauseDataResponseData;let i=index;" >
+                                            <div style="padding: 3%; margin-top: -40px; margin-bottom: -50px" class="row" id="{{i+1}}">
+                                                <div class="text-left col l12 m12 s12">
+                                                    <div class="text-blue" style="color: #2196f3; margin-bottom:1%;">
+                                                        <b style="font-size: 18px; font-weight: bold;">{{ c.numberInfo }}. {{c.clauseTitle}}</b>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-left: 20px;">
+                                                    <table>
+                                                        <tr *ngFor="let ct of customClauseDataResponseData[i].clauseCategoryTerms;let si=index">
+                                                            <td style="width:100%; font-size: 16px; font-weight: bold; margin-bottom: 20px" >
+                                                                <span>{{ct.identifier}}) </span><span [innerHtml]="ct.mainTermRecord"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="row" *ngIf="customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom !=0">
+                                                    <h4 style="margin-top: -10px; font-weight: bold; font-size: 18px;">Custom Amendments</h4>
+                                                    <table style="margin-left: 20px;">
+                                                        <tr *ngFor="let n of customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                                            <td class="customFontWeight" style="font-size: 16px;  font-weight: bold;">{{n.identifier}})</td>
+                                                            <td class="customFontWeight" style="font-size: 16px;  font-weight: bold; width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        <table style="margin-top: 40px; clear: both;">
+                                            <tr>
+                                                <td class="customFontWeight" colspan="3">
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                        Clauses  {{ ownerName }} to  {{ chartererName }}, both inclusive, as attached hereto are fully incorporated in this Charter Party.
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="customFontWeight">
+                                                    <table style="margin-top: 40px; clear: both;">
+                                                        <tr>
+                                                            <td class="customFontWeight">
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Owner :
+                                                                </h4>
+                                                            </td>
+                                                            <td class="customFontWeight">
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Charterer :
+                                                                </h4>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="customFontWeight">
+                                                                <h4 *ngIf="signature1ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    <img *ngIf="signature1MainImageView" src="{{ currentSignature1 }}" height="200" width="500" style="height: 200px !important;">
+                                                                </h4>
+                                                            </td>
+                                                            <td class="customFontWeight">
+                                                                <h4 *ngIf="signature2ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    <img *ngIf="signature2MainImageView" src="{{ currentSignature2 }}" height="200" width="500" style="height: 200px !important;">
+                                                                </h4>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="customFontWeight">
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    <button *ngIf="updateSignatureButtonViewOwner"  class="submit-item submit-item--back-button" style="float: left;" (click)="signmatureNonImageViwe(1)">Update Signature</button>
+                                                                </h4>
+                                                            </td>
+                                                            <td class="customFontWeight">
+                                                                <h4  style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    <button *ngIf="updateSignatureButtonViewCharterer"  class="submit-item submit-item--back-button" style="float: left;" (click)="signmatureNonImageViwe(2)">Update Signature</button>
+                                                                </h4>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="customFontWeight">
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Name : {{ ownerName }}
+                                                                </h4>
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Title : Owner
+                                                                </h4>
+                                                            </td>
+                                                            <td class="customFontWeight">
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Name : {{ chartererName }}
+                                                                </h4>
+                                                                <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                                                    Title : Charterer
+                                                                </h4>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table style="margin-top: 40px; clear: both;">
+                                            <tr>
+                                                <td>
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
+                                                        NYPE 2015 - Appendix A (Vessel Description)
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h4 style="margin-left: 40px; font-size: 15px; margin-top: -10px; font-weight: bold;">
+                                                        {{ vesselDescription }}
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table style="margin-top: 40px; clear: both;">
+                                            <tr>
+                                                <td>
+                                                    <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
+                                                        Index Of Clauses
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr *ngFor="let c of clauseCategoryRecordResponseData;let i=index;">
+                                                <td>
+                                                    <h4 class="tableTDFont" style="float: left;"> {{ i + 1 }}. </h4>
+                                                    <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.name }} </h4>
+                                                </td>
+                                            </tr>
+                                            <tr *ngFor="let c of customClauseDataResponseData;let i=index;">
+                                                <td>
+                                                    <h4 class="tableTDFont" style="float: left;"> {{ c.numberInfo }}. </h4>
+                                                    <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.clauseTitle }} </h4>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+   
+
     <!-- view custome terms  -->
     <fuse-sidebar name="viewcustomclausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
         <!-- <add-detail-clause></add-detail-clause> -->
@@ -92,4 +340,28 @@
             </div>
         </div>
     </fuse-sidebar>
+
+    <div class="cst-modal" [ngClass]="{'cst-modal--active' : signature1NonImageView}">
+        <div class="cst-modal__overlay"></div>
+        <div class="cst-modal__content" style="height: 600px;">
+            <div class="cst-modal__header">
+                <h4 class="cst-modal__title" style="margin: 0 auto;">Please do your signature below.</h4>
+                <button class="cst-modal__close" (click)="signatureImageView()">&times;</button>
+            </div>
+            <div class="cst-modal__body">
+                <div style="border: 1px black solid; height: 300px; width: 510px;">
+                    <signature-pad [options]="signaturePadOptions" 
+                        (onBeginEvent)="drawStart()" 
+                        (onEndEvent)="drawComplete()">
+                    </signature-pad>
+                </div>
+            </div>
+            <div class="cst-modal__footer">
+                <button class="cst-modal__button  submit-item submit-item--back-button" style="float: left; margin: 30px;" (click)="signatureReset()">Clear</button>
+                <button class="cst-modal__button  submit-item submit-item--back-button" style="float: left; margin: 30px;" (click)="saveSignature()">Save</button>
+                <button class="cst-modal__button  submit-item submit-item--back-button" style="float: left; margin: 30px;" (click)="signatureImageView()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 </div>

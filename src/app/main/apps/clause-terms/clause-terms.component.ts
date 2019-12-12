@@ -11,18 +11,20 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
-
 import { UserService } from '../../../_services/user.service';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../_services';
+
 export interface PeriodicElement
 {
     id:String;
     clauseCategoryName: String;
+    cpFormName: String;
     nos: String;
-    name: string;
+    termsName: string;
+    isActive : string;
 }
 
 @Component(
@@ -37,7 +39,7 @@ export interface PeriodicElement
 export class ClauseTermsComponent implements OnInit
 {
 
-    displayedColumns: string[] = ['id','clauseCategoryName', 'nos', 'termsName', 'action'];
+    displayedColumns: string[] = ['id', 'cpFormName', 'clauseCategoryName', 'nos', 'termsName', 'isActive', 'action'];
     dataSource = new MatTableDataSource<PeriodicElement>();
 
     dialogRef: any;
@@ -66,6 +68,17 @@ export class ClauseTermsComponent implements OnInit
     cols: any[];
     cpFormListRes: any;
     cpFormListData: any;
+
+    clauseTermsReviewRes: any;
+    clauseTermsReviewData= [];
+
+    dataID : any;
+    statusAction : any;
+
+    updateDataReqeust : any;
+
+    activeModalStatus = false;
+    inActiveModalStatus = false;
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -106,29 +119,23 @@ export class ClauseTermsComponent implements OnInit
                 .subscribe((res) =>
                 {
                     this.cpFormListRes = res;
-                    console.log(res);
                     if (this.cpFormListRes.success === true)
                     {
                         this.cpFormListData = this.cpFormListRes.data;
-                        console.log(this.cpFormListData);
                     }
                 },
                 err =>
                 {
                     this.alertService.error(err, 'Error');
-                    console.log(err);
                 });
         } catch (err)
         {
-            console.log(err);
         }
     }
 
     clauseTermsRecords(): void
     {
         this.clauseTermsData = [];
-        this.fromList();
-        
         try
         {
             this._userService.getclusesList()
@@ -136,53 +143,24 @@ export class ClauseTermsComponent implements OnInit
                 .subscribe((res) =>
                 {
                     this.clauseTermsRes = res;
-                    console.log(res);
-                    console.log('Here In DATA');
                     if (this.clauseTermsRes.success === true)
                     {
-                        for (let index = 0; index < this.clauseTermsRes.data.length; index++)
-                        {
-                            for (let secondindex = 0; secondindex < this.cpFormListData.length; secondindex++)
-                            {
-                                if (this.clauseTermsRes.data[index].parentId === this.cpFormListData[secondindex].id)
-                                {
-                                    let tempData =
-                                    {
-                                        clauseTermsId:this.clauseTermsRes.data[index].id,
-                                        id:this.clauseTermsRes.data[index].id,
-                                        nos:this.clauseTermsRes.data[index].nos,
-                                        clauseCategoryName: this.cpFormListData[secondindex].name,
-                                        termsName: this.clauseTermsRes.data[index].termsName,
-                                        parentId: this.clauseTermsRes.data[index].parentId
-                                    }
-                                    console.log(tempData);
-                                    this.clauseTermsData.push(tempData);
-                                }
-                            }
-                        }
-                        // this.clauseTermsData = this.clauseTermsRes.data;
+                        this.clauseTermsData = this.clauseTermsRes.data;
                         this.dataSource = new MatTableDataSource(this.clauseTermsData);
                         this.dataSource.paginator = this.paginator;
                         this.dataSource.sort = this.sort;
-                        console.log("Final Records");
-                        console.log(this.clauseTermsData);
                     }
                 },
                 err =>
                 {
                     this.alertService.error(err, 'Error');
-                    console.log(err);
                 });
-            } catch (err)
-            {
-                console.log(err);
-        }
+        } catch (err)
+        {}
     }
 
     editClauseTermsData(data): void
     {
-        console.log('Data For Edit');
-        console.log(data);
         localStorage.setItem('clauseTermsData', JSON.stringify(data));
         this.router.navigate(['/apps/clause-terms-management/edit']);
     }
@@ -212,12 +190,11 @@ export class ClauseTermsComponent implements OnInit
                 (
                     res =>
                     {
-                        console.log(res);
                         this.clauseTermsRes = res;
                         if (this.clauseTermsRes.success === true)
                         {
                             this.showModalStatus = false;
-                            this.alertService.success('Successfully Deleted', 'Success');
+                            this.alertService.success('Record Removed Successfully', 'Success');
                             this.clauseTermsRecords();
                         } else {
                             this.alertService.error(this.clauseTermsRes.message, 'Error');
@@ -225,13 +202,69 @@ export class ClauseTermsComponent implements OnInit
                     },
                     err =>
                     {
-                        console.log(err);
                         this.alertService.error(err.message, 'Error');
                     }
                 );
         } catch (err)
         {
-            console.log(err);
         }
+    }
+
+    updateDataStatus(): void
+    {
+        const req =
+        {
+            id: this.dataID,
+            isActive: this.statusAction,
+            updatedBy: localStorage.getItem('userId'),
+        };
+        this._userService.clauseTermsStatusUpdate(req)
+            .pipe(first())
+            .subscribe(
+            data =>
+            {
+                this.updateDataReqeust = data;
+                if (this.updateDataReqeust.success === true)
+                {
+                    this.alertService.success(this.updateDataReqeust.message, 'Success');
+                    if(req.isActive == 'Y')
+                    {
+                        this.activeModalStatus = !this.activeModalStatus;
+                    } else {
+                        this.inActiveModalStatus = !this.inActiveModalStatus;
+                    }
+                    this.clauseTermsRecords();
+                } else {
+                    this.alertService.error(this.updateDataReqeust.message, 'Error');
+                }
+            },
+            error =>
+            {
+                this.alertService.error(error.message, 'Error');
+            });
+    }
+
+    showActiveModal(status,id): void
+    {
+        this.dataID = id;
+        this.statusAction = status;
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+
+    hideActiveModal(): void
+    {
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+
+    showInActiveModal(status,id): void
+    {
+        this.dataID = id;
+        this.statusAction = status;
+        this.inActiveModalStatus = !this.inActiveModalStatus;
+    }
+
+    hideInActiveModal(): void
+    {
+        this.inActiveModalStatus = !this.inActiveModalStatus;
     }
 }

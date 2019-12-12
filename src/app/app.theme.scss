@@ -14,7 +14,15 @@ $fuse-black: (
         500: $light-primary-text,
     )
 );
+.mat-progress-bar::after {
+    background-color: #5cb85c !important;
+}
 
+
+.mat-checkbox-layout .mat-checkbox-label{
+    // white-space: normal !important;
+ 
+}
 $fuse-navy: (
     50: #ECECEE,
     100: #C5C6CB,

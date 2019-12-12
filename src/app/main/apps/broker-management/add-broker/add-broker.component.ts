@@ -23,10 +23,8 @@ export interface UserData {
     name: string;
     mobileno: string;
     email: string;
-    company: string;
-   
+    company: string;  
 }
-
 const dummyData = [
     {
         'id': '1',
@@ -186,15 +184,15 @@ export class AddBrokerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
        // this.companyData = JSON.parse(localStorage.getItem('companyData'));
         this.addChartererForm = this._formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required],
-            email: new FormControl('', [ Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")] ),
+            username: ['',[ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            password: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            email: new FormControl('',[ Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")]) ,
             repassword: ['', [Validators.required, confirmPasswordValidator]],
-            address: ['', Validators.required],
-            businessPhone: ['', Validators.required],
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            mobileNo: ['', Validators.required],
+            address: ['',[ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            businessPhone: ['',[ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            firstName: ['',[ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            lastName: ['',[ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            mobileNo: ['',[ Validators.required, Validators.pattern("[0-9]+")]],
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/broker-management';
         this.addChartererForm.get('password').valueChanges

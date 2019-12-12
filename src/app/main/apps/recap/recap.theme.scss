@@ -1,10 +1,15 @@
-@mixin draw-theme($theme)
+@mixin vessel-theme($theme)
 {
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
     $is-dark: map-get($theme, is-dark);
-    #draw
+    #vessel
     {
+        canvas
+        {
+            border: 1px black solid !important;
+        }
+        
         .header
         {
             .search-wrapper

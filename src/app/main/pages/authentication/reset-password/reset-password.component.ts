@@ -2,9 +2,11 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AlertService, AuthenticationService } from '../../../../_services';
+import { first } from 'rxjs/operators';
 
 @Component({
     selector     : 'reset-password',
@@ -15,18 +17,39 @@ import { fuseAnimations } from '@fuse/animations';
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy
 {
+    forgotPasswordForm: FormGroup;
+    loading = false;
+    submitted = false;
+    returnUrl: string;
+    showLoaderImg = false;
+    email: string;
+    res: any;
     resetPasswordForm: FormGroup;
 
+    get f() { return this.resetPasswordForm.controls; }
+
+    /**
+     * Constructor
+     *
+     * @param {FuseConfigService} _fuseConfigService
+     * @param {FormBuilder} _formBuilder
+     */
     // Private
     private _unsubscribeAll: Subject<any>;
-
-    constructor(
+    constructor
+    (
         private _fuseConfigService: FuseConfigService,
-        private _formBuilder: FormBuilder
+        private _formBuilder: FormBuilder,
+        private router: Router,
+        private route: ActivatedRoute,
+        private authenticationService: AuthenticationService,
+        private alertService: AlertService
     )
     {
         // Configure the layout
-        this._fuseConfigService.config = {
+        this.showLoaderImg = false;
+        this._fuseConfigService.config =
+        {
             layout: {
                 navbar   : {
                     hidden: true
@@ -66,10 +89,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy
         // Update the validity of the 'passwordConfirm' field
         // when the 'password' field changes
         this.resetPasswordForm.get('password').valueChanges
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(() => {
-                this.resetPasswordForm.get('passwordConfirm').updateValueAndValidity();
-            });
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe(() =>
+        {
+            this.resetPasswordForm.get('passwordConfirm').updateValueAndValidity();
+        });
     }
 
     /**
@@ -80,6 +104,25 @@ export class ResetPasswordComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    onSubmit()
+    {
+        if (this.resetPasswordForm.invalid)
+        {
+            return;
+        }
+        this.loading = true;
+        this.authenticationService.userChangePassword(this.f.email.value,this.f.password.value)
+        .pipe(first()).subscribe(
+        data => {
+            this.showLoaderImg = false;
+            this.router.navigate(['/pages/auth/login']);
+        },
+        error => {
+            this.alertService.error(error, 'Error');
+            this.loading = false;
+        });
     }
 }
 

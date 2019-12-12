@@ -8,8 +8,7 @@
             <div class="row-col-6"></div>
             <div class="row-col-3">
                 <div style="float: right;">
-                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <a
-                        routerLink="/apps/draw-management"> Draw C/P Platform</a>
+                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> >  Draw C/P Platform
                 </div>
             </div>
         </div>
@@ -43,20 +42,21 @@
             <hr *ngIf="brokerDivShow">
             <!-- Existing Draw C/P Platform Records -->
             <table mat-table [dataSource]="dataSource" *ngIf="existingDrawCP">
-                <ng-container matColumnDef="action">
+                <!-- <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> </th>
                     <td mat-cell *matCellDef="let element" class="action">
-                        <mat-radio-button name="checkboxData" [value]="element.id" [ngClass]="{'d-none': element.isAccepted === 'N' || element.isAccepted === 'P'}" (click)="setDrawID(element.id,element.formId,element.chartererId)"> </mat-radio-button>
-                        <!-- <input ng-click="setDrawID($event)" value="" type="checkbox" /> -->
+                        <mat-radio-button name="checkboxData" [value]="element.id" 
+                        [ngClass]="{'d-none': element.isAccepted === 'N' || element.isAccepted === 'P'}" 
+                        (click)="setDrawID(element.id,element.formId,element.chartererId)"> </mat-radio-button>
                     </td>
-                </ng-container>
-                <ng-container matColumnDef="id">
+                </ng-container> -->
+                <ng-container matColumnDef="identifier">
                     <th mat-header-cell *matHeaderCellDef> Identifier </th>
-                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.identifier}} </td>
                 </ng-container>
-                <ng-container matColumnDef="cpDate">
+                <ng-container matColumnDef="cpDateInfo">
                     <th mat-header-cell *matHeaderCellDef> CP Date </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cpDate}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.cpDateInfo}} </td>
                 </ng-container>
                 <ng-container matColumnDef="chartererName">
                     <th mat-header-cell *matHeaderCellDef> Charter </th>
@@ -84,29 +84,54 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" [ngClass]="{'d-none': chartererDivShow === 'N'}"> Accept / Reject</th>
                     <td mat-cell  *matCellDef="let row" class="action" [ngClass]="{'d-none': chartererDivShow === 'N'}">
                         <button mat-button class="click-icon click-icon--done" [disabled]="row.isAccepted === 'Y'"
-                            (click)="showActiveModal('Y', row.drawStatusId)">
+                            (click)="showActiveModal('Y', row.drawStatusId,row.id)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">done</mat-icon>
                         </button>
                         <button mat-button class="click-icon click-icon--clear" [disabled]="row.isAccepted === 'N'"
-                            (click)="showInActiveModal('N', row.drawStatusId)">
+                            (click)="showInActiveModal('N', row.drawStatusId,row.id)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">clear</mat-icon>
                         </button>
                     </td>
                 </ng-container>
+                <ng-container matColumnDef="newAction" >
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
+                    <td mat-cell  *matCellDef="let row" class="action" >
+                        <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;" (click)="editView(row.id,row.formId,row.chartererId)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                        </button>
+                        <!-- <button mat-button class="click-icon click-icon--done" *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                        </button> -->
+
+                        <button mat-button class="click-icon click-icon--done" [ngClass]="{'d-none': row.isAccepted === 'N' || row.isAccepted === 'P'}"  *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                        </button>
+                        
+                        
+
+                        <!-- <button mat-button class="click-icon click-icon--clear" *ngIf="isPdfView" (click)="showInActiveModal('N', row.drawStatusId)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">print</mat-icon>
+                        </button> -->
+                    </td>
+                </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                
             </table>
-            <mat-paginator #paginator
-            [pageSize]="5"
-            [pageSizeOptions]="[5, 10, 20]" *ngIf="existingDrawCP"   ></mat-paginator>
-            <button *ngIf="existingDrawCPButton" id="submitButtonDrawCP" class="add-item add-item--back-button" style="float:right; margin: 30px !important;" (click)="getTermsReviewData()"> {{ buttonInfo }} </button>
-            <!-- Existing Draw C/P Platform Records -->
-            <!-- Charter Party Type Selection Start -->
-                <mat-radio-group *ngIf="mainDrawCPDiv" aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
-                    <mat-label class="labelCustom">Please select the applicable Charter Party.</mat-label>
-                    <br>
-                    <mat-radio-button name="charterPartyTypeID" style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " class="customFormfullWidth" *ngFor="let CharterPartyTypeArray of CharterPartyTypeArray" [ngClass]="{'d-none': CharterPartyTypeArray.isActive === 'N'}"  [value]="CharterPartyTypeArray.id" (click)="setApplicabelCharterParty(CharterPartyTypeArray.id)"> {{CharterPartyTypeArray.name}} </mat-radio-button>
-                </mat-radio-group>
+
+            <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" *ngIf="existingDrawCP"></mat-paginator>
+
+            <button *ngIf="existingDrawCPButton" id="submitButtonDrawCP" class="add-item add-item--back-button" 
+            style="float:right; margin: 30px !important;" (click)="getTermsReviewData()"> {{ buttonInfo }} </button>
+
+            <mat-radio-group *ngIf="mainDrawCPDiv" aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
+                <mat-label class="labelCustom">Please select the applicable Charter Party.</mat-label>
+                <br>
+                <mat-radio-button name="charterPartyTypeID" style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " 
+                class="customFormfullWidth" *ngFor="let CharterPartyTypeArray of CharterPartyTypeArray; let i=index;" 
+                [ngClass]="{'d-none': CharterPartyTypeArray.isActive === 'N'}"  [value]="CharterPartyTypeArray.id" 
+                (click)="setApplicabelCharterParty(CharterPartyTypeArray.id)"> {{CharterPartyTypeArray.name}} </mat-radio-button>
+            </mat-radio-group>
             <!-- Charter Party Type Selection End -->
 
             <!-- Accept Draw Modal Start -->
@@ -145,21 +170,21 @@
                 <form [formGroup]="DrawManagementSearchForm" (ngSubmit)="fetchDrawRecords()">
                     
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>Select NYPE Form</mat-label>
+                        <mat-label>CP Form</mat-label>
                         <mat-select formControlName="formIdSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let cpFormData of cpFormData" [ngClass]="{'d-none': cpFormData.isActive === 'N'}" [value]="cpFormData.id"> {{cpFormData.cpformName}} </mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>Select Vessel</mat-label>
+                        <mat-label>Vessel</mat-label>
                         <mat-select formControlName="vesselIdSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let VesselData of VesselData" [ngClass]="{'d-none': VesselData.isActive === 'N'}" [value]="VesselData.id"> {{VesselData.vessel_name}} </mat-option>
                         </mat-select>
                     </mat-form-field>
                     
                     <mat-form-field  class="full-width" appearance="outline" class="customFormfullWidth">
-                        <mat-label>Select C/P Date* </mat-label>
+                        <mat-label>C/P Date* </mat-label>
                         <input formControlName="cpDateSearch" matInput [matDatepicker]="cpDateSearch" placeholder="C/P Date">
                         <mat-datepicker-toggle matSuffix [for]="cpDateSearch"></mat-datepicker-toggle>
                         <mat-datepicker #cpDateSearch></mat-datepicker>
@@ -169,7 +194,14 @@
                     </mat-form-field>
                     
                     <mat-form-field class="customFormfullWidth" appearance="outline">
-                        <mat-label>Select Identifier</mat-label>
+                        <mat-label>Charterer*</mat-label>
+                        <mat-select formControlName="chartererIdSearch" matSelect (selectionChange)="changeChartererType($event)">
+                            <mat-option *ngFor="let ChartereInfoData of ChartereInfoData" [ngClass]="{'d-none': ChartereInfoData.isActive === 'N'}" [value]="ChartereInfoData.id"> {{ChartereInfoData.username}} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Identifier</mat-label>
                         <mat-select formControlName="drawCPIDSearch" matSelect (selectionChange)="changeCPForm($event)">
                             <mat-option *ngFor="let drawCPDataData of drawCPDataData" [ngClass]="{'d-none': drawCPDataData.isActive === 'N'}" [value]="drawCPDataData.id"> {{drawCPDataData.id}} </mat-option>
                         </mat-select>
@@ -196,19 +228,20 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> S NO. </th>
                     <td mat-cell *matCellDef="let row; let i = index;"> {{i+1}} </td>
                 </ng-container> -->
-                <ng-container matColumnDef="action">
+                <!-- <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> </th>
                     <td mat-cell *matCellDef="let element" class="action">
-                        <mat-radio-button name="checkboxData" [value]="element.id" (click)="setDrawIDExecuted(element.id,element.formId,element.chartererId)"> </mat-radio-button>
+                        <mat-radio-button name="checkboxData" [value]="element.id" 
+                        (click)="setDrawIDExecuted(element.id,element.formId,element.chartererId)"> </mat-radio-button>
                     </td>
-                </ng-container>
-                <ng-container matColumnDef="id">
+                </ng-container> -->
+                <ng-container matColumnDef="identifier">
                     <th mat-header-cell *matHeaderCellDef> Identifier </th>
-                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.identifier}} </td>
                 </ng-container>
-                <ng-container matColumnDef="cpDate">
+                <ng-container matColumnDef="cpDateInfo">
                     <th mat-header-cell *matHeaderCellDef> CP Date </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cpDate}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.cpDateInfo}} </td>
                 </ng-container>
                 <ng-container matColumnDef="chartererName">
                     <th mat-header-cell *matHeaderCellDef> Charter </th>
@@ -245,10 +278,26 @@
                         </button>
                     </td>
                 </ng-container>
+
+                <ng-container matColumnDef="newAction" >
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
+                        <td mat-cell  *matCellDef="let row" class="action" >
+                            <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;" (click)="editView(row.id,row.formId,row.chartererId)">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                            </button>
+                            <button mat-button class="click-icon click-icon--done" [ngClass]="{'d-none': row.isAccepted === 'N' || row.isAccepted === 'P'}"  *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+           
             </table>
-            <mat-paginator  *ngIf="drawRecordsTableShow" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+            <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" *ngIf="drawRecordsTableShow" ></mat-paginator>
+
+
             <button *ngIf="drawRecordsTableShowButton" class="add-item add-item--back-button" style="float:right; margin: 30px !important;" (click)="getTermsReviewData()"> Submit</button>
         <!-- Draw Datatable End -->
 

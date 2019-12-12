@@ -17,6 +17,11 @@ import { AlertService, AuthenticationService } from '../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
+import * as moment from 'moment';
+
+import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+
+// import { SignaturePad } from 'angular2-signaturepad/signature-pad';
 
 export interface PeriodicElement
 {
@@ -34,7 +39,8 @@ export interface PeriodicElement
 
 export class RecapComponent implements OnInit
 {
-	displayedColumns: string[] = ['name', 'Date', 'clauseTracker'];
+
+    displayedColumns: string[] = ['name', 'Date', 'clauseTracker'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
     dataSourcecustom = new MatTableDataSource<PeriodicElement>();
@@ -74,6 +80,12 @@ export class RecapComponent implements OnInit
 
     clauseCategoryTermsReviewResponseCustom: any;
     clauseCategoryTermsReviewDataCustom = [];
+
+    customClauseDataResponse : any;
+    customClauseDataResponseData = [];
+
+    totalTermsReviewRecords : any;
+
     flag = 1;
     nextStatus = true;
     termsUpdateRes: any;
@@ -104,8 +116,138 @@ export class RecapComponent implements OnInit
 
     submitResponse : any;
 
+    checkedClauseCategory = [];
+    clauseCategoryRecordResponse : any;
+    clauseCategoryRecordResponseData = [];
+
+    cpFormResponse : any;
+    cpFormDataResponseData = [];
+
+    drawResponseInformation : any;
+    drawResponseInformationData = [];
+
+    tradingResponseInformation : any;
+    tradingResponseInformationData = [];
+
+    vesselDataResponse : any;
+    vesselDataResponseArray = [];
+
+    cpFormName :  any;
+
+    cityName : string;
+    cpDate : string;
+    cpTime : string;
+
+    vesselId : string;
+
+    ownerName : string;
+    chartererName : string;
+    brokerName : string;
+
+    vesselName : string;
+    imoNumber : string;
+    vesselFlag : string;
+    vesselYear : string;
+    vesselDescription : string;
+
+    dateMonthYearString : string;
+    
+    metricTonValue : string;
+    customInput1 : string;
+    customInput2 : string;
+    customInput3 : string;
+    customInput4 : string;
+    customInput5 : string;
+
+    nonPrintView = true;
+    printView = false;
+
+    signature1Response : any;
+    signature2Response : any;
+
+    currentSignature1 : any;
+    currentSignature2 : any;
+
+    signature1ImageView = true;
+    signature1NonImageView = false;
+
+    signature2ImageView = true;
+    signature2NonImageView = false;
+
+    signature1MainImageView = false;
+    signature2MainImageView = false;
+
+    selectedSignature : any;
+
+    updateSignatureButtonViewCharterer = false;
+    updateSignatureButtonViewOwner = false;
+
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
+
+    @ViewChild( SignaturePad, { static: false }) signaturePad: SignaturePad;
+
+    ngAfterViewInit()
+    {
+        this.signaturePad.set('minWidth', 5); // set szimek/signature_pad options at runtime
+        this.signaturePad.clear(); // invoke functions from szimek/signature_pad API
+    }
+
+    signatureReset()
+    {
+        console.log('here');
+        this.signaturePad.clear();
+    }
+
+    signatureImageView()
+    {
+        this.signaturePad.clear();
+        this.signature1ImageView = true;
+        this.signature1NonImageView = false;
+    }
+
+    signmatureNonImageViwe(type)
+    {
+        this.signaturePad.clear();
+        this.selectedSignature = type;
+        this.signature1NonImageView = !this.signature1NonImageView;
+    }
+    
+    
+    drawComplete()
+    {
+    // will be notified of szimek/signature_pad's onEnd event
+        // console.log(this.signaturePad.toDataURL());
+    }
+    
+    drawStart() {
+    // will be notified of szimek/signature_pad's onBegin event
+    // console.log('begin drawing');
+    }
+
+    saveSignature()
+    {
+        // this.signature1ImageView = true;
+        this.signature1NonImageView = !this.signature1NonImageView;
+        var selectedSignature = this.selectedSignature;
+        if(selectedSignature == '1')
+        {
+            this.signature1MainImageView = true;
+            this.currentSignature1 = this.signaturePad.toDataURL();
+        } else {
+            this.signature2MainImageView = true;
+            this.currentSignature2 = this.signaturePad.toDataURL();
+        }
+
+        this.defaultSignatureUpdate();
+    }
+
+    public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
+        'minWidth': 5,
+        'canvasWidth': 510,
+        'canvasHeight': 300,
+        // 'backgroundColor' : '#00000012'
+      };
 
     /**
      * Constructor
@@ -129,20 +271,425 @@ export class RecapComponent implements OnInit
     ngOnInit() {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.termsReviewRecords();
+        
         this.dataSourcecustom.paginator = this.paginator;
         this.dataSourcecustom.sort = this.sort;
 
-		this.pageTitle = 'Draw C/P';
-		
-		var value = 1;
-		document.write((value + 9).toString(36).toUpperCase());
+		this.pageTitle = 'Draw CP Recap';
 
-		console.log(document.write((value + 9).toString(36).toUpperCase()));
+        this.currentSignature1 = '';
 
-		var chr = String.fromCharCode(97 + value); // where n is 0, 1, 2 ...
+        this.clauseCategoryRecordsServerSide();
+        this.cpFormData();
 
-		console.log(chr);
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.drawId = filter.drawId;
+        this.tradingId = filter.tradingId;
+        var isTrading = filter.isTrading;
+
+        if(isTrading == '2')
+        {
+            this.fetchDrawData();
+            this.drawStatusInfoUpdate();
+        } else {
+            this.fetchTradingData();
+        }
+        
+    }
+
+     // Custom Input Draw Data Update
+     customInputDrawDataUpdate()
+     {
+         const req =
+         {
+             drawId : this.drawId,
+             metricTonValue: this.metricTonValue,
+             customInput1: this.customInput1,
+             customInput2: this.customInput2,
+         };
+         console.log(req);
+         const header = new HttpHeaders();
+         header.append('Content-Type', 'application/json');
+         const headerOptions = { headers: header }
+         this.http.post(`${config.baseUrl}/customInputDrawDataUpdate`, req, headerOptions).subscribe( res =>
+         {
+            this.drawDataSignatureUpadate();
+         });
+    }
+    
+    // signatureUpdate
+    defaultSignatureUpdate()
+    {   
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.drawId = filter.drawId;
+        this.tradingId = filter.tradingId;
+        var isTrading = filter.isTrading;
+
+        if(isTrading == '2')
+        {
+            const req =
+            {
+                drawId : this.drawId,
+                signature1: this.currentSignature1,
+                signature2: this.currentSignature2,
+            };
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+            this.http.post(`${config.baseUrl}/drawDataSignatureUpadate`, req, headerOptions).subscribe( res =>
+            {
+                
+            });
+
+            var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+            this.drawId = filter.drawId;
+
+            if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+            {
+                const newReq =
+                {
+                    id: this.drawId,
+                    charterer_signed_check: 20,
+                    statusInfo: 'Charterer Signed',
+                    updatedBy: localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
+                {
+                });
+            }
+
+            if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                const newReq =
+                {
+                    id: this.drawId,
+                    owner_signed_check: 20,
+                    statusInfo: 'Owner Signed',
+                    updatedBy: localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
+                {
+                });
+            }
+            
+
+        } else {
+            const req =
+            {
+                tradingId : this.tradingId,
+                signature1: this.currentSignature1,
+                signature2: this.currentSignature2,
+            };
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+            this.http.post(`${config.baseUrl}/tradingDataSignatureUpadate`, req, headerOptions).subscribe( res =>
+            {
+
+            });
+        }
+    }
+
+
+    // Draw Data Signature Update
+    drawDataSignatureUpadate()
+    {
+        const req =
+        {
+            drawId : this.drawId,
+            signature1: this.currentSignature1,
+            signature2: this.currentSignature2,
+        };
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/drawDataSignatureUpadate`, req, headerOptions).subscribe( res =>
+        {
+        var printContents = document.getElementById('printDiv').innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1024,height=768');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+        });
+    }
+
+    // Trading Data Signature Update
+    tradingDataSignatureUpadate()
+    {
+        const req =
+        {
+            tradingId : this.tradingId,
+            signature1: this.currentSignature1,
+            signature2: this.currentSignature2,
+        };
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/tradingDataSignatureUpadate`, req, headerOptions).subscribe( res =>
+        {
+        var printContents = document.getElementById('printDiv').innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1024,height=768');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+        });
+    }
+
+    // Custom Input Trading Data Update
+    customInputTradingDataUpdate()
+    {
+        const req =
+        {
+            tradingId : this.tradingId,
+            metricTonValue: this.metricTonValue,
+            customInput1: this.customInput1,
+            customInput2: this.customInput2
+        };
+        console.log(req);
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/customInputTradingDataUpdate`, req, headerOptions).subscribe( res =>
+        {
+           this.tradingDataSignatureUpadate();
+        });
+    }
+
+    dateMonthYearFormatFunction(date)
+    {
+        var dateInfo = moment(date).format("Do");
+        console.log(dateInfo," Date Info ");
+
+        var monthInfo = moment(date).format("MMM");
+        console.log(monthInfo," Month Info ");
+
+        var yearInfo = moment(date).format("YYYY");
+        console.log(yearInfo," Year Info ");
+
+        var string = 'this '+dateInfo+' of '+ monthInfo+','+yearInfo;
+        console.log(string);
+
+        return string;
+    }
+
+    
+
+    dataURItoBlob(dataURI)
+    {
+
+            // convert base64/URLEncoded data component to raw binary data held in a string
+            var byteString;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0)
+                byteString = atob(dataURI.split(',')[1]);
+            else
+                byteString = unescape(dataURI.split(',')[1]);
+
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            return new Blob([ia], {type:mimeString});
+    }
+
+
+    
+    printPage()
+    {
+        // this.saveSignature();
+        
+        this.updateSignatureButtonViewOwner = false;
+        this.updateSignatureButtonViewCharterer = false;
+
+        this.nonPrintView = false;
+        this.printView = true;
+
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        var isTrading = filter.isTrading;
+
+        if(isTrading == '2')
+        {
+            this.customInputDrawDataUpdate();
+        } else {
+            this.customInputTradingDataUpdate();
+        }
+    }
+
+    // Fetch Trading Data
+    fetchTradingData()
+    {
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+            this.tradingId = filter.tradingId;
+
+        var filterCondition = {};
+            filterCondition["dcm.id"] = this.tradingId;
+        try
+        {
+            this._userService.fetchTradingData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.tradingResponseInformation = res;
+                if(this.tradingResponseInformation.success == true)
+                {
+                    this.tradingResponseInformationData = this.tradingResponseInformation.data[0];
+
+                    this.tradingResponseInformationData['cityName'] = (this.tradingResponseInformationData['cityName'] == null) ? '' : this.tradingResponseInformationData['cityName'];
+
+                    var cpTime = this.tradingResponseInformationData['cpTime'];
+                    var cpDate = this.tradingResponseInformationData['cpDate'];
+                    var cityName = this.tradingResponseInformationData['cityName'];
+
+                    var current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
+                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
+                    var cityID = (cityName != '') ? cityName : '0';
+
+                    this.cpDate = current_date;
+
+                    this.cityName = cityName;
+                    this.cpDate = current_date;
+                    this.cpTime = cpTime;
+
+                    this.ownerName = this.tradingResponseInformation.data[0].ownerName;
+                    this.chartererName = this.tradingResponseInformation.data[0].chartererName;
+                    this.brokerName = this.tradingResponseInformation.data[0].brokerName;
+
+                    this.vesselId = this.tradingResponseInformation.data[0].vesselId;
+
+                    this.dateMonthYearString = this.dateMonthYearFormatFunction(this.cpDate);
+
+                    this.metricTonValue = this.tradingResponseInformation.data[0].metricTonValue;
+                    this.customInput1 = this.tradingResponseInformation.data[0].customInput1;
+                    this.customInput2 = this.tradingResponseInformation.data[0].customInput2;
+
+                    console.log(cpTime);
+                    console.log(cpDate);
+                    console.log(cityName);
+
+                    console.log(this.ownerName);
+                    console.log(this.chartererName);
+                    console.log(this.brokerName);
+
+                    this.fetchVesselData();
+                }
+            });
+        }catch (err){}
+    }
+
+    // Fetch Draw Data
+    fetchDrawData()
+    {
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+            this.drawId = filter.drawId;
+
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            const newReq =
+            {
+                id: this.drawId,
+                charterer_view_check: 20,
+                updatedBy: localStorage.getItem('userId')
+            };
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+            this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
+            {
+            });
+        }
+        
+
+        var filterCondition = {};
+            filterCondition["dcm.id"] = this.drawId;
+        try
+        {
+            this._userService.fetchDrawData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.drawResponseInformation = res;
+                if(this.drawResponseInformation.success == true)
+                {
+                    this.drawResponseInformationData = this.drawResponseInformation.data[0];
+
+                    this.drawResponseInformationData['cityName'] = (this.drawResponseInformationData['cityName'] == null) ? '' : this.drawResponseInformationData['cityName'];
+
+                    var cpTime = this.drawResponseInformationData['cpTime'];
+                    var cpDate = this.drawResponseInformationData['cpDate'];
+                    var cityName = this.drawResponseInformationData['cityName'];
+
+                    var current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
+                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
+                    var cityID = (cityName != '') ? cityName : '0';
+
+                    this.cpDate = current_date;
+
+                    this.cityName = cityName;
+                    this.cpDate = current_date;
+                    this.cpTime = cpTime;
+
+                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
+                    this.chartererName = this.drawResponseInformation.data[0].chartererName;
+                    this.brokerName = this.drawResponseInformation.data[0].brokerName;
+
+                    this.vesselId = this.drawResponseInformation.data[0].vesselId;
+
+                    this.dateMonthYearString = this.dateMonthYearFormatFunction(this.cpDate);
+
+                    this.metricTonValue = this.drawResponseInformation.data[0].metricTonValue;
+                    this.customInput1 = this.drawResponseInformation.data[0].customInput1;
+                    this.customInput2 = this.drawResponseInformation.data[0].customInput2;
+
+                    this.currentSignature1 = this.drawResponseInformation.data[0].signature1;
+                    this.currentSignature2 = this.drawResponseInformation.data[0].signature2;
+
+                    var signature1 = this.currentSignature1;
+                    if(signature1 != '' && signature1 != null)
+                    {
+                        this.signature1MainImageView = true;
+                    }
+
+                    var signature2 = this.currentSignature2;
+                    if(signature2 != '' && signature2 != null)
+                    {
+                        this.signature2MainImageView = true;
+                    }
+
+                    console.log(cpTime);
+                    console.log(cpDate);
+                    console.log(cityName);
+
+                    console.log(this.ownerName);
+                    console.log(this.chartererName);
+                    console.log(this.brokerName);
+
+                    this.fetchVesselData();
+                }
+            });
+        }catch (err){}
+    }
+ 
+    // Fetch Vessel Data
+    fetchVesselData()
+    {
+        var filterCondition = {};
+            filterCondition["id"] = this.vesselId;
+        try
+        {
+            this._userService.fetchVesselData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.vesselDataResponse = res;
+                if(this.vesselDataResponse.success == true)
+                {
+                    this.vesselDataResponseArray = this.vesselDataResponse.data[0];
+                    this.vesselName = this.vesselDataResponse.data[0].vessel_name;
+                    this.imoNumber = this.vesselDataResponse.data[0].imo;
+                    this.vesselFlag = this.vesselDataResponse.data[0].flageName;
+                    this.vesselYear = this.vesselDataResponse.data[0].built_year;
+                    this.vesselDescription = this.vesselDataResponse.data[0].vessel_info;
+                }
+            });
+        }catch (err){}
     }
 
     next(id): void {
@@ -170,8 +717,63 @@ export class RecapComponent implements OnInit
             this.nextStatus = true;
         }
     }
+
+    // Clause Category Records Server Side
+    clauseCategoryRecordsServerSide()
+    {
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.formId = filter.formId;
+
+        var filterCondition = {};
+            filterCondition['cpFormId'] = this.formId;
+            filterCondition['checkedClauseCategory'] = [];
+        try
+        {
+            this._userService.clauseCategoryRecordsServerSide(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.clauseCategoryRecordResponse = res;
+                if(this.clauseCategoryRecordResponse.success == true)
+                {
+                    this.clauseCategoryRecordResponseData = this.clauseCategoryRecordResponse.data;
+                    this.checkedClauseCategory = [];
+                    for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
+                    {
+                        this.checkedClauseCategory.push(Number(this.clauseCategoryRecordResponseData[index].id));
+                    }
+                    console.log(this.checkedClauseCategory);
+                    this.termsReviewRecords();
+                }
+            });
+        }catch (err){}
+    }
+
+    // CP Form Datga
+    cpFormData()
+    {
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.formId = filter.formId;
+
+        var filterCondition = {};
+            filterCondition['id'] = this.formId;
+        try
+        {
+            this._userService.cpFormData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.cpFormResponse = res;
+                if(this.cpFormResponse.success == true)
+                {
+                    this.cpFormDataResponseData = this.cpFormResponse.data;
+                    console.log(this.cpFormDataResponseData);
+                    this.cpFormName = this.cpFormDataResponseData[0].cpformName;
+                    console.log(this.cpFormName);
+                }
+            });
+        }catch (err){}
+    }
+
     // Main Array
-    termsReviewRecords(): void {
+    termsReviewRecords(): void
+    {
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         console.log(filter);
         var drawId = filter.drawId;
@@ -198,6 +800,9 @@ export class RecapComponent implements OnInit
             clauseCategoryFilterCondition["cpFormId"] = formID;
             clauseCategoryFilterCondition["drawId"] = drawId;
             clauseCategoryFilterCondition["companyId"] = companyId;
+            clauseCategoryFilterCondition["commonClauses"] = [];
+            clauseCategoryFilterCondition["commonClausesCustomArray"] = [];
+            clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
             try {
                 this._userService.mainClauseScreenDataRecords(clauseCategoryFilterCondition).pipe(first()).subscribe((res) => {
                     this.termsReviewRecordsResponse = res;
@@ -214,7 +819,9 @@ export class RecapComponent implements OnInit
 							{
 								this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
 							}
-						}
+                        }
+                        
+                        this.customClauseDataRecords();
 
 						console.log(this.termsReviewRecordsData);
                     }
@@ -228,21 +835,167 @@ export class RecapComponent implements OnInit
             clauseCategoryFilterCondition["cpFormId"] = formID;
             clauseCategoryFilterCondition["tradingId"] = tradingId;
             clauseCategoryFilterCondition["companyId"] = companyId;
+            clauseCategoryFilterCondition["commonClauses"] = [];
+            clauseCategoryFilterCondition["commonClausesCustomArray"] = [];
+            clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
             try {
                 this._userService.mainClauseScreenDataRecordsTrading(clauseCategoryFilterCondition).pipe(first()).subscribe((res) => {
                     this.termsReviewRecordsResponse = res;
                     if (this.termsReviewRecordsResponse.success === true) {
                         this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
+                        
+                        for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+						{
+							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+							{
+								this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+							}
+							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+							{
+								this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+							}
+						}
+                        this.customClauseDataRecords();
                     }
                 },
                     err => {
                         this.alertService.error(err, 'Error');
                     });
             } catch (err) { }
+
+            this.tradingProgressUpdate();
         }
         
     }
 
+    
+    customClauseDataRecords() : void
+    {
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        var drawId = filter.drawId;
+        var tradingId = filter.tradingId;
+
+        var commonClausesCustomClauseTermArray = localStorage.getItem('commonClausesCustomClauseTermArray');
+        
+        var drawCondition = {};
+            drawCondition["drawId"] = drawId;
+            drawCondition["tradingId"] = tradingId;
+            drawCondition["commonClauses"] = commonClausesCustomClauseTermArray;
+        
+        try
+        {
+            this._userService.customClauseRecords(drawCondition).pipe(first()).subscribe((res) =>
+            {
+                this.customClauseDataResponse = res;
+                if (this.customClauseDataResponse.success === true)
+                {
+                    this.customClauseDataResponseData = this.customClauseDataResponse.data;
+                    var newCount = this.termsReviewRecordsData.length;
+                        newCount = newCount + 1;
+                    for (let index = 0; index < this.customClauseDataResponseData.length; index++)
+                    {
+                        this.customClauseDataResponseData[index]['numberInfo'] = newCount;
+                        newCount = newCount + 1;
+                        for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTerms.length; sindex++)
+                        {
+                            this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                        }
+                        for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+                        {
+                            this.customClauseDataResponseData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                        }
+                    }
+                    console.log(this.customClauseDataResponseData);
+                }
+            })
+        } catch (err) { }
+    }
+
+    // // Draw Progress Update
+    // drawProgressUpadte()
+    // {
+    //     const req =
+    //     {
+    //         drawId: this.drawId,
+    //         updatedBy: localStorage.getItem('userId')
+    //     };
+    //     const header = new HttpHeaders();
+    //     header.append('Content-Type', 'application/json');
+    //     const headerOptions = { headers: header }
+    //     this.http.post(`${config.baseUrl}/drawProgressUpdate`, req, headerOptions).subscribe( res =>
+    //     {
+    //         this.drawStatusInfoUpdate();
+    //     });
+    // }
+
+    // Trading Progress Update
+    tradingProgressUpdate()
+    {
+        const req =
+        {
+            tradingId: this.tradingId,
+            updatedBy: localStorage.getItem('userId')
+        };
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/tradingProgressUpdate`, req, headerOptions).subscribe( res =>
+        {
+            this.tradingStatusInfoUpdate();
+        });
+    }
+
+    // Draw Status Information Update
+    drawStatusInfoUpdate()
+    {
+        var statusInfoValue = 'Broker Updates';
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            statusInfoValue = 'Charterer Viewed';
+            this.updateSignatureButtonViewCharterer = true;
+        }
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            statusInfoValue = 'Owner Viewed';
+            this.updateSignatureButtonViewOwner = true;
+        }
+        const req =
+        {
+            drawId: this.drawId,
+            statusInfo: statusInfoValue,
+            updatedBy: localStorage.getItem('userId')
+        };
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/drawStatusInfoUpdate`, req, headerOptions).subscribe( res =>
+        {});
+    }
+
+    // Trading Status Information Update
+    tradingStatusInfoUpdate()
+    {
+        var statusInfoValue = 'Broker Updates';
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            statusInfoValue = 'Charterer Viewed';
+        }
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            statusInfoValue = 'Owner Viewed';
+        }
+        const req =
+        {
+            drawId: this.drawId,
+            statusInfo: statusInfoValue,
+            updatedBy: localStorage.getItem('userId')
+        };
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/tradingStatusInfoUpdate`, req, headerOptions).subscribe( res =>
+        {});
+    }
 
     // custome terms add toggle
     toggleOpen(key, id): void {

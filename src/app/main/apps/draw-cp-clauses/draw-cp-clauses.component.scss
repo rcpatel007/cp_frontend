@@ -1,6 +1,152 @@
 @import 'src/@fuse/scss/fuse';
 
 #ofcm {
+
+    .inputPrintCustom
+    {
+        width: 100px !important;
+        margin-left: 20px !important;
+        margin-right: 20px  !important;
+    }
+
+    table
+    {
+        width: 100% !important;
+    }
+
+    .custom-tooltip
+    {
+        top: 25px !important;
+        height: 35px !important;
+        background-color: red !important;
+        color: white !important;
+        border-radius: 5px;
+    }
+
+    .customElips
+    {
+        font-size: 16px !important;
+        font-weight: bold !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        width: 300px !important;
+        display: block !important;
+        overflow: hidden !important
+    }
+
+    .mat-tooltip-panel
+    {
+        pointer-events:none!important
+    }
+
+    .mat-tooltip
+    {
+        color:#fff !important;
+        font-size:16px !important;
+        margin-top:10px !important;
+        border-radius:4px !important;
+        margin:0px !important;
+        max-width:500px !important;
+        padding-left:8px !important;
+        padding-right:8px !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+    }
+    
+    @media (-ms-high-contrast:active)
+    {
+        .mat-tooltip{outline:solid 1px}
+    }
+    
+    .mat-tooltip-handset
+    {
+        margin:24px !important;
+        padding-left:16px !important;
+        padding-right:16px  !important;
+    }
+    
+    table.report-container
+    {
+        page-break-after:always;
+    }
+    thead.report-header {
+        display:table-header-group;
+    }
+    tfoot.report-footer {
+        display:table-footer-group;
+    } 
+
+    .customFontWeight
+    {
+        font-weight: bold !important;
+        font-size: 18px !important;
+    }
+
+
+    .tableTDFont
+    {
+        margin-left: 40px; font-size: 18px; margin-top: -10px; font-weight: bold;
+    }
+   
+    @media screen
+    {
+        div.divHeader
+        {
+            display: none;
+            // display: block;
+        }
+    }
+
+    @media print
+    {
+        div.divHeader
+        {
+            position: fixed;
+            top: 0;
+        }
+    }
+
+    @media screen
+    {
+        div.divHeaderMainScreen
+        {
+            // display: none;
+            display: block;
+        }
+    }
+
+    @media print
+    {
+        div.divHeaderMainScreen
+        {
+            position: fixed;
+            top: 0;
+        }
+    }
+    
+    .firstScreenH4
+    {
+        clear: both !important;
+        float: right !important;
+        margin: 20px !important;
+        font-size: 25px !important;
+        font-weight: bold !important;
+    }
+
+    .firstScreenH4Span
+    {
+        margin-left: 15px !important;
+        font-size: 25px !important;
+        font-weight: bold !important;
+    }
+
+    .tableTr
+    {
+        font-size: 25px !important;
+        font-weight: bold !important;
+        text-align: left;
+    }
+
     .heading {
         padding: 3rem;
         h2 {
@@ -28,6 +174,16 @@
                 cursor: pointer;
             }
         }
+    }
+
+    .angular-editor-placeholder
+    {
+        padding: 10px !important;
+    }
+
+    .mat-expansion-panel-body
+    {
+        padding: 0 75px 16px !important;
     }
 
     .matCheckboxLayoutCustom
@@ -185,7 +341,7 @@
     }
 
     table {
-        width: 100%;
+        width: 100% !important;
     }
 
     .mat-form-field {
@@ -392,13 +548,13 @@
      
 }
     table {
-        width: 100%;
+        width: 100% !important;
       }
       table tr{
           vertical-align: top; 
       } 
       table tr td{
-          padding: 2% 0.5%; 
+          padding: 1% 0.5%; 
       }
     .heading {
         padding: 3rem;
@@ -546,9 +702,6 @@
             color: '#fff';
             margin-left: 5px;
         }
-    }
-    table {
-        width: 100%;
     }
     .mat-form-field {
         font-size: 14px;
@@ -733,6 +886,11 @@
     display: none !important;
 }
 
+.viewtable
+{
+    width: 100% !important;
+}
+
 .viewtable tr td {
     border-bottom-width: 1px !important;
     border: 1px solid #e2e2e2 !important;
@@ -759,14 +917,15 @@
     
 }
 
-.viewtable:first-of-type{
+.viewtable:first-of-type
+{
     padding: 3% !important;
     border-bottom-width: 1px !important;
     border: 1px solid #e2e2e2 !important;
     border-bottom-style: solid !important;
     box-shadow: 0 0 black !important;
     text-align: center !important;
-    width: auto !important;
+    width: 100% !important;
     border-radius: 5px !important;
 
 }
@@ -828,6 +987,7 @@ background: #f7a000;
     color:#1e88e5 !important;
     font-weight: 600 !important;
 }
+
 span {
 font-weight: 100;
 color: #000;
@@ -842,3 +1002,10 @@ border-radius: 79%;
 cursor: pointer;
 }
 
+
+
+
+.mat-checkbox-layout .mat-checkbox-label{
+    white-space: normal !important;
+    color: #fff;
+}

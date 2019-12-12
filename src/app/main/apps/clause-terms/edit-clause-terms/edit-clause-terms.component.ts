@@ -40,6 +40,15 @@ export class EditClauseTermsComponent implements OnInit
     clauseTermsData:any;
     clauseTerms:String;
     cpId:String;
+
+    cpFormListRes : any;
+    cpFormListData : [];
+
+    cpFormId : any;
+
+    clauseTermsRes : any;
+
+
     /*
     * @param {FuseSidebarService} _fuseSidebarService
     */
@@ -60,35 +69,82 @@ export class EditClauseTermsComponent implements OnInit
     ngOnInit()
     {
         this.typeData = JSON.parse(localStorage.getItem('clauseTermsData'));
+
+        console.log(this.typeData);
+
         this.clauseTermsForm = this._formBuilder.group(
         {
-            clauseTermsId: [this.typeData.clauseTermsId, Validators.required],
+            cpFormId : [this.typeData.cpFormId, Validators.required],
             parentId: [this.typeData.parentId, Validators.required],
             nos: [this.typeData.nos, Validators.required],
             termsName: [this.typeData.termsName, Validators.required],
         });
-        console.log(this.clauseTermsForm);
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/clause-terms-management';
-        console.log(this.typeData);
-        console.log('Edit Data');
-        this.fromList();
+        
+        this.cpFormRecords();
+
+        this.cpFormId = this.typeData.cpFormId;
+        this.clauseTermsForm.controls['parentId'].setValue('');
+        this.getClauseCategoryRecords();
+        this.parentId = this.typeData.parentId;
+
+        setTimeout(()=> this.clauseTermsForm.controls['parentId'].setValue(this.typeData.parentId),500);
     }
 
     get f() { return this.clauseTermsForm.controls; }
 
-    fromList(): void
+    cpFormRecords(): void {
+        try {
+            this._userService.getFormList()
+            .pipe(first())
+            .subscribe((res) => {
+                this.cpFormListRes = res;
+                console.log(res);
+                if (this.cpFormListRes.success === true)
+                {
+                    this.cpFormListData = this.cpFormListRes.data;
+                    console.log(this.cpFormListData);
+                }
+            },
+            err =>
+            {
+                this.alertService.error(err, 'Error');
+                console.log(err);
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    selectCpType(event)
+    {
+        this.parentId = event.target.value;
+    }
+
+    onChangeCPForm(event)
+    {
+        this.cpFormId = event.value;
+        this.clauseTermsForm.controls['parentId'].setValue('');
+        this.getClauseCategoryRecords();
+    }
+
+    getClauseCategoryRecords(): void
     {
         try
         {
-            this._userService.getclusesCategoryList()
+            var arrfilterInfo = {};
+            arrfilterInfo["cpFormId"] = this.cpFormId;
+
+            this._userService.clauseCategoryServerSideRecords(arrfilterInfo)
                 .pipe(first())
                 .subscribe((res) =>
                 {
-                    this.clauseTermsListRes = res;
                     console.log(res);
-                    if (this.clauseTermsListRes.success === true)
+                    this.clauseTermsRes = res;
+                    
+                    if (this.clauseTermsRes.success === true)
                     {
-                        this.clauseTermsData = this.clauseTermsListRes.data;
+                        this.clauseTermsData = this.clauseTermsRes.data;
                         console.log(this.clauseTermsData);
                     }
                 },
@@ -105,7 +161,6 @@ export class EditClauseTermsComponent implements OnInit
     
     onSubmit()
     {
-        console.log("Here On Submit");
         this.showLoaderImg = true;
         this.submitted = true;
         // reset alerts on submit
@@ -114,7 +169,6 @@ export class EditClauseTermsComponent implements OnInit
         if (this.clauseTermsForm.invalid)
         {
             console.log("VALIDATION ERROR");
-            // return false;;
             console.log(this.clauseTermsForm);
             console.log(this.clauseTermsForm.invalid);
         } else {
@@ -142,8 +196,6 @@ export class EditClauseTermsComponent implements OnInit
                     {
                         this.alertService.success(this.submitRes.message, 'Success');
                         this.router.navigate([this.returnUrl]);
-                        // this.enableSubmitStatus = false;
-                        // this.clicked = false;
                     } else {
                         this.alertService.error(this.submitRes.message, 'Error');
                     }
@@ -156,10 +208,5 @@ export class EditClauseTermsComponent implements OnInit
                     this.loading = false;
                 });
         }
-    }
-    
-    selectCpType(event)
-    {
-        this.clauseTermsId =event.target.value;
     }
 }

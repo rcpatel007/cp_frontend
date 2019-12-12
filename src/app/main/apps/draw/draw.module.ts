@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,12 +28,22 @@ import { DrawComponent } from 'app/main/apps/draw/draw.component';
 import { ReviewComponent } from './review/review.component';
 import { AddDrawComponent } from './add-draw/add-draw.component';
 import { EditDrawComponent } from './edit-draw/edit-draw.component';
+import { ExecutedComponent } from './executed/executed.component';
+import { DrawoptionComponent } from './drawoption/drawoption.component';
 
 const routes: Routes =
 [  
     {
         path     : 'review',
         component: ReviewComponent,
+    },
+    {
+        path     : 'executed',
+        component: ExecutedComponent,
+    },
+    {
+        path     : 'drawoption',
+        component: DrawoptionComponent,
     },
     {
         path     : 'add',
@@ -58,7 +67,9 @@ const routes: Routes =
         DrawComponent,
         ReviewComponent,
         AddDrawComponent,
-        EditDrawComponent
+        EditDrawComponent,
+        ExecutedComponent,
+        DrawoptionComponent
     ],
     
     imports:

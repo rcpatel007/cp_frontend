@@ -47,7 +47,11 @@ const routes = [
     {
         path: 'broker-management',
         loadChildren: './broker-management/broker-management.module#BrokerManagementModule',
-       
+    },
+
+    {
+        path: 'owner-management',
+        loadChildren: './owner-management/owner-management.module#OwnerManagementModule',
     },
 
     {

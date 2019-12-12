@@ -37,7 +37,7 @@ export interface UserData {
     animations: fuseAnimations
 })
 export class ChartererManagementComponent implements OnInit, OnDestroy {
-    displayedColumns: string[] = ['id', 'name', 'mobileno', 'email', 'company',  'action', 'status'];
+    displayedColumns: string[] = ['id', 'name', 'mobileno', 'email',  'action'];
     dialogRef: any;
     hasSelectedContacts: boolean;
     searchInput: FormControl;
@@ -177,7 +177,7 @@ export class ChartererManagementComponent implements OnInit, OnDestroy {
     }
 
     // Delete Role
-    deletecharter(id): void {
+    deletecharter(): void {
         const req = {
             isDelete: 'Y',      
             id: this.userRoleId,

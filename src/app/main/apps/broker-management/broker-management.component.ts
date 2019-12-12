@@ -20,14 +20,10 @@ import { Router } from '@angular/router';
 export interface UserData {
     id: string;
     Name: string;
-    mobileno: string;
+    mobileNo: string;
     email: string;
-    company: string;
-    
+    company: string;    
 }
-
-
-
 
 @Component({
     selector: 'broker-management',
@@ -37,7 +33,7 @@ export interface UserData {
     animations: fuseAnimations
 })
 export class BrokerManagementComponent implements OnInit, OnDestroy {
-    displayedColumns: string[] = ['id', 'name', 'phone', 'email', 'company',  'action'];
+    displayedColumns: string[] = ['id', 'name', 'mobileNo', 'email',  'action'];
     dialogRef: any;
     hasSelectedContacts: boolean;
     searchInput: FormControl;

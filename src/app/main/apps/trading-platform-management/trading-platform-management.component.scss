@@ -1,6 +1,15 @@
 @import 'src/@fuse/scss/fuse';
 
-#draw {
+#trading {
+
+    body.theme-default .mat-progress-bar-buffer {
+        background-color: white !important;
+    }
+
+    .mat-progress-bar::after {
+   
+        background-color: #5cb85c !important;
+    }
     .heading {
         padding: 3rem;
         h2 {
@@ -233,17 +242,24 @@
         }
     }
 }
+.mat-progress-bar::after
+{
+    background-color : #5cb85c !important;
+}
+
 .d-none {
     display: none !important;
 }
 
 @import 'src/@fuse/scss/fuse';
-#draw {
+#trading {
 
-    .mat-progress-bar-fill::after
+    .mat-progress-bar::after
     {
-        background-color : #5cb85c;
+        background-color : #5cb85c !important;
     }
+
+    
 
     .customForm
     {
@@ -289,6 +305,11 @@
         border-radius: 100px;
         border: 1px #bcbcbc solid;
         width: 110px;
+        background-color : #5cb85c !important;
+    }
+
+   .mat-progress-bar-fill::after {
+        background-color: #5cb85c !important;
     }
 
     .mat-progress-bar-buffer {
@@ -756,7 +777,7 @@
     }
 }
 
-#draw {
+#trading {
     table {
         width: 100%;
       }
@@ -1173,4 +1194,13 @@
         }
         
     }
+}
+.mat-progress-bar::after {
+   
+    background: #5cb85c !important;
+}
+
+.mat-progress-bar-background
+{
+    fill : white !important;
 }

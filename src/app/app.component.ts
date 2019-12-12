@@ -30,6 +30,8 @@ export class AppComponent implements OnInit, OnDestroy
     notificationResponse : any;
     notificationData = [];
 
+    companyClauseDataResponse : any;
+    companyClauseDataResponseData = [];
     
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -161,6 +163,43 @@ export class AppComponent implements OnInit, OnDestroy
 
                 this.document.body.classList.add(this.fuseConfig.colorTheme);
             });
+        
+        var companyName = localStorage.getItem('companyName');
+
+        console.log(companyName,"Company Name INFO");
+
+        if(companyName == '')
+        {
+            this.getCompanyInfo();
+        }
+
+        if(companyName == null)
+        {
+            this.getCompanyInfo();
+        }
+    }
+
+    getCompanyInfo()
+    {
+        var companyCondition = {};
+            companyCondition["id"] = JSON.parse(localStorage.getItem('companyId'));
+
+        try
+        {
+            this._userService.fetchCompanyData(companyCondition).pipe(first()).subscribe((res) =>
+            {
+                this.companyClauseDataResponse = res;
+                if (this.companyClauseDataResponse.success === true)
+                {
+                    this.companyClauseDataResponseData = this.companyClauseDataResponse.data;
+                    console.log(this.companyClauseDataResponseData);
+                    var companyInfo = this.companyClauseDataResponseData[0];
+
+                    localStorage.setItem('companyName', companyInfo.companyName);
+
+                }
+            })
+        } catch (err) { }
     }
 
     /**

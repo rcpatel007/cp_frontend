@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -64,15 +65,17 @@ const routes: Routes =
         DrawCpClausesComponent,
         ClausesDetailComponent,
         AddDetailClauseComponent
-          ],
+    ],
     
     imports:
     [
         CommonModule,
         RouterModule.forChild(routes),
         MatPaginatorModule,
+        NgxMaterialTimepickerModule,
         MatButtonModule,
         MatRadioModule,
+        MatTooltipModule,
         MatCheckboxModule,
         MatDatepickerModule,
         MatFormFieldModule,
@@ -85,7 +88,6 @@ const routes: Routes =
         MatRippleModule,
         MatTableModule,
         MatExpansionModule,
-        NgxMaterialTimepickerModule,
         MatToolbarModule,
         MatSelectModule,
         FuseSharedModule,

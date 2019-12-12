@@ -5,60 +5,47 @@
             <div class="row-col-3">
                 <h2>Clause Category Management</h2>
             </div>
-
             <div class="row-col-3">
                 <div style="float: right;">
                     <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> > <a
-                        routerLink="/apps/clause-category-management"> Clause Category
-                        Management </a> > <b> Clause Category Edit </b>
+                        routerLink="/apps/clause-category-management"> Clause Category Management </a> > <b> Clause Category Edit </b>
                 </div>
             </div>
         </div>
-
         <div class="mat-elevation-z8">
-
             <div class="main-tab">
                 <div class="header-row">
                     <div class="row-col-3">
-                        <h2 style="padding-bottom: 0;"> Edit Clause Category </h2>
+                        <h2 style="padding-bottom: 0;">Edit Clause Category </h2>
                     </div>
                     <div class="row-col-3">
-                        <button routerLink="/apps/clause-category-management" class="add-item add-item--back-button"> Back
-                        </button>
+                        <button routerLink="/apps/clause-category-management" class="add-item add-item--back-button"> Back </button>
                     </div>
                 </div>
-
             </div>
             <hr>
             <div class="content-card">
-
                 <form [formGroup]="typeManagementeditForm" (ngSubmit)="onSubmit()">
-
-                        <select formControlName="cpFormId" placeholder="select charter party Type" id="inputState" name="cpFormId" [(ngModel)]="cpFormId" (change)="selectCpType($event)">
-                                <option [value]="">Select charter party Type</option>
-                                <option *ngFor="let role of cpFormData"  [ngClass]="{'d-none': role.isActive === 'N'}" [value]="role.id">{{role.cpformName}}</option>
-                            </select>
-
                     <mat-form-field class="full-width" appearance="outline">
-
+                        <mat-label>CP Form*</mat-label>
+                        <mat-select formControlName="cpFormId" matSelect >
+                            <mat-option *ngFor="let cpFormData of cpFormData" [ngClass]="{'d-none': cpFormData.isActive === 'N'}" [value]="cpFormData.id"> {{cpFormData.cpformName}} </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="typeManagementeditForm.get('cpFormId').hasError('required')"> CP Form is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width" appearance="outline">
                         <mat-label>Clause Category* </mat-label>
                         <input matInput formControlName="name">
                         <mat-error *ngIf="typeManagementeditForm.get('name').hasError('required')">
-                            Category Name is required
+                            Clause Category Name is required
                         </mat-error>
                         <mat-error *ngIf="typeManagementeditForm.get('name').hasError('name')">
-                            Category enter a valid Type*
+                            Please enter a valid Clause Category Name*
                         </mat-error>
                     </mat-form-field>
-
-
-
                     <button class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
-
                 </form>
             </div>
         </div>
-
     </div>
-
 </div>

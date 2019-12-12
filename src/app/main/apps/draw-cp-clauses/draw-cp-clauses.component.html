@@ -13,152 +13,496 @@
             </div>
         </div>
         <div class="mat-elevation-z8">
+
+            <!-- <h4 [innerHtml]="convrtedString"></h4> -->
+
+            <!-- <input [matDatepicker]="demoDatePicker">
+            <mat-datepicker-toggle matSuffix [for]="demoDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #demoDatePicker></mat-datepicker> -->
+
+            <div class="content-card" *ngIf="firstScreen" style="margin-left: -10px !important; margin-top: 20px !important">
+                <table style="float: right; width: 500px !important;">
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Owner</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.ownerName }}</td>
+                    </tr>
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Charterer</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.chartererName }}</td>
+                    </tr>
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Broker</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.brokerName }}</td>
+                    </tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                </table>
+            
+                <table style="margin-top: 40px; clear: both;">
+                    <tr>
+                        <td class="customFontWeight" style="width: 25%;"></td>
+                        <td class="customFontWeight" style="width: 33%; text-align: center; font-size: 25px; font-weight: bold;">{{ cpFormName }}</td>
+                        <td class="customFontWeight" style="width: 33%;;"></td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">THIS CHARTER PARTY, made and concluded in {{ cityName }} on {{ dateMonthYearString }} </h4>
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; margin-bottom: 40px;">
+                                as *Registered Owners/*Disponent Owners/*Time Chartered Owners (the “Owners”) of the Vessel described below *delete as applicable
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Name : {{ vesselName }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> IMO : {{ imoNumber }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Flag : {{ vesselFlag }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Built (year) : {{ vesselYear }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -35px;">
+                                Deadweight All Told : <input matInput class="inputPrintCustom" [(ngModel)]="metricTonValue" [value]="metricTonValue"  placeholder="_______________">  metric tons
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -35px;">
+                                (For Vessel’s charter party description see Appendix A (Vessel Description)), 
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -35px;">
+                                and <input matInput class="inputPrintCustom" [(ngModel)]="customInput1" [value]="customInput1" placeholder="_______________"> Charterers of <input matInput class="inputPrintCustom" [(ngModel)]="customInput2" [value]="customInput2"  placeholder="_______________"> (the “Charterers”)
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -20px; font-weight: bold;">
+                                    This Charter Party shall be performed subject to all the terms and conditions here in 
+                                    consisting of this main body including any additional clauses and addenda, 
+                                    if applicable, as well as Appendix A attached hereto. 
+                                    In the event of any conflict of conditions, the provisions of any additional 
+                                    clauses and Appendix A shall prevail over those of the main body to the 
+                                    extent of such conflict, but no further. 
+                            </h4>
+                            <br>
+                        </td>
+                    </tr>
+                </table>
+
+                <ng-container *ngFor="let c of termsReviewRecordsDataRecap;let i=index;" >
+                    <div style="padding: 3%; margin-top: -60px; margin-bottom: -50px" class="row" id="{{i+1}}">
+                        <div class="text-left col l12 m12 s12">
+                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;">
+                                <b class="customFontWeight" style="font-size: 22px;">{{ i + 1 }}.</b>
+                                <b class="customFontWeight" style="font-size: 22px;text-decoration: underline; margin-left: 10px;">{{c.name}}</b>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left: 20px;">
+                            <table>
+                                <tr *ngFor="let ct of termsReviewRecordsDataRecap[i].clauseCategoryTerms;let si=index">
+                                    <td style="width:100%; font-size: 18px; margin-bottom: 20px;" >
+                                        <span class="customFontWeight" >{{ct.identifier}}) </span><span class="customFontWeight" [innerHtml]="ct.mainTermRecord"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row" *ngIf="termsReviewRecordsDataRecap[i].clauseCategoryTermsUpdateCustom !=0">
+                            <h4 style="margin-top: -10px; font-weight: bold; font-size: 22px;">Custom Amendments</h4>
+                            <table style="margin-left: 20px;">
+                                <tr *ngFor="let n of termsReviewRecordsDataRecap[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                    <td class="customFontWeight" style="font-size: 18px;">{{n.identifier}})</td>
+                                    <td class="customFontWeight" style="font-size: 18px;width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngFor="let c of customClauseDataResponseData;let i=index;" >
+                    <div style="padding: 3%; margin-top: -40px; margin-bottom: -50px" class="row" id="{{i+1}}">
+                        <div class="text-left col l12 m12 s12">
+                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;">
+                                <b style="font-size: 22px;" class="customFontWeight">{{ c.numberInfo }}. {{c.clauseTitle}}</b>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left: 20px;">
+                            <table>
+                                <tr *ngFor="let ct of customClauseDataResponseData[i].clauseCategoryTerms;let si=index">
+                                    <td style="width:100%; font-size: 18px; margin-bottom: 20px" >
+                                        <span class="customFontWeight">{{ct.identifier}}) </span><span class="customFontWeight" [innerHtml]="ct.mainTermRecord"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row" *ngIf="customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom !=0">
+                            <h4 style="margin-top: 10px; font-weight: bold; font-size: 22px; margin-left: 28px;">Custom Amendments</h4>
+                            <table style="margin-left: 20px; margin-top: -30px">
+                                <tr *ngFor="let n of customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom;let ti=index">
+                                    <td class="customFontWeight" style="font-size: 18px;">{{n.identifier}})</td>
+                                    <td class="customFontWeight" style="font-size: 22px; width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <table style="margin-top: 40px; clear: both;">
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                Clauses  {{ ownerName }} to  {{ chartererName }}, both inclusive, as attached hereto are fully incorporated in this Charter Party.
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight">
+                            <table style="margin-top: 40px; clear: both;">
+                                <tr>
+                                    <td class="customFontWeight">
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Owner :
+                                        </h4>
+                                    </td>
+                                    <td class="customFontWeight">
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Charterer :
+                                        </h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="customFontWeight">
+                                        <h4 *ngIf="signature1ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            <img src="{{ currentSignature1 }}" height="100" width="400" style="height: 100px !important;">
+                                        </h4>
+                                        <h4 *ngIf="signature1DemoView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            ---------------
+                                        </h4>
+                                    </td>
+                                    <td class="customFontWeight">
+                                        <h4 *ngIf="signature2ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            <img src="{{ currentSignature2 }}" height="100" width="400" style="height: 100px !important;">
+                                        </h4>
+                                        <h4 *ngIf="signature2DemoView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            ---------------
+                                        </h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="customFontWeight">
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Name : {{ ownerName }}
+                                        </h4>
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Title : Owner
+                                        </h4>
+                                    </td>
+                                    <td class="customFontWeight">
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Name : {{ chartererName }}
+                                        </h4>
+                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
+                                            Title : Charterer
+                                        </h4>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="margin-top: 40px; clear: both;">
+                    <tr>
+                        <td>
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
+                                NYPE 2015 - Appendix A (Vessel Description)
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 style="margin-left: 40px; font-size: 15px; margin-top: -10px; font-weight: bold;">
+                                {{ vesselDescription }}
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="margin-top: 40px; clear: both;">
+                    <tr>
+                        <td>
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
+                                Index Of Clauses
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let c of clauseCategoryRecordResponseData;let i=index;">
+                        <td>
+                            <h4 class="tableTDFont" style="float: left;"> {{ i + 1 }}. </h4>
+                            <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.name }} </h4>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let c of customClauseDataResponseData;let i=index;">
+                        <td>
+                            <h4 class="tableTDFont" style="float: left;"> {{ c.numberInfo }}. </h4>
+                            <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.clauseTitle }} </h4>
+                        </td>
+                    </tr>
+                </table>
                 
-            <div class="content-card" *ngIf="mainScreen" style="margin-left: -10px !important; margin-top: -29px !important">
-                <form [formGroup]="OwnersFirstCounterForm" (ngSubmit)="onSubmit()">
+                <table style="float: right; width: 500px !important;">
+                    <tr class="tableTr">
+                        <td style="width: 200px;"></td>
+                        <td style="width: 100px;"></td>
+                        <td style="width: 200px;">
+                            <button class="submit-item submit-item--back-button" *ngIf="firstScreen" style="float: right;  margin: 35px;" (click)="secondScreenView()">Next</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-card " *ngIf="secondScreen" style="margin-left: -10px !important; margin-top: 20px !important; clear: both;">
+                    <mat-checkbox style="margin-left: 35px"
+                        (change)="checkUncheckAllForClauseTermsSecondScreen($event)"  [checked]="clauseCategoryRecordResponseDataAllChecked === 'Y'"
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" >
+                        Check All
+                    </mat-checkbox>
                     <br>
-                    <!-- <mat-label class="labelCustom" style="margin-left: 20px !important">Charterers are pleased to accept owners counter bid with the following exception for reply.</mat-label> -->
+                    <br>
+                    <mat-checkbox
+                        
+                        style="width: 350px !important; margin: -10px !important;
+                        margin-left: 35px !important; float: left; " 
+                        
+                        *ngFor="let clauseCategoryData of clauseCategoryRecordResponseData; let i= index"
+
+                        (change)="checkUncheckClauseCategory($event,clauseCategoryData.id)" 
+                        
+                        [checked]="clauseCategoryData.isChecked === 'Y'"
+                        
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        
+                        [disabled]="clauseCategoryData.isChecked === 'Y'"
+
+                        matTooltip="
+                        {{clauseCategoryData.name}}
+                        "
+                    >
+
+                        <h4  class="customElips"
+
+                           >
+
+                                {{i+1}}) {{clauseCategoryData.name}} 
+                        
+                        </h4>
+
+                        
+
+
+                    </mat-checkbox>
+                    
+                <br><br><br><br><br><br>
+                <br><br><br><br><br><br>
+                <br><br><br><br><br><br>
+            </div>
+            <div class="content-card" *ngIf="secondScreen" style="margin-left: -10px !important; margin-top: 20px !important; clear: both;">
+                <table style="margin-bottom: -100px;">
+                    <tr>
+                        <td>
+                            <button class="submit-item submit-item--back-button" style="clear: both !important;float: left; margin: 35px; background: green;" (click)="firstScreenView()">Previous</button>
+                        </td>
+                        <td></td>
+                        <td>
+                            <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="thirdScreenView()">Next</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content-card" *ngIf="thirdScreen" style="margin-left: -10px !important; margin-top: -29px !important">
+                <form [formGroup]="OwnersFirstCounterForm" >
                     <br>
                     <br>
                     <br>
                     <mat-form-field class="customFormfullWidth" appearance="outline">
                         <mat-label>CP Time* </mat-label>
-                        <input matInput formControlName="cpTime" [ngxTimepicker]="picker">
-                        <ngx-material-timepicker #picker></ngx-material-timepicker>
+                        <input matInput formControlName="cpTime">
                         <mat-error *ngIf="OwnersFirstCounterForm.get('cpTime').hasError('required')">
                             CP Time is required
                         </mat-error>
                     </mat-form-field>
-                    
                     <select class="customFormfullWidth dropdownCustomClass" formControlName="cityId"  (change)="changeCity($event)">
-                        <option [value]="0">--- Select City ---</option>
+                        <option [value]="0" selected>--- Select City ---</option>
                         <option *ngFor="let cityManagementData of cityManagementData"  [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" [value]="cityManagementData.id">{{cityManagementData.cityName}}</option>
                     </select>
-
                     <mat-form-field  class="customFormfullWidth" appearance="outline">
                         <mat-label>C/P Date* </mat-label>
-                        <input formControlName="cpDate" matInput [matDatepicker]="datePicker" placeholder="C/P Date">
+                        <input formControlName="cpDate" matInput [matDatepicker]="datePicker" placeholder="C/P Date" [(ngModel)]="cpDate">
                         <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                         <mat-datepicker #datePicker></mat-datepicker>
                         <mat-error *ngIf="OwnersFirstCounterForm.get('cpDate').hasError('required')">
                             Date is required
                         </mat-error>
                     </mat-form-field>
-
-                    <div class="customFormfullWidthForClause" *ngFor="let clauseCategoryData of termsReviewRecordsData; let i= index">
+                    <div class="customFormfullWidthForClause" *ngFor="let clauseCategoryDataMain of termsReviewRecordsData; let i= index">
                         <mat-accordion>
                             <mat-expansion-panel>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <!-- <mat-label  class="clauseLableCustom customMarginLeft20">{{ clauseCategoryData.srNo }}. {{ clauseCategoryData.name }}</mat-label> -->
-                                        <mat-checkbox [checked]="clauseCategoryData.isChecked === 'Y'" class="matCheckboxLayoutCustom matCheckboxCustom" (click)="checkclick(clauseCategoryData.id)" ><b>{{i+1}} </b>. {{ clauseCategoryData.name }} </mat-checkbox>
+                                        <h4 class="matCheckboxLayoutCustom matCheckboxCustom customElips"   matTooltip="
+                                        {{clauseCategoryDataMain.name}}
+                                        "> <b style="margin-left: 10px;">{{i+1}}  .</b> {{ clauseCategoryDataMain.name }}  <i style="font-size: 16px !important;
+                                            color: #1e88e5 !important;
+                                            font-weight: 600 !important;" class="material-icons" [ngClass]="{'d-none': clauseCategoryDataMain.isChecked === 'N'}">check</i> </h4>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <!-- <mat-form-field> -->
-                                    <br>
-                                    <hr>
-                                    <br>
-                                    <table>
-                                        <tr *ngFor="let ct of clauseCategoryData.clauseCategoryTerms;let si=index">
-                                            <td><i class="material-icons" (click)="view('viewMainClausePanel',ct.id,clauseCategoryData.id)">remove_red_eye</i></td>
-                                            <td>
-                                                <i class="material-icons" (click)="editToggle('editPanel',ct.id,clauseCategoryData.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
-                                            </td>
-                                            <td><mat-checkbox [checked]="ct.isChecked === 'Y'"></mat-checkbox></td>
-                                            <td style="width:100%" >
-                                                <span><b>{{ct.identifier}})</b> </span><span [innerHtml]="ct.mainTermRecord"></span>
-                                            </td>
-                                            <!-- <ng-container *ngIf="termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate">
-                                                <td style="width:100%" *ngFor="let ot of termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate;let ti=index">
-                                                    <span>{{ti+1}})</span>
-                                                    <span><s>{{ot.originalTermsName}}</s></span>
-                                                    <br/>
-                                                    <span>{{ot.termsName}}</span>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                </td>
-                                            </ng-container> -->
-                                        </tr>
-                                        <br/>
-                                    </table>
-                                    <br />
-                                    <br />
-                                    <b *ngIf="clauseCategoryData.clauseCategoryTermsUpdateCustom !=0">Customet Amendments</b>
-                                    <table *ngIf="clauseCategoryData.clauseCategoryTermsUpdateCustom !=0">
-                                        <tr *ngFor="let ct of clauseCategoryData.clauseCategoryTermsUpdateCustom;let ti=index">
-                                            <td><i class="material-icons" (click)="reviewModalShow('viewMainClausePanel',ct.id,clauseCategoryData.id)">remove_red_eye</i></td>
-                                            <td>
-                                                <i class="material-icons" (click)="editToggle('editPanel',ct.id,clauseCategoryData.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
-                                            </td>
-                                            <td><mat-checkbox></mat-checkbox></td>
-                                            <td style="width:100%" >
-                                                <span> <b>{{ct.identifier}})</b> </span><span [innerHtml]="ct.mainTermRecordCustom"></span>
-                                            </td>
-                                            
-                                            <!-- <ng-container *ngIf="termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate">
-                                                <td style="width:100%" *ngFor="let ot of termsReviewRecordsData[i].clauseCategoryTerms[si].clauseCategoryTermsUpdate;let ti=index">
-                                                    <span>{{ti+1}})</span>
-                                                    <span><s>{{ot.originalTermsName}}</s></span>
-                                                    <br/>
-                                                    <span>{{ot.termsName}}</span>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                </td>
-                                            </ng-container> -->
-                                        </tr>
-                                        <br/>
-                                    
-                                    </table>
+                                <br>
+                                <mat-checkbox 
+                                    (change)="checkUncheckAllForClauseTerms($event,i)"  [checked]="clauseCategoryDataMain.isallChecked === 'Y'"
+                                    class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" >
+                                    Check All
+                                </mat-checkbox>
+                                <hr>
+                                <table>
+                                    <tr *ngFor="let ct of clauseCategoryDataMain.clauseCategoryTerms;let si=index">
+                                        <td>
+                                            <i class="material-icons" (click)="viewClauseCategoryTermsOfMainClause('viewMainClausePanel',ct.id,clauseCategoryDataMain.id)">remove_red_eye</i>
+                                        </td>
+                                        <td>
+                                            <i class="material-icons" (click)="editClauseCategoryTermsOfMainClause('editPanel',ct.id,clauseCategoryDataMain.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
+                                        </td>
+                                        <td>
+                                            <mat-checkbox 
+                                                class="clauseTermsCheckboxValueInfo clauseTermsOfClause"
+                                                [checked]="ct.isChecked === 'Y'"
+                                                (change)="onChange($event,ct.id,i)"
+                                            ></mat-checkbox>
+                                        </td>
+                                        <td style="width:100%" >
+                                            <span  style="margin-left: 10px"><b>{{ct.identifier}})</b> </span>
+                                            <span style="margin-left: 10px"> {{ ct.mainTermRecord }} </span>
 
-                                    <br />
-                                    <br />
-
-                                    <div class="row" style="padding: 3% 0;">
-                                        <button class="mat-fab mat-accent" (click)="toggleOpen('addPanel',clauseCategoryData.id)" aria-label="Toggle quick panel"><span class="mat-button-wrapper" style="font-size: 70px !important; color: #fff !important; padding: 6px 0px !important;">+</span></button>
-                                    </div>
-                                    <br />
-                                    <br />
- 
-                                    
-                                    <!-- </mat-form-field> -->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <b *ngIf="clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0">Custom Amendments</b>
+                                <br>
+                                <br>
+                                <mat-checkbox *ngIf="clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0"
+                                    (change)="checkUncheckAllForCustomClauseTermsOfClauseCategory($event,i)" 
+                                    [checked]="termsReviewRecordsData[i].clauseCategoryTermsUpdateCustom.isAllCustomTermsChecked === 'Y'"
+                                    class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause">
+                                    Check All
+                                </mat-checkbox>
+                                <hr>
+                                <table *ngIf="clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0">
+                                    <tr *ngFor="let ct of clauseCategoryDataMain.clauseCategoryTermsUpdateCustom;let ti=index">
+                                        <td>
+                                            <i class="material-icons" (click)="viewCustomClauseCategoryTermsUpdateOfMainClause('viewMainCustomClausePanel',ct.id,clauseCategoryDataMain.id)">remove_red_eye</i>
+                                        </td>
+                                        <td>
+                                            <i class="material-icons" (click)="editCustomClauseCategoryTermsOfMainClause('editCustomClauseTerm',ct.id,clauseCategoryDataMain.id)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
+                                        </td>
+                                        <td>
+                                            <mat-checkbox [checked]="ct.isChecked === 'Y'" (change)="onChangeCustom($event,ct.id,i)"></mat-checkbox>
+                                        </td>
+                                        <td style="width:100%" >
+                                            <span style="margin-left: 10px;"> <b>{{ct.identifier}})</b> </span><span style="margin-left: 10px;"><pre>{{ct.mainTermRecordCustom}}</pre> </span>
+                                        </td>
+                                    </tr>
+                                    <br/>
+                                </table>
+                                <br />
+                                <br />
+                                <div class="row" style="padding: 3% 0;">
+                                    <button class="mat-fab mat-accent" (click)="toggleOpen('addPanel',clauseCategoryDataMain.id)" aria-label="Toggle quick panel"><span class="mat-button-wrapper" style="font-size: 70px !important; color: #fff !important; padding: 6px 0px !important;">+</span></button>
+                                </div>
+                                <br />
+                                <br />
                             </mat-expansion-panel>
                         </mat-accordion>
-
-             
                     </div>
+                    <div class="customFormfullWidthForClause" *ngFor="let clauseCategoryDataMain of customClauseDataResponseData; let i= index">
+                        <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <h4 class="matCheckboxLayoutCustom matCheckboxCustom customElips"  matTooltip="
+                                        {{clauseCategoryDataMain.clauseTitle}}
+                                        "> 
+                                            <b style="margin-left: 10px;" >{{ clauseCategoryDataMain.numberInfo }}  </b>. {{ clauseCategoryDataMain.clauseTitle }}  <i style="font-size: 16px !important;
+                                            color: #1e88e5 !important;
+                                            font-weight: 600 !important;" class="material-icons" [ngClass]="{'d-none': clauseCategoryDataMain.isChecked === 'N'}">check</i> </h4>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <br>
+                                <mat-checkbox *ngIf="customClauseDataResponseData !=0"
+                                    (change)="checkUncheckAllForCustomClauseTermsOfCustomClause($event,i)" 
+                                    
+                                    [checked]="customClauseDataResponseData[i].isAllCustomTermsOfCustomClauseChecked === 'Y'"
+                                    
+                                    class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause">
+                                    Check All
+                                </mat-checkbox>
+                                <hr>
+                                <table>
+                                    <tr *ngFor="let ct of clauseCategoryDataMain.clauseCategoryTerms;let si=index">
+                                        <td>
+                                            <i class="material-icons" (click)="ViewCustomTermsUpdatesOfCustomTermsOfCustomClause('ViewCustomTermsUpdatesOfCustomTermsOfCustomClause',ct.customClauseTermsId,clauseCategoryDataMain.id)">remove_red_eye</i>
+                                        </td>
+                                        <td>
+                                            <i class="material-icons" (click)="EditCustomClauseTermOfCustomClause('editCustomTermsOfCustomClause',ct.mainTermID,clauseCategoryDataMain.id,ct.customClauseTermsId)" aria-label="Toggle quick panel" style="color: #1e88e5;">create</i>
+                                        </td>
+                                        <td>
+                                            <mat-checkbox [checked]="ct.isChecked === 'Y'" (change)="onChangeCustomClauseTerms($event,ct.id,i)"></mat-checkbox>
+                                        </td>
+                                        <td style="width:100%" >
+                                            <span  style="margin-left: 10px"><b>{{ct.identifier}})</b> </span><span style="margin-left: 10px" [innerHtml]="ct.mainTermRecord"></span>
+                                        </td>
+                                    </tr>
+                                    <br/>
+                                </table>
+                                <br>
+                                <br>
+                                <div class="row" style="padding: 3% 0;">
+                                    <button class="mat-fab mat-accent" (click)="addCustomTermsOfCustomClauseToggleOpen('addCustomTermsOfCustomClause',clauseCategoryDataMain.id)" aria-label="Toggle quick panel"><span class="mat-button-wrapper" style="font-size: 70px !important; color: #fff !important; padding: 6px 0px !important;">+</span></button>
+                                </div>
+                                <br />
+                                <br />
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+
+                    <br>
+                    <br>
+                    <b style="font-size: 20px;font-weight: bold;margin-left: 25px;margin-top: 21px;">Custom Amendments</b>
+                    <br>
+                    <button class="mat-fab mat-accent" (click)="customClauseToggleOpen('addCustomClausePanel')" style="margin-top: 30px; margin-left: 30px;">
+                        <span class="mat-button-wrapper" style="font-size: 70px !important; color: #fff !important; padding: 10px 0px !important;">+</span>
+                    </button>
                 </form>
                 <br />
                 <br />
                 <div class="text-right">
-                    <button class="submit-item submit-item--back-button" (click)="submit()" style="margin: 30px" >Submit</button>
+                    <button class="submit-item submit-item--back-button" style="clear: both !important;float: left; margin: 35px; background: green;" (click)="secondScreenView()">Previous</button>
+                    <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="submit()" style="margin: 30px" >Submit</button>
                 </div>
                 <br />
                 <br />
-                <!-- view main terms  -->
-                <!-- <fuse-sidebar name="reviewPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
-                    
-                    <table mat-table [dataSource]="dataSource">
-                        <ng-container matColumnDef="userName">
-                            <th mat-header-cell *matHeaderCellDef> Name </th>
-                            <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="updatedDateInfo">
-                            <th mat-header-cell *matHeaderCellDef> Date </th>
-                            <td mat-cell *matCellDef="let element"> {{element.updatedDateInfo}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="termsName">
-                            <th mat-header-cell *matHeaderCellDef>  Clause Tracker </th>
-                            <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" ></mat-paginator>
-                    
-                </fuse-sidebar> -->
-
                 <div class="review-modal" [ngClass]="{'review-modal--active' : showReviewModal}">
                     <div class="review-modal__overlay"></div>
                     <div class="review-modal__content">
@@ -170,36 +514,25 @@
                         </div>
                         <hr>
                         <div class="review-modal__body">
-                            <!-- <table mat-table [dataSource]="dataSource">
-                                <ng-container matColumnDef="userName">
-                                    <th mat-header-cell *matHeaderCellDef> Name </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="updatedBy">
-                                    <th mat-header-cell *matHeaderCellDef> Date </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.updatedBy}} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="termsName">
-                                    <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.termsName}} </td>
-                                </ng-container>
-                            </table> -->
+                   
                         </div>
                         <div class="review-modal__footer">
                         </div>
                     </div>
                 </div>
             </div>
+            <br>
+            <br>
+            <br>
+            <br>
         </div>
     </div>
 </div>
 
-<fuse-sidebar name="viewMainClausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
-    <!-- <add-detail-clause></add-detail-clause> -->
+<fuse-sidebar name="viewMainClausePanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
     <div class="heading center">
         <div class="mat-elevation-z8" style="padding: 2%;">
-            <table mat-table [dataSource]="dataSource" class="viewtable" >
-                       
+            <table mat-table [dataSource]="dataSource" class="viewtable">
                 <ng-container matColumnDef="userName">
                     <th mat-header-cell *matHeaderCellDef> Name </th>
                     <td mat-cell *matCellDef="let element"> {{element.mainUserName}} </td>
@@ -215,13 +548,34 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-      
-            </div>
-            
+        </div>
     </div>
 </fuse-sidebar>
 
-<fuse-sidebar name="addPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+<fuse-sidebar name="viewMainCustomClausePanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <table mat-table [dataSource]="dataSource" class="viewtable">
+                    <ng-container matColumnDef="userName">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.mainUserName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updatedDateInfo">
+                        <th mat-header-cell *matHeaderCellDef>  Date </th>
+                        <td mat-cell *matCellDef="let element" > {{element.updateDateTime}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="clauseTracker">
+                        <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                        <td mat-cell *matCellDef="let element" > <span [innerHtml]="element.termsName"></span> </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div>
+    </fuse-sidebar>
+
+<fuse-sidebar name="addPanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
     <!-- <add-detail-clause></add-detail-clause> -->
     <!-- hello -->
     <div class="heading center">
@@ -241,27 +595,87 @@
     </div>
 </fuse-sidebar>
 
-<fuse-sidebar name="editPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
-    <!-- <add-detail-clause></add-detail-clause> -->
+<fuse-sidebar name="addCustomClausePanel" style="max-width: 70%; width: 70%;" position="right" class="quick-panel">
+    <h2 style="margin-left: 15px; font-weight: bold;">Clause Header</h2>
     <div class="heading center">
         <div class="mat-elevation-z8" style="padding: 2%;">
-            <div class="">
-                <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext"
-                    name="editclausetext"></angular-editor>
+            <div>
+                <mat-form-field  class="full-width" appearance="outline" style="width:100%;" placeholder="Clause Haeder">
+                    <input [(ngModel)]="clauseTitle" name="clauseTitle" matInput>
+                </mat-form-field>
             </div>
         </div>
-
-        <div class="header-row text-right">
-            <div style="width: 100%; padding: 3% 0;">
-                <button class="submit-item submit-item--back-button" (click)="editterms(editid)">Edit</button>
+    </div>
+    <br>
+    <h2 style="margin-left: 15px; font-weight: bold;">Clause Terms</h2>
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div style="width: 80%;">
+                <mat-form-field  class="full-width" appearance="outline" style="width:100%;" placeholder="Clause Haeder">
+                    <input [(ngModel)]="clauseTerms" name="clauseTerms" matInput>
+                </mat-form-field>
             </div>
-
-
+            <div>
+                <button class="submit-item submit-item--back-button" (click)="addCustomClauseTerms()" style="margin-top: -75px;">Add Terms</button>
+            </div>
+        </div>
+    </div>
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div class="customFormfullWidthForClause" *ngFor="let clauseTermsArray of clauseTermsArray; let i= index">
+                <div style="width: 80%;" id="clauseTermsArray.clauseTermCustomID">
+                    <mat-form-field  class="full-width" appearance="outline" style="width:100%;">
+                        <input [value]="clauseTermsArray.clauseTermsName" matInput readonly>
+                    </mat-form-field>
+                </div>
+                <div id="clauseTermsArray.clauseTermCustomIDButton">
+                    <button class="submit-item submit-item--back-button" (click)="removeCustomClauseTerms(clauseTermsArray.clauseTermCustomID,clauseTermsArray.clauseTermCustomIDButton)" style="margin-top: -75px;">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="addCustomClause()">Submit</button>
+                </div>
+            </div>
         </div>
     </div>
 </fuse-sidebar>
 
-<fuse-sidebar name="customPanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+<fuse-sidebar name="editPanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div class="">
+                <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editclausetext" name="editclausetext"></angular-editor>
+            </div>
+        </div>
+        <div class="header-row text-right">
+            <div style="width: 100%; padding: 3% 0;">
+                <button class="submit-item submit-item--back-button" (click)="updateClauseTermOfMainClause()">Update</button>
+            </div>
+        </div>
+    </div>
+</fuse-sidebar>
+
+<fuse-sidebar name="editCustomClauseTerm" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+        <div class="heading center">
+            <div class="mat-elevation-z8" style="padding: 2%;">
+                <div class="">
+                    <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editCustomClauseTermDataInput" name="editCustomClauseTermDataInput"></angular-editor>
+                </div>
+            </div>
+            <div class="header-row text-right">
+                <div style="width: 100%; padding: 3% 0;">
+                    <button class="submit-item submit-item--back-button" (click)="updateCustomClauseTermOfMainClause()">Update</button>
+                </div>
+            </div>
+        </div>
+    </fuse-sidebar>
+
+<fuse-sidebar name="customPanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
     <!-- <add-detail-clause></add-detail-clause> -->
     <div class="heading center">
         <form>
@@ -282,9 +696,8 @@
     </div>
 </fuse-sidebar>
 
-
 <!-- view custome terms  -->
-<fuse-sidebar name="viewcustomclausePanel" style="max-width: 60%;  width: 60%;" position="right" class="quick-panel">
+<fuse-sidebar name="viewcustomclausePanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
     <!-- <add-detail-clause></add-detail-clause> -->
     <div class="heading center">
             <div class="mat-elevation-z8" style="padding: 2%;">
@@ -311,3 +724,60 @@
     </div>
 </fuse-sidebar>
 
+<!-- Add Custom Terms Of Custom Clause -->
+<fuse-sidebar name="addCustomTermsOfCustomClause" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div>
+                <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="customTermsOfCustomClause" name="customTermsOfCustomClause"></angular-editor>
+            </div>
+        </div>
+
+        <div class="header-row text-right">
+            <div style="width: 100%; padding: 3% 0;">
+                <button class="submit-item submit-item--back-button" (click)="addCustomTermsOfCustomClause()">Add</button>
+            </div>
+
+        </div>
+    </div>
+</fuse-sidebar>
+
+<!-- Edit Custom Term Of Custom Clause -->
+<fuse-sidebar name="editCustomTermsOfCustomClause" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <div class="">
+                <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="customTermsOfCustomClauseEdit" name="customTermsOfCustomClauseEdit"></angular-editor>
+            </div>
+        </div>
+        <div class="header-row text-right">
+            <div style="width: 100%; padding: 3% 0;">
+                <button class="submit-item submit-item--back-button" (click)="editCustomTermsOfCustomClause()">Update</button>
+            </div>
+        </div>
+    </div>
+</fuse-sidebar>
+
+<!-- View Custom Terms Update Records Of Custom Terms Of Custom Clause -->
+<fuse-sidebar name="ViewCustomTermsUpdatesOfCustomTermsOfCustomClause" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
+    <div class="heading center">
+        <div class="mat-elevation-z8" style="padding: 2%;">
+            <table mat-table [dataSource]="dataSourceOfCustomTermsUpodateOfCustomTermsOfCustomClause" class="viewtable" >
+                <ng-container matColumnDef="userName">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.mainUserName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="updatedDateInfo">
+                    <th mat-header-cell *matHeaderCellDef>  Date </th>
+                    <td mat-cell *matCellDef="let element" > {{element.updateDateTime}} </td>
+                </ng-container>
+                <ng-container matColumnDef="clauseTracker">
+                    <th mat-header-cell *matHeaderCellDef> Clause Tracker </th>
+                    <td mat-cell *matCellDef="let element" > <span [innerHtml]="element.termsName"></span> </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+</fuse-sidebar>

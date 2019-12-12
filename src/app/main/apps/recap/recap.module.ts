@@ -23,6 +23,8 @@ import { FuseConfirmDialogModule, FuseSidebarModule } from '@fuse/components';
 import {MatSelectModule} from '@angular/material/select';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 
+import { SignaturePadModule } from 'angular2-signaturepad';
+
 import { RecapComponent } from './recap.component';
 
 const routes: Routes =
@@ -45,6 +47,7 @@ const routes: Routes =
         RouterModule.forChild(routes),
         MatPaginatorModule,
         MatButtonModule,
+        SignaturePadModule ,
         MatRadioModule,
         MatCheckboxModule,
         MatDatepickerModule,

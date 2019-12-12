@@ -17,10 +17,12 @@ import { AlertService, AuthenticationService } from '../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
+import * as moment from 'moment';
 
 export interface UserData
 {
     id: string;
+    identifier : string;
     CPTypeId: string;
     formId: string;
     vesselId: string;
@@ -29,6 +31,7 @@ export interface UserData
     chartererBrokerId: string;
     ownerBrokerId: string;
     cpDate: string;
+    cpDateInfo : string;
     cpTime: string;
     cpCity: string;
     cpSubject: string;
@@ -37,12 +40,13 @@ export interface UserData
     cpLiftCity: string;
     companyId: string;
     isAccepted : string;
+    newAction : string;
 }
 
 export interface PeriodicElement
 {
-    
     id:String;
+    identifier : string;
     CPTypeId:String;
     formId: string;
     vesselId: string;
@@ -51,6 +55,7 @@ export interface PeriodicElement
     chartererBrokerId: string;
     ownerBrokerId: string;
     cpDate: string;
+    cpDateInfo : string;
     cpTime: string;
     cpCity: string;
     cpSubject: string;
@@ -67,6 +72,8 @@ export interface PeriodicElement
     vesselName: string;
     charterBrokerName: string;
     ownerBrokerName: string;
+    
+    newAction : string;
 }
 
 @Component(
@@ -79,12 +86,10 @@ export interface PeriodicElement
 export class TradingPlatformManagementComponent implements OnInit
 {
 
-    displayedColumns: string[] = ['action','id','cpDate', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted'];
+    displayedColumns: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted','newAction'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
-
     dataSourceFilter = new MatTableDataSource<PeriodicElement>();
-
 
     dialogRef: any;
     hasSelectedContacts: boolean;
@@ -103,6 +108,7 @@ export class TradingPlatformManagementComponent implements OnInit
 
 
     id: string;
+    identifier : string;
 
     tradingId : string;
 
@@ -116,6 +122,7 @@ export class TradingPlatformManagementComponent implements OnInit
     chartererBrokerId: string;
     ownerBrokerId: string;
     cpDate: string;
+    cpDateInfo : string;
     cpTime: string;
     cpCity: string;
     cpSubject: string;
@@ -143,6 +150,10 @@ export class TradingPlatformManagementComponent implements OnInit
     drawManagement: any;
     drawManagementRes: any;
     drawManagementData= [];
+
+    drawManagementResFilter: any;
+    drawManagementDataFilter = [];
+
     cols: any[];
     drawRecordsListRes: any;
     drawRecordsListData: any;
@@ -227,8 +238,14 @@ export class TradingPlatformManagementComponent implements OnInit
     statusAction : string;
 
     updateDataReqeust : any;
+
+    buttonInfo : any;
+
+    isEditView = false;
+    isRecapView = false;
+    isPdfView = false;
     
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
     /**
@@ -260,6 +277,12 @@ export class TradingPlatformManagementComponent implements OnInit
 
     ngOnInit()
     {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+
+        this.dataSourceFilter.paginator = this.paginator;
+        this.dataSourceFilter.sort = this.sort;
+
         this.DrawManagementForm = this._formBuilder.group(
         {
             formId: ['', Validators.required],
@@ -274,9 +297,23 @@ export class TradingPlatformManagementComponent implements OnInit
             formIdSearch: ['', ''],
             vesselIdSearch: ['', ''],
             cpDateSearch: ['', ''],
+            chartererIdSearch: ['', ''],
             drawCPIDSearch: ['', ''],
         
         });
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            this.isEditView = true;    
+            this.isRecapView = true;
+            this.isPdfView = true;
+        }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            this.isRecapView = true;
+            this.isPdfView = true;
+        }
 
         this.CPTypeId = '1';
 
@@ -284,8 +321,18 @@ export class TradingPlatformManagementComponent implements OnInit
         if(JSON.parse(localStorage.getItem('userRoleId')) == 4)
         {
             this.chartererDivShow = 'Y';
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+
+            this.dataSourceFilter.paginator = this.paginator;
+            this.dataSourceFilter.sort = this.sort;
             this.TradingPlatformRecordsServerSideCharterer();
         } else {
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+
+            this.dataSourceFilter.paginator = this.paginator;
+            this.dataSourceFilter.sort = this.sort;
             this.TradingFormRecords();
         }
 
@@ -302,6 +349,40 @@ export class TradingPlatformManagementComponent implements OnInit
             this.brokerDivShow = false;
         }
 
+        this.buttonInfo = 'View / Update Clause';
+
+    }
+
+    recapView(tradingId,formId,chartererId)
+    {
+        const reqData =
+        {
+            mainUserId: localStorage.getItem('userId'),
+            companyId: localStorage.getItem('companyId'),
+            tradingId: tradingId,
+            formId : formId,
+            chartererId : chartererId,
+            isTrading : '1',
+        };
+        console.log(reqData,"Recap View");
+        localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+        this.router.navigate(['/apps/recap-management']);
+    }
+
+    editView(tradingId,formId,chartererId) : void
+    {
+        const reqData =
+        {
+            mainUserId: localStorage.getItem('userId'),
+            companyId: localStorage.getItem('companyId'),
+            tradingId: tradingId,
+            formId : formId,
+            chartererId : chartererId,
+            isTrading : '1',
+        };
+        console.log(reqData);
+        localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+        this.router.navigate(['/apps/drawCp-Clauses-management']);
     }
 
     setDrawID(tradingId,formId,chartererId) : void
@@ -434,6 +515,7 @@ export class TradingPlatformManagementComponent implements OnInit
         this.standardOffersFormDivShow = false;
         this.standardOffersFormTableShow = false;
         this.drawFormDivShow = false;
+        this.TradingFormRecords();
     }
 
     TradingFormRecords(): void
@@ -443,6 +525,19 @@ export class TradingPlatformManagementComponent implements OnInit
         var arrfilterInfo = {};
 
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
+        }
+        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         
         try
         {
@@ -451,18 +546,19 @@ export class TradingPlatformManagementComponent implements OnInit
                 .subscribe((res) =>
                 {
                     this.drawManagementRes = res;
+                   
+                    this.drawManagementData = this.drawManagementRes.data;
+                    this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
+                    this.dataSource.paginator = this.paginator;
+                    this.dataSource.sort = this.sort;
+
+                    // setTimeout(() => {
+                    //     this.updateFilterPaginatorMainTrading();
+                    // }, 1000);
                     
                     if (this.drawManagementRes.success === true)
                     {
-                        this.drawManagementData = this.drawManagementRes.data;
-                        this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-                        // setTimeout(() => this.dataSource.paginator = this.paginator, 15000);
-                        this.dataSource.paginator = this.paginator;
-                        this.dataSource.sort = this.sort;
-                        
                     }
-
-                    console.log(this.drawManagementData);
                 },
                 err =>
                 {
@@ -471,6 +567,15 @@ export class TradingPlatformManagementComponent implements OnInit
             } catch (err)
             {
             }
+    }
+
+    updateFilterPaginatorMainTrading()
+    {
+        console.log('HERE IN MAIN TRADING');
+        console.log(this.drawManagementRes.data);
+        this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
     }
 
 
@@ -504,23 +609,35 @@ export class TradingPlatformManagementComponent implements OnInit
         }
 
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-    
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
+        }
+        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         
         try
         {
             this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
-                this.drawManagementRes = res;
+                this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
                 this.drawRecordsTableShow = true;
-                this.drawManagementData = this.drawManagementRes.data;
-                this.dataSourceFilter = new MatTableDataSource(this.drawManagementRes.data);
+                this.drawManagementData = this.drawManagementResFilter.data;
+                this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
                 this.dataSourceFilter.paginator = this.paginator;
                 this.dataSourceFilter.sort = this.sort;
-                if (this.drawManagementRes.success === true)
+                if (this.drawManagementResFilter.success === true)
                 {
                    
-                    localStorage.setItem('tradingId',this.drawManagementRes.data[0].id);
+                    localStorage.setItem('tradingId',this.drawManagementResFilter.data[0].id);
                 }
                 this.show = true;
             },
@@ -557,6 +674,11 @@ export class TradingPlatformManagementComponent implements OnInit
             isCondition = 1;
             arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
         }
+        if(this.chartererIdValueForDrawRecords != '')
+        {
+            isCondition = 1;
+            arrfilterInfo["dcm.chartererId"] = this.chartererIdValueForDrawRecords;
+        }
         if(this.drawCPIDForDrawRecords > 0)
         {
             isCondition = 1;
@@ -564,19 +686,33 @@ export class TradingPlatformManagementComponent implements OnInit
         }
 
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
+        }
+        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         try
         {
             this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
-                this.drawManagementRes = res;
+                this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
                 this.drawRecordsTableShow = true;
-                this.drawManagementData = this.drawManagementRes.data;
-                this.dataSourceFilter = new MatTableDataSource(this.drawManagementRes.data);
-                this.dataSourceFilter.paginator = this.paginator;
-                this.dataSourceFilter.sort = this.sort;
-                if (this.drawManagementRes.success === true)
+                this.drawManagementData = this.drawManagementResFilter.data;
+                
+                setTimeout(() => {
+                    this.updateFilterPaginator();
+                }, 100);
+
+                if (this.drawManagementResFilter.success === true)
                 {
                    
                 }
@@ -589,6 +725,14 @@ export class TradingPlatformManagementComponent implements OnInit
         } catch (err)
         {
         }
+    }
+
+    
+    updateFilterPaginator()
+    {
+        this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
+        this.dataSourceFilter.paginator = this.paginator;
+        this.dataSourceFilter.sort = this.sort;
     }
 
     editdrawManagementData(data): void
@@ -669,6 +813,33 @@ export class TradingPlatformManagementComponent implements OnInit
             var arrfilterInfo = {};
 
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+
+            
+            if(this.formIdValueForDrawRecords > 0)
+            {
+                
+                arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
+            }
+            if(this.vesselIdValueForDrawRecords > 0)
+            {
+                
+                arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
+            }
+            if(this.cpDateValueForDrawRecords != '')
+            {
+                
+                arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
+            }
+            if(this.chartererIdValueForDrawRecords != '')
+            {
+                
+                arrfilterInfo["dcm.chartererId"] = this.chartererIdValueForDrawRecords;
+            }
+            if(this.drawCPIDForDrawRecords > 0)
+            {
+                
+                arrfilterInfo["dcm.id"] = this.drawCPIDForDrawRecords;
+            }
             
             try
             {
@@ -868,6 +1039,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.formIdSearch = '';
             this.vesselIdSearch = '';
             this.cpDateSearch = '';
+            this.chartererIdSearch = '';
             this.chartererId = '';
             this.ownerId = '';
 
@@ -885,6 +1057,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 formIdSearch: ['', ''],
                 vesselIdSearch: ['', ''],
                 cpDateSearch: ['', ''],
+                chartererIdSearch: ['', ''],
                 drawCPIDSearch: ['', ''],
             });
 
@@ -916,16 +1089,12 @@ export class TradingPlatformManagementComponent implements OnInit
         { 
             return;
         } else {
-            var yearInfo = this.f.cpDate.value._i.year;
-            var monthInfo = this.f.cpDate.value._i.month;
-            var dateInfo = this.f.cpDate.value._i.date;
 
-            if(monthInfo < 10) { monthInfo = '0'+monthInfo; }
-            if(dateInfo < 10) { dateInfo = '0'+dateInfo; }
+            var convertedDate = moment(this.f.cpDate.value).format("YYYY-MM-DD");
 
             this.formIdValueForDrawRecords      =       this.f.formId.value;
             this.vesselIdValueForDrawRecords    =       this.f.vesselId.value,
-            this.cpDateValueForDrawRecords      =       yearInfo+"-"+monthInfo+"-"+dateInfo,
+            this.cpDateValueForDrawRecords      =       convertedDate,
             this.chartererIdValueForDrawRecords =       this.f.chartererId.value;
 
             // localStorage.setItem('userId','1');
@@ -964,13 +1133,24 @@ export class TradingPlatformManagementComponent implements OnInit
                         this.createtypeRes = res;
                         if (this.createtypeRes.success === true)
                         {
+                            this.tradingId = this.createtypeRes.data[0];
                             this.alertService.success(this.createtypeRes.message, 'Success');
-                            this.DrawManagementForm.reset();
-                            this.drawIdServerSide();
-                                
-                            this.router.navigate(['/apps/drawCp-Clauses-management']);
+                            // this.DrawManagementForm.reset();
+                            // this.drawIdServerSide();
 
-                            this.drawRecordsServerSide();
+                            const reqData =
+                            {
+                                mainUserId: localStorage.getItem('userId'),
+                                companyId: localStorage.getItem('companyId'),
+                                tradingId: this.tradingId,
+                                formId : req.formId,
+                                chartererId : this.chartererIdValueForDrawRecords,
+                                isTrading : '1',
+                            };
+                            console.log(reqData);
+                            localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+                            this.router.navigate(['/apps/drawCp-Clauses-management']);
+                            // this.drawRecordsServerSide();
                         } else {
                             this.alertService.error(this.createtypeRes.message, 'Error');
                         }
@@ -997,6 +1177,7 @@ export class TradingPlatformManagementComponent implements OnInit
         {
             return;
         }  else {
+            var convertedDate = moment(this.fSearch.cpDateSearch.value).format("YYYY-MM-DD");
             if(this.fSearch.formIdSearch.value)
             {
                 this.formIdValueForDrawRecords      =       this.fSearch.formIdSearch.value;
@@ -1007,7 +1188,11 @@ export class TradingPlatformManagementComponent implements OnInit
             }
             if(this.fSearch.cpDateSearch.value)
             {
-                this.cpDateValueForDrawRecords      =       this.fSearch.cpDateSearch.value._i.year+"-"+this.fSearch.cpDateSearch.value._i.month+"-"+this.fSearch.cpDateSearch.value._i.date;
+                this.cpDateValueForDrawRecords      =       convertedDate;
+            }
+            if(this.fSearch.chartererIdSearch.value)
+            {
+                this.chartererIdValueForDrawRecords      =       this.fSearch.chartererIdSearch.value;
             }
             if(this.fSearch.drawCPIDSearch.value)
             {
@@ -1035,9 +1220,10 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         this.drawManagementData = this.drawManagementRes.data;
                         this.dataSource = new MatTableDataSource(this.drawManagementData);
-                        // this.dataSource.paginator = this.paginator;
+                        this.dataSource.paginator = this.paginator;
                         this.dataSource.sort = this.sort;
                     }
+                    console.log(this.dataSource)
                 },
                 err =>
                 {

@@ -15,6 +15,7 @@ import { config } from '../../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
+import { $ } from 'protractor';
 
 export interface UserData
 {
@@ -33,6 +34,10 @@ export interface UserData
 
 export class AddClauseTermsComponent implements OnInit
 {
+    formId : string;
+
+    cpFormIdInfo : any;
+
     parentId:String;
     nos:Number;
     termsName:String;
@@ -45,6 +50,9 @@ export class AddClauseTermsComponent implements OnInit
     clauseTerms :any;
     clauseTermsRes: any;
     clauseTermsData: any;
+
+    cpFormListRes : any;
+    cpFormListData : [];
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -77,75 +85,100 @@ export class AddClauseTermsComponent implements OnInit
  
     ngOnInit()
     {
-        this.clauseTermsForm = this._formBuilder.group({ parentId: ['', Validators.required],
-        nos: ['', Validators.required],
-        termsName: ['', Validators.required], });
-        // this.clauseTermsForm = this._formBuilder.group({ nos: ['', Validators.required], });
-        // this.clauseTermsForm = this._formBuilder.group({ termsName: ['', Validators.required], });
+        this.clauseTermsForm = this._formBuilder.group(
+        {
+            cpFormId: ['', Validators.required],
+            parentId: ['', Validators.required],
+            nos: ['', Validators.required],
+            termsName: ['', Validators.required]
+        });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/clause-terms-management';
-        this.fromList();
+        this.cpFormRecords();
     }
 
     get f() { return this.clauseTermsForm.controls; }
 
-    fromList(): void
+    cpFormRecords(): void
     {
         try
         {
-            this._userService.getclusesCategoryList()
+            this._userService.getFormList()
+            .pipe(first())
+            .subscribe((res) =>
+            {
+                this.cpFormListRes = res;
+                if (this.cpFormListRes.success === true)
+                {
+                    this.cpFormListData = this.cpFormListRes.data;
+                }
+            },
+            err =>
+            {
+                this.alertService.error(err, 'Error');
+            });
+        } catch (err) {}
+    }
+
+    selectCpType(event)
+    {
+        this.parentId = event.target.value;
+    }
+
+    onChangeCPForm(event)
+    {
+        this.cpFormId = event.value;
+        this.clauseTermsForm.controls['parentId'].setValue('');
+        this.getClauseCategoryRecords();
+    }
+
+    getClauseCategoryRecords(): void
+    {
+        try
+        {
+            var arrfilterInfo = {};
+            arrfilterInfo["cpFormId"] = this.cpFormId;
+
+            this._userService.clauseCategoryServerSideRecords(arrfilterInfo)
                 .pipe(first())
                 .subscribe((res) =>
                 {
-                    console.log(res);
                     this.clauseTermsRes = res;
                     
                     if (this.clauseTermsRes.success === true)
                     {
                         this.clauseTermsData = this.clauseTermsRes.data;
-                        console.log(this.clauseTermsData);
                     }
                 },
                 err =>
                 {
                     this.alertService.error(err, 'Error');
-                    console.log(err);
                 });
         } catch (err)
         {
-            console.log(err);
         }
     }
  
     onSubmit(): void
     {
-        console.log('add category');
         this.submitted = true;
-
-        // reset alerts on submit
         this.alertService.clear();
- 
-        // stop here if form is invalid
         if (this.clauseTermsForm.invalid)
         { 
-            console.log('add user invalid');
             return;
         } else {
-            console.log('add');
             const req =
             {
                 
-                parentId:this.parentId,
+                parentId:this.f.parentId.value,
                 nos:this.f.nos.value,
                 termsName: this.f.termsName.value,
                 createdBy: localStorage.getItem('userId'),
                 updatedBy: localStorage.getItem('userId'),
             };
-            console.log(req);
 
             this.loading = true;
             try
             {
-                console.log('`sadd`')
                 const header = new HttpHeaders();
                 header.append('Content-Type', 'application/json');
                 const headerOptions =
@@ -155,7 +188,6 @@ export class AddClauseTermsComponent implements OnInit
                 this.http.post(`${config.baseUrl}/clusescreate`, req, headerOptions).subscribe(
                     res =>
                     {
-                        console.log(res);
                         this.createtypeRes = res;
                         if (this.createtypeRes.success === true)
                         {
@@ -168,17 +200,11 @@ export class AddClauseTermsComponent implements OnInit
                     err =>
                     {
                         this.alertService.error(err, 'Error');
-                        console.log(err);
                     }
                 );
             } catch (err)
             {
-                console.log(err);
             } 
         }
-    }
-    selectCpType(event)
-    {
-        this.parentId =event.target.value;
     }
 }

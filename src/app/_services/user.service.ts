@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { User } from '../_models';
-
 import { config } from '../config/config';
 import { Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class UserService {
     userToken: any;
     constructor(private http: HttpClient, private router: Router) {
+        
         const token = JSON.parse(localStorage.getItem('currentUser'));
-       // console.log(token);
+        // console.log(token);
         if (token == null) {
             //this.userToken = token.token;
-            this.router.navigate(['/pages/auth/login'])
+            this.router.navigate(['/pages/auth/login']);
         }
     }
+    
     clausesCategoryRecords(){
        // console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
@@ -466,5 +466,211 @@ export class UserService {
         {
             return this.http.post(`${config.baseUrl}/TradingPlatformRecordsServerSideCharterer`,req)
         }
-    
+
+        TradingCounterInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingCounterInsert`,req)
+        }
+
+        getCounterNumber(req)
+        {
+            return this.http.post(`${config.baseUrl}/getCounterNumber`,req)
+        }
+
+        TradingData(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingData`,req)
+        }
+
+        CustomClauseInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/CustomClauseInsert`,req)
+        }
+
+        CustomClauseTermsInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/CustomClauseTermsInsert`,req)
+        }
+
+        customClauseRecords(req)
+        {
+            return this.http.post(`${config.baseUrl}/customClauseRecords`,req)
+        }
+        
+        getCustomTermDataOfCustomClause(req)
+        {
+            return this.http.post(`${config.baseUrl}/getCustomTermDataOfCustomClause`,req)
+        }
+
+        CustomClauseTermsUpdateParentID(req)
+        {
+            return this.http.post(`${config.baseUrl}/CustomClauseTermsUpdateParentID`,req)
+        }
+
+        viewCustomTermDataOfCustomClause(req)
+        {
+            return this.http.post(`${config.baseUrl}/viewCustomTermDataOfCustomClause`,req)
+        }
+
+        getClauseTermDataForUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/getClauseTermDataForUpdate`,req)
+        }
+
+        viewClauseTermUpdateRecordsOfMainClause(req)
+        {
+            return this.http.post(`${config.baseUrl}/viewClauseTermUpdateRecordsOfMainClause`,req)
+        }
+
+        getCustomClauseTermDataForUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/getCustomClauseTermDataForUpdate`,req)
+        }
+
+        customClauseDetailsInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/customClauseDetailsInsert`,req)
+        }
+
+        viewCustomClauseTermUpdateRecordsOfMainClause(req)
+        {
+            return this.http.post(`${config.baseUrl}/viewCustomClauseTermUpdateRecordsOfMainClause`,req)
+        }
+
+        drawProgressUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/drawProgressUpdate`,req)
+        }
+
+        tradingProgressUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingProgressUpdate`,req)
+        }
+
+        drawStatusInfoUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/drawStatusInfoUpdate`,req)
+        }
+
+        tradingStatusInfoUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingStatusInfoUpdate`,req)
+        }
+
+        drawDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/drawDataUpdate`,req)
+        }
+
+        fetchDrawData(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchDrawData`,req)
+        }
+
+        fetchTradingData(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchTradingData`,req)
+        }
+
+        tradingDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingDataUpdate`,req)
+        }
+
+        fetchCompanyData(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchCompanyData`,req)
+        }
+
+        updateCheckedClauses(req)
+        {
+            return this.http.post(`${config.baseUrl}/updateCheckedClauses`,req)
+        }
+
+        clauseCategoryRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/clauseCategoryRecordsServerSide`,req)
+        }
+
+        cpFormData(req)
+        {
+            return this.http.post(`${config.baseUrl}/cpFormData`,req)
+        }
+
+        fetchVesselData(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchVesselData`,req)
+        }
+
+        customInputDrawDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/customInputDrawDataUpdate`,req)
+        }
+
+        updateCheckedClausesTrading(req)
+        {
+            return this.http.post(`${config.baseUrl}/updateCheckedClausesTrading`,req)
+        }
+
+        customInputTradingDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/customInputTradingDataUpdate`,req)
+        }
+
+        clauseCategoryStatusUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/clauseCategoryStatusUpdate`,req)
+        }
+
+        cpFormStatusUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/cpFormStatusUpdate`,req)
+        }
+
+        clauseTermsStatusUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/clauseTermsStatusUpdate`,req)
+        }
+
+        // Owner Routes
+
+        OwnerRecords()
+        {
+            return this.http.get(`${config.baseUrl}/OwnerRecords`)
+        }
+
+        OwnerCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/OwnerCreate`,req)
+        }
+
+        OwnerDetails(req)
+        {
+            return this.http.post(`${config.baseUrl}/OwnerDetails`,req)
+        }
+
+        OwnerEdit(req)
+        {
+            return this.http.post(`${config.baseUrl}/OwnerEdit`,req)
+        }
+
+        OwnerDelete(req)
+        {
+            return this.http.post(`${config.baseUrl}/OwnerDelete`,req)
+        }
+
+        signatureFileUpload(req)
+        {
+            return this.http.post(`${config.baseUrl}/signatureFileUpload`,req)
+        }
+
+        drawDataSignatureUpadate(req)
+        {
+            return this.http.post(`${config.baseUrl}/drawDataSignatureUpadate`,req)
+        }
+
+        tradingDataSignatureUpadate(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingDataSignatureUpadate`,req)
+        }
 }

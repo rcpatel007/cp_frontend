@@ -144,13 +144,13 @@ export class EditBrokerComponent implements OnInit, OnDestroy {
         let brokerdID = localStorage.getItem('brokerId');
         
         this.updatechartererForm = this._formBuilder.group({
-            username: ['', Validators.required],
-            email: ['', [Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")]],
-            address: ['', Validators.required],
-            businessPhone: ['', Validators.required],
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            mobileNo: ['', Validators.required],
+            username: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            email:  new FormControl('',[ Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")]),
+            address: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            businessPhone: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            firstName: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            lastName: ['', [ Validators.required, Validators.pattern("[A-Za-z0-9]+")]],
+            mobileNo: ['', [ Validators.required, Validators.pattern("[0-9]+")]],
         
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/broker-management';
