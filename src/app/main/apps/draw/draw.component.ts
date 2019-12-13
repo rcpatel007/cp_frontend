@@ -1331,7 +1331,7 @@ export class DrawComponent implements OnInit
             const req =
                 {
                     fromUserId: localStorage.getItem('userId'),
-                    toUserId: localStorage.getItem('userId'),
+                    toUserId: this.ownerId,
                     notification: charterName+'Accepts charter party form NYPE Form 2015 request',
                     createdBy: localStorage.getItem('userId'),
                     updatedBy: localStorage.getItem('userId')

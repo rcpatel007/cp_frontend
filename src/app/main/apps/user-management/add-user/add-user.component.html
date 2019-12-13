@@ -48,9 +48,23 @@
                         </mat-error>
                     </mat-form-field>
 
+                    <!-- <select placeholder="select role" id="contryCode">
+                            <option [value]="+1">US</option>
+                            <option [value]="+91">IN</option>
+                        </select>
+    Z -->
                     <mat-form-field class="full-width" appearance="outline">
+                        <!-- <ngx-mat-intl-tel-input
+                        [preferredCountries]="['us', 'gb']"
+                        [enablePlaceholder]="true"
+                        [enableSearch]="true"
+                        name="mobileNo"
+                        (countryChanged)="yourComponentMethodToTreatyCountryChangedEvent($event)" 
+                        formControlName="mobileNo"></ngx-mat-intl-tel-input>       -->
                         <mat-label>Mobile Number *</mat-label>
-                        <input type="text" (keypress)="numberOnly($event)" onKeyPress="if(this.value.length==12) return false;" min="10" matInput formControlName="mobileNo">
+                        <input type="text" (keypress)="numberOnly($event)" 
+                        onKeyPress="if(this.value.length==12) return false;" min="10"
+                         matInput formControlName="mobileNo">
                 
                         <mat-error *ngIf="userManagementForm.get('mobileNo').hasError('required')">
                             Mobile number is required

@@ -217,7 +217,13 @@ export class UserManagementComponent implements OnInit, OnDestroy {
                     console.log(res);
                     this.roleListRes = res;
                     if (this.roleListRes.success) {
-                        this.roleListData = this.roleListRes.data;
+                        
+                        for (let index = 0; index < this.roleListRes.data.length; index++) {
+                            if(this.roleListRes.data[index].id == '6' && this.roleListRes.data[index].id == '4' && this.roleListRes.data[index].id == '3')                    {
+                                this.roleListData.push(this.roleListRes.data[index]);
+                                                
+                            }        
+                        }
                     }
                 },
                 err => {

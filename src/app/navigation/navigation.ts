@@ -17,32 +17,40 @@ console.log(JSON.parse(localStorage.getItem('userRoleId')));
 
 if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
 {
-    var childrenArrayInfo = {};
-        childrenArrayInfo["id"] = 'owner';
-        childrenArrayInfo["title"] = 'Owner Management';
-        childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'work';
-        childrenArrayInfo["url"] = '/apps/owner-management';
+    // var childrenArrayInfo = {};
+    //     childrenArrayInfo["id"] = 'owner';
+    //     childrenArrayInfo["title"] = 'Owner Management';
+    //     childrenArrayInfo["type"] = 'item';
+    //     childrenArrayInfo["icon"] = 'work';
+    //     childrenArrayInfo["url"] = '/apps/owner-management';
 
-        childrenArray.push(childrenArrayInfo);
+    //     childrenArray.push(childrenArrayInfo);
     
-    var childrenArrayInfo = {};
-        childrenArrayInfo["id"] = 'broker';
-        childrenArrayInfo["title"] = 'Broker Management';
-        childrenArrayInfo["translate"] = 'NAV.BROKERMANAGEMENT';
-        childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'supervisor_account';
-        childrenArrayInfo["url"] = '/apps/broker-management';
+    // var childrenArrayInfo = {};
+    //     childrenArrayInfo["id"] = 'broker';
+    //     childrenArrayInfo["title"] = 'Broker Management';
+    //     childrenArrayInfo["translate"] = 'NAV.BROKERMANAGEMENT';
+    //     childrenArrayInfo["type"] = 'item';
+    //     childrenArrayInfo["icon"] = 'supervisor_account';
+    //     childrenArrayInfo["url"] = '/apps/broker-management';
 
-        childrenArray.push(childrenArrayInfo);
+    //     childrenArray.push(childrenArrayInfo);
+
+    // var childrenArrayInfo = {};
+    //     childrenArrayInfo["id"] = 'charter';
+    //     childrenArrayInfo["title"] = 'charter Management';
+    //     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
+    //     childrenArrayInfo["type"] = 'item';
+    //     childrenArrayInfo["icon"] = 'supervised_user_circle';
+    //     childrenArrayInfo["url"] = '/apps/charterer-management';
 
     var childrenArrayInfo = {};
-        childrenArrayInfo["id"] = 'charter';
-        childrenArrayInfo["title"] = 'charter Management';
-        childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
+        childrenArrayInfo["id"] = 'user';
+        childrenArrayInfo["title"] = 'User Management';
+        childrenArrayInfo["translate"] = 'NAV.USERMANAGEMENT';
         childrenArrayInfo["type"] = 'item';
         childrenArrayInfo["icon"] = 'supervised_user_circle';
-        childrenArrayInfo["url"] = '/apps/charterer-management';
+        childrenArrayInfo["url"] = '/apps/user-management';
 
         childrenArray.push(childrenArrayInfo);
 

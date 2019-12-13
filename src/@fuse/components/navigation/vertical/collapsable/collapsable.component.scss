@@ -1,6 +1,6 @@
 :host {
 
-    .folded:not(.unfolded) & {
+    .unfolded:not(.folded) & {
 
         .nav-link {
 

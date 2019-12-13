@@ -17,11 +17,11 @@
             <div class="main-tab" *ngIf="brokerDivShow">
                 <div class="header-row">
                     <div class="row-col-9">
-                        <h2 style="padding-bottom: 0;"> Existing Draw C/P Platform </h2>
+                        <h2 style="padding-bottom: 0;"> Existing Draw charter party Platform </h2>
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Draw C/P Platform</button>
+                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Draw charter party Platform</button>
                     </div>
                 </div>
             </div>
@@ -30,11 +30,12 @@
             <div class="main-tab" *ngIf="mainDrawCPDiv">
                 <div class="header-row">
                     <div class="row-col-9">
-                        <h2 style="padding-bottom: 0;"> Select Draw C/P Platform </h2>
+                        <h2 style="padding-bottom: 0;"> Select Draw charter party Platform </h2>
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()"> Existing Draw C/P Platform</button>
+                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()">
+                             Existing Draw C/P Platform</button>
                     </div>
                 </div>
             </div>
@@ -139,7 +140,7 @@
                 <div class="cst-modal__overlay"></div>
                 <div class="cst-modal__content">
                     <div class="cst-modal__header">
-                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Accept this Draw C/P Platform?</h4>
+                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Accept this Draw charter party Platform?</h4>
                         <button class="cst-modal__close" (click)="hideActiveModal()">&times;</button>
                     </div>
                     <div class="cst-modal__footer">
@@ -154,7 +155,7 @@
                 <div class="cst-modal__overlay"></div>
                 <div class="cst-modal__content">
                     <div class="cst-modal__header">
-                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Reject this Draw C/P Platform?</h4>
+                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Reject this Draw  charter party Platform?</h4>
                         <button class="cst-modal__close" (click)="hideInActiveModal()">&times;</button>
                     </div>
                     <div class="cst-modal__footer">
@@ -184,7 +185,7 @@
                     </mat-form-field>
                     
                     <mat-form-field  class="full-width" appearance="outline" class="customFormfullWidth">
-                        <mat-label>C/P Date* </mat-label>
+                        <mat-label>Charter party Date* </mat-label>
                         <input formControlName="cpDateSearch" matInput [matDatepicker]="cpDateSearch" placeholder="C/P Date">
                         <mat-datepicker-toggle matSuffix [for]="cpDateSearch"></mat-datepicker-toggle>
                         <mat-datepicker #cpDateSearch></mat-datepicker>
