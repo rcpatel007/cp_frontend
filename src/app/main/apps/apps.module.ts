@@ -141,9 +141,8 @@ const routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes), FuseSharedModule,
-    })
-    ],
+    imports: [RouterModule.forChild(routes), FuseSharedModule
+     ],
     declarations: [],
 })
 export class AppsModule {}
