@@ -9,7 +9,7 @@ import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.compon
 import { SettingsComponent } from './settings/settings.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DrawcpComponent } from './drawcp/drawcp.component';
-import { CountryPickerModule } from 'angular2-countrypicker';
+// import { CountryPickerModule } from 'angular2-countrypicker';
 // import { DrawFirstCounterManagementComponent } from './draw-first-counter-management/draw-first-counter-management.component';
 // import { DrawCpCounterComponent } from './draw-cp-counter/draw-cp-counter.component';
 
@@ -142,7 +142,7 @@ const routes = [
 
 @NgModule({
     imports: [RouterModule.forChild(routes), FuseSharedModule,
-        CountryPickerModule.forRoot({baseUrl: 'assets/'})
+    })
     ],
     declarations: [],
 })

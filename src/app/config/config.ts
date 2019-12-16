@@ -3,7 +3,7 @@
 export const config = {
     production: false,
     // baseUrl: 'http://3.89.115.24:3008/api'
-    baseUrl: 'http://localhost:3001/api'
-    // baseUrl: 'http://18.219.59.88:3001/api'
+    // baseUrl: 'http://localhost:3001/api'
+    baseUrl: 'http://18.219.59.88:3001/api'
 
 };
