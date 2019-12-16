@@ -2,6 +2,106 @@
 
 #ofcm {
 
+    .timePickerCustomButttonCSS
+    {
+        padding: 5px !important;
+        background: transparent !important;
+        border: none !important;
+        color: deepskyblue !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+
+    .datePickerInputDynamicCustom
+    {
+        font-size: 16px !important;
+        font-weight: bold !important;
+        color: #1e88e5 !important;
+        width: 115px !important;
+    }
+
+    .datePickerMainDivCustom
+    {
+        float: left !important;
+        margin-left: 0px !important;
+        margin-right: 15px !important;
+        margin-top: -18px !important;
+        height: 15px !important;
+    }
+
+    .datePickerDynamicCustom
+    {
+        font-size: 10px !important;
+        margin-left: -24px !important;
+        color: #1e88e5 !important;
+        margin-top: -13px !important;
+        position: absolute;
+    }
+
+    .inputStringCustomDynamic
+    {
+        float: left !important;
+        margin-left: 5px !important;
+        font-size: 16px !important;
+        margin-top: -20px !important;
+        font-weight: bold;
+    }
+
+    .inputStringIdentifierCustomDynamic
+    {
+        float: left !important;
+        margin-left: 5px !important;
+        font-size: 16px !important;
+        margin-top: 0px !important;
+        font-weight: bold;
+    }
+
+    .numberPickerCustom
+    {
+        width: 50px !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+        color: #1e88e5 !important;
+        margin-top: 0px !important;
+        padding: 0px !important;
+        margin-right: 0px !important;
+        border-radius: 0px !important;
+        border-color: #1e88e5 !important;
+        position: relative !important;
+        top: 2px !important;
+    }
+
+    .timePickerCustomCSS
+    {
+        width: 100px !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        color: #1e88e5 !important;
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+    }
+
+    .timePickerDivCustomCSS
+    {
+        float: left !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        margin-top: -23px !important;
+    }
+
+    .datePickerDynamicCustom 
+    {
+        .mat-datepicker-toggle-default-icon
+        {
+            margin-top: -5px !important; 
+        }
+
+        svg
+        {
+            margin-top: -5px !important; 
+        }
+    }
+
     .inputPrintCustom
     {
         width: 100px !important;

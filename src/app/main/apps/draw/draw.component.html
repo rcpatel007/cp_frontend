@@ -3,45 +3,44 @@
     <div class="heading center">
         <div class="header-row">
             <div class="row-col-9">
-                <h2>Draw C/P Platform</h2>
+                <h2>Draw Charater Party Platform</h2>
             </div>
             <div class="row-col-6"></div>
             <div class="row-col-3">
                 <div style="float: right;">
-                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> >  Draw C/P Platform
+                    <mat-icon class="home">home</mat-icon> <a routerLink="/apps/dashboards/analytics"> Home </a> >  Draw Charater Party Platform
                 </div>
             </div>
         </div>
         <div class="mat-elevation-z8">
-            <!-- Existing Draw C/P Platform Records -->
+            <!-- Existing Draw Charater Party Platform Records -->
             <div class="main-tab" *ngIf="brokerDivShow">
                 <div class="header-row">
                     <div class="row-col-9">
-                        <h2 style="padding-bottom: 0;"> Existing Draw charter party Platform </h2>
+                        <h2 style="padding-bottom: 0;"> Existing Draw Charater Party Platform </h2>
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Draw charter party Platform</button>
+                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Draw Charater Party Platform</button>
                     </div>
                 </div>
             </div>
-            <!-- Existing Draw C/P Platform Records -->
-            <!-- Draw C/P Platform -->
+            <!-- Existing Draw Charater Party Platform Records -->
+            <!-- Draw Charater Party Platform -->
             <div class="main-tab" *ngIf="mainDrawCPDiv">
                 <div class="header-row">
                     <div class="row-col-9">
-                        <h2 style="padding-bottom: 0;"> Select Draw charter party Platform </h2>
+                        <h2 style="padding-bottom: 0;"> Select Draw Charater Party Platform </h2>
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()">
-                             Existing Draw C/P Platform</button>
+                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()"> BaCk</button>
                     </div>
                 </div>
             </div>
-            <!-- Draw C/P Platform -->
+            <!-- Draw Charater Party Platform -->
             <hr *ngIf="brokerDivShow">
-            <!-- Existing Draw C/P Platform Records -->
+            <!-- Existing Draw Charater Party Platform Records -->
             <table mat-table [dataSource]="dataSource" *ngIf="existingDrawCP">
                 <!-- <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> </th>
@@ -140,7 +139,7 @@
                 <div class="cst-modal__overlay"></div>
                 <div class="cst-modal__content">
                     <div class="cst-modal__header">
-                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Accept this Draw charter party Platform?</h4>
+                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Accept this Draw Charater Party Platform?</h4>
                         <button class="cst-modal__close" (click)="hideActiveModal()">&times;</button>
                     </div>
                     <div class="cst-modal__footer">
@@ -155,7 +154,7 @@
                 <div class="cst-modal__overlay"></div>
                 <div class="cst-modal__content">
                     <div class="cst-modal__header">
-                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Reject this Draw  charter party Platform?</h4>
+                        <h4 class="cst-modal__title" style="margin: 0 auto;">Are you sure you want to Reject this Draw Charater Party Platform?</h4>
                         <button class="cst-modal__close" (click)="hideInActiveModal()">&times;</button>
                     </div>
                     <div class="cst-modal__footer">
@@ -185,8 +184,8 @@
                     </mat-form-field>
                     
                     <mat-form-field  class="full-width" appearance="outline" class="customFormfullWidth">
-                        <mat-label>Charter party Date* </mat-label>
-                        <input formControlName="cpDateSearch" matInput [matDatepicker]="cpDateSearch" placeholder="C/P Date">
+                        <mat-label>Charater Party Date* </mat-label>
+                        <input formControlName="cpDateSearch" matInput [matDatepicker]="cpDateSearch" placeholder="Charater Party Date">
                         <mat-datepicker-toggle matSuffix [for]="cpDateSearch"></mat-datepicker-toggle>
                         <mat-datepicker #cpDateSearch></mat-datepicker>
                         <mat-error *ngIf="DrawManagementSearchForm.get('cpDateSearch').hasError('required')">
@@ -266,7 +265,7 @@
                     <th mat-header-cell *matHeaderCellDef> Status </th>
                     <td mat-cell *matCellDef="let element" ><h4 class="{{ element.classInfo }}">{{ element.statusInfo }}</h4></td>
                 </ng-container>
-                <ng-container matColumnDef="isAccepted" >
+                <!-- <ng-container matColumnDef="isAccepted" >
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" [ngClass]="{'d-none': chartererDivShow === 'N'}"> Accept / Reject</th>
                     <td mat-cell  *matCellDef="let row" class="action" [ngClass]="{'d-none': chartererDivShow === 'N'}">
                         <button mat-button class="click-icon click-icon--done" [disabled]="row.isAccepted === 'Y'"
@@ -278,16 +277,19 @@
                             <mat-icon aria-hidden="false" aria-label="Example home icon">clear</mat-icon>
                         </button>
                     </td>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="newAction" >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
                         <td mat-cell  *matCellDef="let row" class="action" >
-                            <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;" (click)="editView(row.id,row.formId,row.chartererId)">
+                            <!-- <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;" (click)="editView(row.id,row.formId,row.chartererId)">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                             </button>
                             <button mat-button class="click-icon click-icon--done" [ngClass]="{'d-none': row.isAccepted === 'N' || row.isAccepted === 'P'}"  *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                            </button> -->
+                            <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;" (click)="createNew(row.id,row.formId,row.chartererId)">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon">file_copy</mat-icon>
                             </button>
                         </td>
                     </ng-container>
@@ -325,8 +327,8 @@
                     </mat-form-field>
                     
                     <mat-form-field  class="customFormfullWidth" appearance="outline">
-                        <mat-label>C/P Date* </mat-label>
-                        <input formControlName="cpDate" matInput [matDatepicker]="picker" placeholder="C/P Date">
+                        <mat-label>Charater Party Date* </mat-label>
+                        <input formControlName="cpDate" matInput [matDatepicker]="picker" placeholder="Charater Party Date">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="DrawManagementForm.get('cpDate').hasError('required')">

@@ -37,6 +37,7 @@ import { DrawCpClausesComponent } from './draw-cp-clauses.component';
 import { ClausesDetailComponent } from './clauses-detail/clauses-detail.component';
 import { AddDetailClauseComponent } from './add-detail-clause/add-detail-clause.component';
 
+
 const routes: Routes =
 [  
     {

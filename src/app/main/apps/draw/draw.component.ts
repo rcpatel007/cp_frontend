@@ -90,6 +90,7 @@ export interface PeriodicElement
 export class DrawComponent implements OnInit
 {
     displayedColumns: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted','newAction'];
+    displayedColumnsFilter: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','newAction'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
     dataSourceFilter = new MatTableDataSource<PeriodicElement>();
@@ -597,6 +598,7 @@ export class DrawComponent implements OnInit
 
     drawManagementRecords(): void
     {
+    
         this.drawManagementData = [];
         var arrfilterInfo = {};
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
@@ -631,7 +633,10 @@ export class DrawComponent implements OnInit
                         this.dataSource.sort = this.sort;
 
                         console.log(this.drawManagementData,"Draw Records Server Side");
+
                     }
+                    console.log(this.drawManagementRes,"Draw Records Server Side");
+
                 },
                 err =>
                 {
@@ -692,9 +697,12 @@ export class DrawComponent implements OnInit
         {
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
+
                 this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
                 this.drawRecordsTableShow = true;
+                console.log(this.drawManagementResFilter.data,"hello");
+                
                 this.drawManagementData = this.drawManagementResFilter.data;
                 this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
                 this.dataSourceFilter.paginator = this.paginator;
@@ -766,11 +774,20 @@ export class DrawComponent implements OnInit
         try
         {
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
+
             {
-                this.drawManagementResFilter = res;
+            console.log(res);
+            this.drawManagementResFilter = res;
+
+                for (let index = 0; index < this.drawManagementResFilter.data.length; index++) {
+                    if (this.drawManagementResFilter.data[index].progress == 100) {
+                        this.drawManagementData.push(this.drawManagementResFilter.data[index]);    
+                        
+                    }
+                    
+                }
                 this.drawFormDivShow = false;
                 this.drawRecordsTableShow = true;
-                this.drawManagementData = this.drawManagementResFilter.data;
 
                 setTimeout(() => {
                     this.updateFilterPaginator();
@@ -791,9 +808,86 @@ export class DrawComponent implements OnInit
         }
     }
 
+    createNew(id,formId,chartererId){
+
+     
+        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+
+        
+        try
+        {
+            const drawID = {
+                id :id
+            }
+        console.log(drawID);
+            this._userService.drawFormCopyRecords(drawID).pipe(first()).subscribe((res) =>
+
+            {
+            
+            this.drawManagementResFilter = res;
+            console.log(res  ,"data fetch");
+            console.log(this.drawManagementResFilter.data ,"data fetch");
+
+            const reqData= {
+                CPTypeId: this.drawManagementResFilter.data[0].CPTypeId,
+                formId: this.drawManagementResFilter.data[0].formId,
+                vesselId: this.drawManagementResFilter.data[0].vesselId,
+                ownerId: this.drawManagementResFilter.data[0].ownerId,
+                chartererId: this.drawManagementResFilter.data[0].chartererId,
+                chartererBrokerId: this.drawManagementResFilter.data[0].chartererBrokerId,
+                ownerBrokerId: this.drawManagementResFilter.data[0].ownerBrokerId,
+                cpDate: this.drawManagementResFilter.data[0].cpDate,
+                cpTime: this.drawManagementResFilter.data[0].cpTime,
+                cpCity: this.drawManagementResFilter.data[0].cpCity,
+                cpSubject: this.drawManagementResFilter.data[0].cpSubject,
+                cpLiftDate: this.drawManagementResFilter.data[0].cpLiftDate,
+                cpLiftTime: this.drawManagementResFilter.data[0].cpLiftTime,
+                cpLiftCity: this.drawManagementResFilter.data[0].cpLiftCity,
+                companyId: this.drawManagementResFilter.data[0].companyId,
+                progress: 10,
+                signature1: this.drawManagementResFilter.data[0].signature1,
+​​                signature2: this.drawManagementResFilter.data[0].signature2,
+​​                status: 0,
+                statusInfo:'To Be Updated',
+                owner_clauses: null,  
+                metricTonValue: null,
+                owner_signed_check: 0,
+                charterer_view_check: 0,
+                charterer_accept_check: 0,
+                charterer_clauses: this.drawManagementResFilter.data[0].charterer_clauses,
+                createdBy:localStorage.getItem('userId'),
+                updatedBy:localStorage.getItem('userId'),
+                broker_clauses:this.drawManagementResFilter.data[0].broker_clauses,		
+                common_clauses:this.drawManagementResFilter.data[0].common_clauses,
+                custom_common_clause:this.drawManagementResFilter.data[0].custom_common_clause,
+                custom_term_clause:this.drawManagementResFilter.data[0].custom_term_clause,
+            }
+                           console.log(reqData,"reqdata demo");
+            this._userService.DrawFormCopyCreate(drawID).pipe(first()).subscribe((res) =>
+            {
+                let tempData =res;
+                
+                if(tempData === true){
+                    this.alertService.success('Created New Draw Charter Party', 'Success');
+                }
+            },
+            err =>{
+                this.alertService.error(err, 'Error');
+
+            });
+            },
+            err =>
+            {
+                this.alertService.error(err, 'Error');
+            });
+        } catch (err)
+        {
+        }
+    }
+
     updateFilterPaginator()
     {
-        this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
+        this.dataSourceFilter = new MatTableDataSource(this.drawManagementData);
         this.dataSourceFilter.paginator = this.paginator;
         this.dataSourceFilter.sort = this.sort;
     }
@@ -1379,4 +1473,8 @@ export class DrawComponent implements OnInit
     {
         this.inActiveModalStatus = !this.inActiveModalStatus;
     }
+
+
+    
+    
 }

@@ -71,7 +71,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     userDeleteRoleId: any;
 
     selectId: any;
-
+    public countries: any[];
 
     // disabled?: boolean;
 
@@ -89,6 +89,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
      * @param {MatDialog} _matDialog
      */
     constructor(
+        // private countryPickerService: CountryPickerService,
         private _formBuilder: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
@@ -97,6 +98,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         private _fuseSidebarService: FuseSidebarService,
         private http: HttpClient,
         private alertService: AlertService,
+        
     ) {
         // Set the defaults
         this.filterValue = '';
@@ -224,6 +226,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
                                                 
                             }        
                         }
+                        console.log(this.roleListData);
                     }
                 },
                 err => {

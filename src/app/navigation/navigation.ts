@@ -2,7 +2,7 @@ import { FuseNavigation } from '@fuse/types';
 
 
 var childrenArray = [];
-
+if (JSON.parse(localStorage.getItem('userRoleId')) != '7'){
 var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'dashboard';
     childrenArrayInfo["title"] = 'Dashboard';
@@ -128,6 +128,17 @@ var childrenArrayInfo = {};
     childrenArray.push(childrenArrayInfo);
 
     console.log(childrenArray);
+}
+
+var childrenArrayInfo = {};
+    childrenArrayInfo["id"] = 'Draw C/P';
+    childrenArrayInfo["title"] = 'Draw C/P';
+    childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'color_lens';
+    childrenArrayInfo["url"] = '/apps/draw-management';
+
+    childrenArray.push(childrenArrayInfo);
 
 export const navigation: FuseNavigation[] =
 [

@@ -395,7 +395,15 @@ export class UserService {
     {
         return this.http.post(`${config.baseUrl}/drawRecordsServerSideCharterer`,req)
     }
+    drawFormCopyRecords(req)
+    {
+        return this.http.post(`${config.baseUrl}/drawFormCopyRecords`,req)
+    }
 
+    DrawFormCopyCreate(req)
+    {
+        return this.http.post(`${config.baseUrl}/DrawFormCopyCreate`,req)
+    }
     // Draw Request Create
     DrawRequestToChartererCreate(req)
     {

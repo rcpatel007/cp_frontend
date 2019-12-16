@@ -14,11 +14,48 @@
         </div>
         <div class="mat-elevation-z8">
 
-            <!-- <h4 [innerHtml]="convrtedString"></h4> -->
+                <!-- <input [format]=24 class="timePickerCustomCSS testimepicker " [ngxTimepicker]="testimepicker" (change)="timePickerTimeTest($event)">
+                <ngx-material-timepicker #testimepicker   ></ngx-material-timepicker> -->
+                <!-- <ng-template #cancelButton>
+                    <button style="padding: 5px !important;background: transparent !important;border: none !important;
+                    color: deepskyblue !important;font-size: 18px !important;font-weight: 600 !important; margin-left: 15px;"> CANCEL </button>
+                </ng-template>
+                <ng-template #confirmBtn>
+                    <button style="padding: 5px !important;background: transparent !important;border: none !important;
+                    color: deepskyblue !important;font-size: 18px !important;font-weight: 600 !important;
+                    margin-left: 15px;" (click)="timePickerTimeTest(testimepicker)"> UPDATE </button>
+                </ng-template> -->
 
-            <!-- <input [matDatepicker]="demoDatePicker">
-            <mat-datepicker-toggle matSuffix [for]="demoDatePicker"></mat-datepicker-toggle>
-            <mat-datepicker #demoDatePicker></mat-datepicker> -->
+            <!-- <h4 *ngFor="let dynamicData of dynamicStringArray; let i= index; ">
+                
+                <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
+                
+                <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
+                    <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
+                    (dateChange)="dynamicDatePickerChange()">
+                    <mat-datepicker-toggle class="datePickerDynamicCustom" matSuffix [for]="i"></mat-datepicker-toggle>
+                    <mat-datepicker #i></mat-datepicker>
+                </h4>
+
+                <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
+                    <input class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
+                    <ngx-material-timepicker #i></ngx-material-timepicker>
+                </h4>
+
+                <h4 class="timePickerDivCustomCSS" *ngIf="dynamicData.string == '#number'">
+                    <select class="numberPickerCustom {{dynamicData.timeStamp}} ">
+                        <option *ngFor="let dynamicDropDownData of dynamicData.hasNumberPicker" [selected]="dynamicDropDownData.selected" [value]="dynamicDropDownData.number"> {{dynamicDropDownData.number}}</option>
+                    </select>
+                </h4>
+                
+            </h4>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <button (click)="createNewString()">Create A New String</button> -->
 
             <div class="content-card" *ngIf="firstScreen" style="margin-left: -10px !important; margin-top: 20px !important">
                 <table style="float: right; width: 500px !important;">
@@ -104,172 +141,13 @@
                     </tr>
                 </table>
 
-                <ng-container *ngFor="let c of termsReviewRecordsDataRecap;let i=index;" >
-                    <div style="padding: 3%; margin-top: -60px; margin-bottom: -50px" class="row" id="{{i+1}}">
-                        <div class="text-left col l12 m12 s12">
-                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;">
-                                <b class="customFontWeight" style="font-size: 22px;">{{ i + 1 }}.</b>
-                                <b class="customFontWeight" style="font-size: 22px;text-decoration: underline; margin-left: 10px;">{{c.name}}</b>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-left: 20px;">
-                            <table>
-                                <tr *ngFor="let ct of termsReviewRecordsDataRecap[i].clauseCategoryTerms;let si=index">
-                                    <td style="width:100%; font-size: 18px; margin-bottom: 20px;" >
-                                        <span class="customFontWeight" >{{ct.identifier}}) </span><span class="customFontWeight" [innerHtml]="ct.mainTermRecord"></span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row" *ngIf="termsReviewRecordsDataRecap[i].clauseCategoryTermsUpdateCustom !=0">
-                            <h4 style="margin-top: -10px; font-weight: bold; font-size: 22px;">Custom Amendments</h4>
-                            <table style="margin-left: 20px;">
-                                <tr *ngFor="let n of termsReviewRecordsDataRecap[i].clauseCategoryTermsUpdateCustom;let ti=index">
-                                    <td class="customFontWeight" style="font-size: 18px;">{{n.identifier}})</td>
-                                    <td class="customFontWeight" style="font-size: 18px;width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <ng-container *ngFor="let c of customClauseDataResponseData;let i=index;" >
-                    <div style="padding: 3%; margin-top: -40px; margin-bottom: -50px" class="row" id="{{i+1}}">
-                        <div class="text-left col l12 m12 s12">
-                            <div class="text-blue" style="color: #2196f3; margin-bottom:1%;">
-                                <b style="font-size: 22px;" class="customFontWeight">{{ c.numberInfo }}. {{c.clauseTitle}}</b>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-left: 20px;">
-                            <table>
-                                <tr *ngFor="let ct of customClauseDataResponseData[i].clauseCategoryTerms;let si=index">
-                                    <td style="width:100%; font-size: 18px; margin-bottom: 20px" >
-                                        <span class="customFontWeight">{{ct.identifier}}) </span><span class="customFontWeight" [innerHtml]="ct.mainTermRecord"></span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row" *ngIf="customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom !=0">
-                            <h4 style="margin-top: 10px; font-weight: bold; font-size: 22px; margin-left: 28px;">Custom Amendments</h4>
-                            <table style="margin-left: 20px; margin-top: -30px">
-                                <tr *ngFor="let n of customClauseDataResponseData[i].clauseCategoryTermsUpdateCustom;let ti=index">
-                                    <td class="customFontWeight" style="font-size: 18px;">{{n.identifier}})</td>
-                                    <td class="customFontWeight" style="font-size: 22px; width: 100%;" [innerHtml]="n.mainTermRecordCustom"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <table style="margin-top: 40px; clear: both;">
-                    <tr>
-                        <td class="customFontWeight" colspan="3">
-                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                Clauses  {{ ownerName }} to  {{ chartererName }}, both inclusive, as attached hereto are fully incorporated in this Charter Party.
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="customFontWeight">
-                            <table style="margin-top: 40px; clear: both;">
-                                <tr>
-                                    <td class="customFontWeight">
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Owner :
-                                        </h4>
-                                    </td>
-                                    <td class="customFontWeight">
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Charterer :
-                                        </h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="customFontWeight">
-                                        <h4 *ngIf="signature1ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            <img src="{{ currentSignature1 }}" height="100" width="400" style="height: 100px !important;">
-                                        </h4>
-                                        <h4 *ngIf="signature1DemoView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            ---------------
-                                        </h4>
-                                    </td>
-                                    <td class="customFontWeight">
-                                        <h4 *ngIf="signature2ImageView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            <img src="{{ currentSignature2 }}" height="100" width="400" style="height: 100px !important;">
-                                        </h4>
-                                        <h4 *ngIf="signature2DemoView" style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            ---------------
-                                        </h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="customFontWeight">
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Name : {{ ownerName }}
-                                        </h4>
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Title : Owner
-                                        </h4>
-                                    </td>
-                                    <td class="customFontWeight">
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Name : {{ chartererName }}
-                                        </h4>
-                                        <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
-                                            Title : Charterer
-                                        </h4>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-
-                <table style="margin-top: 40px; clear: both;">
-                    <tr>
-                        <td>
-                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
-                                NYPE 2015 - Appendix A (Vessel Description)
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h4 style="margin-left: 40px; font-size: 15px; margin-top: -10px; font-weight: bold;">
-                                {{ vesselDescription }}
-                            </h4>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- <table style="margin-top: 40px; clear: both;">
-                    <tr>
-                        <td>
-                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
-                                Index Of Clauses
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr *ngFor="let c of clauseCategoryRecordResponseData;let i=index;">
-                        <td>
-                            <h4 class="tableTDFont" style="float: left;"> {{ i + 1 }}. </h4>
-                            <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.name }} </h4>
-                        </td>
-                    </tr>
-                    <tr *ngFor="let c of customClauseDataResponseData;let i=index;">
-                        <td>
-                            <h4 class="tableTDFont" style="float: left;"> {{ c.numberInfo }}. </h4>
-                            <h4 class="tableTDFont" style="float: left; margin-left: 20px; "> {{ c.clauseTitle }} </h4>
-                        </td>
-                    </tr>
-                </table> -->
-                
                 <table style="float: right; width: 500px !important;">
                     <tr class="tableTr">
                         <td style="width: 200px;"></td>
                         <td style="width: 100px;"></td>
                         <td style="width: 200px;">
-                            <button class="submit-item submit-item--back-button" *ngIf="firstScreen" style="float: right;  margin: 35px;" (click)="secondScreenView()">Next</button>
+                            <button class="submit-item submit-item--back-button" *ngIf="firstScreen" style="float: right;  margin: 35px;"
+                            (click)="secondScreenView()">Next</button>
                         </td>
                     </tr>
                 </table>
@@ -320,6 +198,7 @@
                 <br><br><br><br><br><br>
                 <br><br><br><br><br><br>
             </div>
+
             <div class="content-card" *ngIf="secondScreen" style="margin-left: -10px !important; margin-top: 20px !important; clear: both;">
                 <table style="margin-bottom: -100px;">
                     <tr>
@@ -333,6 +212,7 @@
                     </tr>
                 </table>
             </div>
+
             <div class="content-card" *ngIf="thirdScreen" style="margin-left: -10px !important; margin-top: -29px !important">
                 <form [formGroup]="OwnersFirstCounterForm" >
                     <br>
@@ -393,8 +273,47 @@
                                             ></mat-checkbox>
                                         </td>
                                         <td style="width:100%" >
-                                            <span  style="margin-left: 10px"><b>{{ct.identifier}})</b> </span>
-                                            <span style="margin-left: 10px"> {{ ct.mainTermRecord }} </span>
+                                            
+                                            <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
+                                            <h4 *ngFor="let dynamicData of ct.mainTermRecordArray; let i= index">
+                
+                                                <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
+                
+                                                <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
+                                                    <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
+                                                    (dateChange)="updateDynamicString(dynamicData.timeStamp,'Main')">
+                                                    <mat-datepicker-toggle class="datePickerDynamicCustom" matSuffix [for]="i"></mat-datepicker-toggle>
+                                                    <mat-datepicker #i></mat-datepicker>
+                                                </h4>
+
+                                                <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
+                                                    <input [format]=24  class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
+                                                    <ngx-material-timepicker #i [cancelBtnTmpl]="cancelButton"  [confirmBtnTmpl]="confirmBtn"></ngx-material-timepicker>
+                                                    <ng-template #cancelButton>
+                                                        <button style="padding: 5px !important;
+        background: transparent !important;
+        border: none !important;
+        color: deepskyblue !important;
+        font-size: 18px !important;
+        font-weight: 600 !important; margin-left: 15px;"> CANCEL </button>
+                                                    </ng-template>
+                                                    <ng-template #confirmBtn>
+                                                        <button style="padding: 5px !important;
+        background: transparent !important;
+        border: none !important;
+        color: deepskyblue !important;
+        font-size: 18px !important;
+        font-weight: 600 !important; margin-left: 15px;" (click)="updateDynamicString(dynamicData.timeStamp,'Main')"> UPDATE </button>
+                                                    </ng-template>
+                                                </h4>
+
+                                                <h4 class="timePickerDivCustomCSS" *ngIf="dynamicData.string == '#number'">
+                                                    <select class="numberPickerCustom {{dynamicData.timeStamp}} " (change)="updateDynamicString(dynamicData.timeStamp,'Main')">
+                                                        <option *ngFor="let dynamicDropDownData of dynamicData.hasNumberPicker" [selected]="dynamicDropDownData.selected" [value]="dynamicDropDownData.number"> {{dynamicDropDownData.number}}</option>
+                                                    </select>
+                                                </h4>
+                                                
+                                            </h4>
 
                                         </td>
                                     </tr>
@@ -421,7 +340,53 @@
                                             <mat-checkbox [checked]="ct.isChecked === 'Y'" (change)="onChangeCustom($event,ct.id,i)"></mat-checkbox>
                                         </td>
                                         <td style="width:100%" >
-                                            <span style="margin-left: 10px;"> <b>{{ct.identifier}})</b> </span><span style="margin-left: 10px;"><pre>{{ct.mainTermRecordCustom}}</pre> </span>
+
+                                            <!-- <span style="margin-left: 10px;"> <b>{{ct.identifier}})</b> </span> -->
+                                        
+                                            <!-- <div style="margin-left: 10px;"  [innerHTML]="ct.mainTermRecordCustom" ></div> -->
+                                            
+                                            <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
+
+                                            <h4 *ngFor="let dynamicData of ct.mainTermRecordCustomArray; let i= index">
+                
+                                                <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
+                
+                                                <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
+                                                        <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
+                                                        (dateChange)="updateDynamicString(dynamicData.timeStamp,'Custom')">
+                                                        <mat-datepicker-toggle class="datePickerDynamicCustom" matSuffix [for]="i"></mat-datepicker-toggle>
+                                                        <mat-datepicker #i></mat-datepicker>
+                                                    </h4>
+    
+                                                    <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
+                                                        <input [format]=24  class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
+                                                        <ngx-material-timepicker #i [cancelBtnTmpl]="cancelButton"  [confirmBtnTmpl]="confirmBtn"></ngx-material-timepicker>
+                                                        <ng-template #cancelButton>
+                                                            <button style="padding: 5px !important;
+            background: transparent !important;
+            border: none !important;
+            color: deepskyblue !important;
+            font-size: 18px !important;
+            font-weight: 600 !important; margin-left: 15px;"> CANCEL </button>
+                                                        </ng-template>
+                                                        <ng-template #confirmBtn>
+                                                            <button style="padding: 5px !important;
+            background: transparent !important;
+            border: none !important;
+            color: deepskyblue !important;
+            font-size: 18px !important;
+            font-weight: 600 !important; margin-left: 15px;" (click)="updateDynamicString(dynamicData.timeStamp,'Custom')"> UPDATE </button>
+                                                        </ng-template>
+                                                    </h4>
+    
+                                                    <h4 class="timePickerDivCustomCSS" *ngIf="dynamicData.string == '#number'">
+                                                        <select class="numberPickerCustom {{dynamicData.timeStamp}} " (change)="updateDynamicString(dynamicData.timeStamp,'Custom')">
+                                                            <option *ngFor="let dynamicDropDownData of dynamicData.hasNumberPicker" [selected]="dynamicDropDownData.selected" [value]="dynamicDropDownData.number"> {{dynamicDropDownData.number}}</option>
+                                                        </select>
+                                                    </h4>
+                                                
+                                            </h4>
+
                                         </td>
                                     </tr>
                                     <br/>
@@ -471,7 +436,50 @@
                                             <mat-checkbox [checked]="ct.isChecked === 'Y'" (change)="onChangeCustomClauseTerms($event,ct.id,i)"></mat-checkbox>
                                         </td>
                                         <td style="width:100%" >
-                                            <span  style="margin-left: 10px"><b>{{ct.identifier}})</b> </span><span style="margin-left: 10px" [innerHtml]="ct.mainTermRecord"></span>
+
+                                                <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
+
+                                                <h4 *ngFor="let dynamicData of ct.mainTermRecordCustomArray; let i= index">
+                    
+                                                    <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
+                    
+                                                    <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
+                                                            <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
+                                                            (dateChange)="updateDynamicString(dynamicData.timeStamp,'CustomClauseTerms')">
+                                                            <mat-datepicker-toggle class="datePickerDynamicCustom" matSuffix [for]="i"></mat-datepicker-toggle>
+                                                            <mat-datepicker #i></mat-datepicker>
+                                                        </h4>
+        
+                                                        <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
+                                                            <input [format]=24  class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
+                                                            <ngx-material-timepicker #i [cancelBtnTmpl]="cancelButton"  [confirmBtnTmpl]="confirmBtn"></ngx-material-timepicker>
+                                                            <ng-template #cancelButton>
+                                                                <button style="padding: 5px !important;
+                background: transparent !important;
+                border: none !important;
+                color: deepskyblue !important;
+                font-size: 18px !important;
+                font-weight: 600 !important; margin-left: 15px;"> CANCEL </button>
+                                                            </ng-template>
+                                                            <ng-template #confirmBtn>
+                                                                <button style="padding: 5px !important;
+                background: transparent !important;
+                border: none !important;
+                color: deepskyblue !important;
+                font-size: 18px !important;
+                font-weight: 600 !important; margin-left: 15px;" (click)="updateDynamicString(dynamicData.timeStamp,'CustomClauseTerms')"> UPDATE </button>
+                                                            </ng-template>
+                                                        </h4>
+        
+                                                        <h4 class="timePickerDivCustomCSS" *ngIf="dynamicData.string == '#number'">
+                                                            <select class="numberPickerCustom {{dynamicData.timeStamp}} " (change)="updateDynamicString(dynamicData.timeStamp,'CustomClauseTerms')">
+                                                                <option *ngFor="let dynamicDropDownData of dynamicData.hasNumberPicker" [selected]="dynamicDropDownData.selected" [value]="dynamicDropDownData.number"> {{dynamicDropDownData.number}}</option>
+                                                            </select>
+                                                        </h4>
+                                                    
+                                                </h4>
+
+                                            <!-- <span  style="margin-left: 10px"><b>{{ct.identifier}})</b> </span><span style="margin-left: 10px" [innerHtml]="ct.mainTermRecord"></span> -->
                                         </td>
                                     </tr>
                                     <br/>
@@ -673,7 +681,7 @@
                 </div>
             </div>
         </div>
-    </fuse-sidebar>
+</fuse-sidebar>
 
 <fuse-sidebar name="customPanel" style="max-width: 70%;  width: 70%;" position="right" class="quick-panel">
     <!-- <add-detail-clause></add-detail-clause> -->

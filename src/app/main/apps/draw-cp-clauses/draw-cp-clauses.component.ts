@@ -22,6 +22,7 @@ import { FormGroupDirective, NgForm, } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import * as moment from 'moment';
+import { exists } from 'fs';
 
 
 export interface PeriodicElement {
@@ -256,8 +257,6 @@ export class DrawCpClausesComponent implements OnInit
 
     cpFormResponse : any;
     cpFormDataResponseData = [];
-
-    
     
     vesselDataResponse : any;
     vesselDataResponseArray = [];
@@ -291,6 +290,18 @@ export class DrawCpClausesComponent implements OnInit
 
     dynamicInputForDatePicker : any;
 
+    mainDynamicStringArray = [];
+
+    dynamicStringArray = [];
+
+    dynamicStringUpdateArray = [];
+
+    dynamicInputNumber : any;
+
+    dynamicString : any;
+
+    timePickerValue : any;
+
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -320,20 +331,19 @@ export class DrawCpClausesComponent implements OnInit
         this.dataSource = new MatTableDataSource(this.viewCustomTermsOfCustomClauseResponseData);
     }
 
+    htmlStr: string = '<strong>The Tortoise</strong> &amp; the Hare <button></button>';
+
     ngOnInit()
     {
-        // this.dynamicInputForDatePicker = 1;
-        // var dynamicInput = this.dynamicInputForDatePicker + 1;
+        // console.log(moment(new Date()).format("YYYY-MM-DD"));
+        // console.log(moment(new Date('13:11')).format("HH:mm"));
+        // return false;
 
-        // var string = "#date this is datepicker";
+        this.timePickerValue = '11:44';
 
-        // var dateString = '<input [matDatepicker]="demoDatePicker'+dynamicInput+'"><mat-datepicker-toggle matSuffix [for]="demoDatePicker'+dynamicInput+'"></mat-datepicker-toggle><mat-datepicker #demoDatePicker'+dynamicInput+'></mat-datepicker>';
-
-        // var newstr = string.replace("#date", dateString); 
-        // console.log(newstr)
-
-        // this.convrtedString = newstr;
-            
+        this.mainDynamicStringArray = [];
+        this.dynamicInputNumber = 0;
+       
         this.ownerName = '';
         this.chartererName = '';
         this.brokerName = '';
@@ -345,7 +355,7 @@ export class DrawCpClausesComponent implements OnInit
         this.tradingId = filter.tradingId;
         this.isTrading = filter.isTrading;
 
-        var current_date = moment(new Date()).format("YYYY-MM-DD")
+        var current_date = moment(new Date()).format("YYYY-MM-DD");
         var current_time = moment().format("HH:mm A");
         this.OwnersFirstCounterForm = this._formBuilder.group
         (
@@ -369,7 +379,6 @@ export class DrawCpClausesComponent implements OnInit
             } else {
                 this.pageTitle = 'Trading Clauses';
             }
-            
         }
 
         if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
@@ -391,197 +400,36 @@ export class DrawCpClausesComponent implements OnInit
             this.fetchDrawDataRecap();
         } else {
             console.log('Here In Condition');
-            // this.thirdScreenView();
             this.fetchTradingDataRecap();
-            // this.fetchDrawData();
-            // this.fetchTradingData();
         }
         this.clauseTermsCheckBox = true;
         this.cpFormData();
     }
 
-    dateMonthYearFormatFunction(date)
+    timePickerTimeTest(event)
     {
-        var dateInfo = moment(date).format("Do");
-        console.log(dateInfo," Date Info ");
-
-        var monthInfo = moment(date).format("MMM");
-        console.log(monthInfo," Month Info ");
-
-        var yearInfo = moment(date).format("YYYY");
-        console.log(yearInfo," Year Info ");
-
-        var string = 'this '+dateInfo+' of '+ monthInfo+','+yearInfo;
-        console.log(string);
-
-        return string;
+        console.log(event);
+        console.log(this.timePickerValue);
+        var slides = document.getElementsByClassName('testimepicker');
+        console.log(slides);
+        var updatedStringValuesArray = [];
+        if(slides.length > 0)
+        {
+            for(var i = 0; i < slides.length; i++)
+            {  
+                var valueOfUpdatedSting = slides[i];
+                console.log(slides[i]);
+                console.log(valueOfUpdatedSting['value']);
+                updatedStringValuesArray.push(valueOfUpdatedSting['value']);
+            }
+        }
+        console.log(updatedStringValuesArray);
     }
 
-    // Custom Input Draw Data Update
-    customInputDrawDataUpdate()
-    {
-        const req =
-        {
-            drawId : this.drawId,
-            metricTonValue: this.metricTonValue,
-            customInput1: this.customInput1,
-            customInput2: this.customInput2
-        };
-        console.log(req);
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/customInputDrawDataUpdate`, req, headerOptions).subscribe( res =>
-        {
-            
-        });
-    }
-
-    // Custom Input Trading Data Update
-    customInputTradingDataUpdate()
-    {
-        const req =
-        {
-            tradingId : this.tradingId,
-            metricTonValue: this.metricTonValue,
-            customInput1: this.customInput1,
-            customInput2: this.customInput2
-        };
-        console.log(req);
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/customInputTradingDataUpdate`, req, headerOptions).subscribe( res =>
-        {
-            
-        });
-    }
-
-     // CP Form Datga
-     cpFormData()
-     {
-         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-         this.formId = filter.formId;
- 
-         var filterCondition = {};
-             filterCondition['id'] = this.formId;
-         try
-         {
-             this._userService.cpFormData(filterCondition).pipe(first()).subscribe((res) =>
-             {
-                 this.cpFormResponse = res;
-                 if(this.cpFormResponse.success == true)
-                 {
-                     this.cpFormDataResponseData = this.cpFormResponse.data;
-                     console.log(this.cpFormDataResponseData);
-                     this.cpFormName = this.cpFormDataResponseData[0].cpformName;
-                     console.log(this.cpFormName);
-                 }
-             });
-         }catch (err){}
-     }
-
-
-
-    // Fetch Draw Data
-    fetchDrawData()
-    {
-        var filterCondition = {};
-            filterCondition["dcm.id"] = this.drawId;
-        try
-        {
-            this._userService.fetchDrawData(filterCondition).pipe(first()).subscribe((res) =>
-            {
-                this.drawResponseInformation = res;
-                if(this.drawResponseInformation.success == true)
-                {
-                    this.drawResponseInformationData = this.drawResponseInformation.data[0];
-
-                    this.drawResponseInformationData['cpCity'] = (this.drawResponseInformationData['cpCity'] == null && this.drawResponseInformationData['cpCity'] == '') ? '' : this.drawResponseInformationData['cpCity'];
-
-                    var cpTime = this.drawResponseInformationData['cpTime'];
-                    var cpDate = this.drawResponseInformationData['cpDate'];
-                    var cpCity = this.drawResponseInformationData['cpCity'];
-                    var cityName = this.drawResponseInformationData['cityName'];
-
-                    var current_date = (cpDate != '') ? cpDate : moment(new Date()).format("YYYY-MM-DD")
-                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
-                    var cityID = (cpCity != '') ? cpCity : '0';
-
-                    console.log(current_date);
-
-                    this.OwnersFirstCounterForm = this._formBuilder.group
-                    (
-                        {
-                            cpTime: [current_time, Validators.required],
-                            cityId: [cityID, Validators.required],
-                            cpDate: [current_date, Validators.required],
-                        }
-                    );
-
-                    this.cpDate = current_date;
-
-                    this.checkedClauseCategory = [];
-
-                    var checked_clauses = this.drawResponseInformation.data[0].checked_clauses;
-
-                    console.log(checked_clauses);
-
-                    if(checked_clauses != '' && checked_clauses != null)
-                    {
-                        this.checkedClauseCategory = checked_clauses.split(',');
-                    } else {
-                        this.checkedClauseCategory = [];
-                    }
-
-                    var checkedCheckBoxArray = this.checkedClauseCategory;
-                    this.checkedClauseCategory = [];
-                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
-                    {
-                        this.checkedClauseCategory.push(Number(checkedCheckBoxArray[index]));
-                    }
-
-                    console.log(this.checkedClauseCategory," Main Checked CLause Categogry CHeckBox  ");
-
-                    localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
-
-                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
-                    this.chartererName = this.drawResponseInformation.data[0].chartererName;
-                    this.brokerName = this.drawResponseInformation.data[0].brokerName;
-
-                    this.clauseCategoryRecordsServerSide();
-
-                    var cpTime = this.drawResponseInformationData['cpTime'];
-                    var cpDate = this.drawResponseInformationData['cpDate'];
-                    var cityName = this.drawResponseInformationData['cityName'];
-
-                    current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
-                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
-                    var cityID = (cityName != '') ? cityName : '0';
-
-                    this.cpDate = current_date;
-
-                    this.cityName = cityName;
-                    this.cpDate = current_date;
-                    this.cpTime = cpTime;
-
-                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
-                    this.chartererName = this.drawResponseInformation.data[0].chartererName;
-                    this.brokerName = this.drawResponseInformation.data[0].brokerName;
-
-                    this.vesselId = this.drawResponseInformation.data[0].vesselId;
-
-                    this.fetchVesselData();
-                    
-                }
-            });
-        }catch (err){}
-    }
-
-    // Fetch Draw Data
+  
+    // Preamble Screen Data
     fetchDrawDataRecap()
     {
-        console.log('HERE IN FIRST FETCH DRAW DATA RECAP');
         var filterCondition = {};
             filterCondition["dcm.id"] = this.drawId;
         try
@@ -707,7 +555,220 @@ export class DrawCpClausesComponent implements OnInit
 
                     this.fetchVesselData();
 
-                    this.clauseCategoryRecordsServerSideRecap();
+                    // this.clauseCategoryRecordsServerSideRecap();
+                }
+            });
+        }catch (err){}
+    }
+
+    // Fetch Vessel Data
+    fetchVesselData()
+    {
+        var filterCondition = {};
+            filterCondition["id"] = this.vesselId;
+        try
+        {
+            this._userService.fetchVesselData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.vesselDataResponse = res;
+                if(this.vesselDataResponse.success == true)
+                {
+                    this.vesselDataResponseArray = this.vesselDataResponse.data[0];
+                    if(this.vesselDataResponse.data[0] != '' && this.vesselDataResponse.data[0] != null && this.vesselDataResponse.data[0] != undefined)
+                    {
+                    this.vesselName = this.vesselDataResponse.data[0].vessel_name;
+                    this.imoNumber = this.vesselDataResponse.data[0].imo;
+                    this.vesselFlag = this.vesselDataResponse.data[0].flageName;
+                    this.vesselYear = this.vesselDataResponse.data[0].built_year;
+                    this.vesselDescription = this.vesselDataResponse.data[0].vessel_info;
+                    } else {
+                    this.vesselName = '';
+                    this.imoNumber = '';
+                    this.vesselFlag = '';
+                    this.vesselYear = '';
+                    this.vesselDescription = '';
+                    }
+                }
+            });
+        }catch (err){}
+    }
+
+    clickMeFunction()
+    {
+        console.log('HERE In CLICK ME Function');
+    }
+
+    dateMonthYearFormatFunction(date)
+    {
+        var dateInfo = moment(date).format("Do");
+        console.log(dateInfo," Date Info ");
+
+        var monthInfo = moment(date).format("MMM");
+        console.log(monthInfo," Month Info ");
+
+        var yearInfo = moment(date).format("YYYY");
+        console.log(yearInfo," Year Info ");
+
+        var string = 'this '+dateInfo+' of '+ monthInfo+','+yearInfo;
+        console.log(string);
+
+        return string;
+    }
+
+    // Custom Input Draw Data Update
+    customInputDrawDataUpdate()
+    {
+        const req =
+        {
+            drawId : this.drawId,
+            metricTonValue: this.metricTonValue,
+            customInput1: this.customInput1,
+            customInput2: this.customInput2
+        };
+        console.log(req);
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/customInputDrawDataUpdate`, req, headerOptions).subscribe( res =>
+        {
+            
+        });
+    }
+
+    // Custom Input Trading Data Update
+    customInputTradingDataUpdate()
+    {
+        const req =
+        {
+            tradingId : this.tradingId,
+            metricTonValue: this.metricTonValue,
+            customInput1: this.customInput1,
+            customInput2: this.customInput2
+        };
+        console.log(req);
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        this.http.post(`${config.baseUrl}/customInputTradingDataUpdate`, req, headerOptions).subscribe( res =>
+        {
+            
+        });
+    }
+
+     // CP Form Datga
+     cpFormData()
+     {
+         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+         this.formId = filter.formId;
+ 
+         var filterCondition = {};
+             filterCondition['id'] = this.formId;
+         try
+         {
+             this._userService.cpFormData(filterCondition).pipe(first()).subscribe((res) =>
+             {
+                 this.cpFormResponse = res;
+                 if(this.cpFormResponse.success == true)
+                 {
+                     this.cpFormDataResponseData = this.cpFormResponse.data;
+                     console.log(this.cpFormDataResponseData);
+                     this.cpFormName = this.cpFormDataResponseData[0].cpformName;
+                     console.log(this.cpFormName);
+                 }
+             });
+         }catch (err){}
+    }
+
+    // Fetch Draw Data
+    fetchDrawData()
+    {
+        var filterCondition = {};
+            filterCondition["dcm.id"] = this.drawId;
+        try
+        {
+            this._userService.fetchDrawData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.drawResponseInformation = res;
+                if(this.drawResponseInformation.success == true)
+                {
+                    this.drawResponseInformationData = this.drawResponseInformation.data[0];
+
+                    this.drawResponseInformationData['cpCity'] = (this.drawResponseInformationData['cpCity'] == null && this.drawResponseInformationData['cpCity'] == '') ? '' : this.drawResponseInformationData['cpCity'];
+
+                    var cpTime = this.drawResponseInformationData['cpTime'];
+                    var cpDate = this.drawResponseInformationData['cpDate'];
+                    var cpCity = this.drawResponseInformationData['cpCity'];
+                    var cityName = this.drawResponseInformationData['cityName'];
+
+                    var current_date = (cpDate != '') ? cpDate : moment(new Date()).format("YYYY-MM-DD")
+                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
+                    var cityID = (cpCity != '') ? cpCity : '0';
+
+                    console.log(current_date);
+
+                    this.OwnersFirstCounterForm = this._formBuilder.group
+                    (
+                        {
+                            cpTime: [current_time, Validators.required],
+                            cityId: [cityID, Validators.required],
+                            cpDate: [current_date, Validators.required],
+                        }
+                    );
+
+                    this.cpDate = current_date;
+
+                    this.checkedClauseCategory = [];
+
+                    var checked_clauses = this.drawResponseInformation.data[0].checked_clauses;
+
+                    console.log(checked_clauses);
+
+                    if(checked_clauses != '' && checked_clauses != null)
+                    {
+                        this.checkedClauseCategory = checked_clauses.split(',');
+                    } else {
+                        this.checkedClauseCategory = [];
+                    }
+
+                    var checkedCheckBoxArray = this.checkedClauseCategory;
+                    this.checkedClauseCategory = [];
+                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
+                    {
+                        this.checkedClauseCategory.push(Number(checkedCheckBoxArray[index]));
+                    }
+
+                    console.log(this.checkedClauseCategory," Main Checked CLause Categogry CHeckBox  ");
+
+                    localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
+
+                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
+                    this.chartererName = this.drawResponseInformation.data[0].chartererName;
+                    this.brokerName = this.drawResponseInformation.data[0].brokerName;
+
+                    this.clauseCategoryRecordsServerSide();
+
+                    var cpTime = this.drawResponseInformationData['cpTime'];
+                    var cpDate = this.drawResponseInformationData['cpDate'];
+                    var cityName = this.drawResponseInformationData['cityName'];
+
+                    current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
+                    var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
+                    var cityID = (cityName != '') ? cityName : '0';
+
+                    this.cpDate = current_date;
+
+                    this.cityName = cityName;
+                    this.cpDate = current_date;
+                    this.cpTime = cpTime;
+
+                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
+                    this.chartererName = this.drawResponseInformation.data[0].chartererName;
+                    this.brokerName = this.drawResponseInformation.data[0].brokerName;
+
+                    this.vesselId = this.drawResponseInformation.data[0].vesselId;
+
+                    this.fetchVesselData();
+                    
                 }
             });
         }catch (err){}
@@ -847,31 +908,6 @@ export class DrawCpClausesComponent implements OnInit
         }catch (err){}
     }
     
-    // Fetch Vessel Data
-    fetchVesselData()
-    {
-        var filterCondition = {};
-            filterCondition["id"] = this.vesselId;
-        try
-        {
-            this._userService.fetchVesselData(filterCondition).pipe(first()).subscribe((res) =>
-            {
-                this.vesselDataResponse = res;
-                if(this.vesselDataResponse.success == true)
-                {
-                    this.vesselDataResponseArray = this.vesselDataResponse.data[0];
-                    
-                    this.vesselName = this.vesselDataResponse.data[0].vessel_name;
-                    this.imoNumber = this.vesselDataResponse.data[0].imo;
-                    this.vesselFlag = this.vesselDataResponse.data[0].flageName;
-                    this.vesselYear = this.vesselDataResponse.data[0].built_year;
-                    this.vesselDescription = this.vesselDataResponse.data[0].vessel_info;
-                }
-            });
-        }catch (err){}
-    }
-
-
     // Clause Category Records Server Side
     clauseCategoryRecordsServerSideRecap()
     {
@@ -925,8 +961,6 @@ export class DrawCpClausesComponent implements OnInit
             });
         }catch (err){}
     }
-
-    
 
     // First Screen View
     firstScreenView()
@@ -1078,9 +1112,6 @@ export class DrawCpClausesComponent implements OnInit
     }
 
     get f() { return this.OwnersFirstCounterForm.controls; }
-
-    
-
 
     // Check / Uncheck All Of Clause Terms Of Clause Category
     checkUncheckAllForClauseTerms(ev,clauseCategoryID)
@@ -1558,371 +1589,421 @@ export class DrawCpClausesComponent implements OnInit
         
     }
 
-    // Main Data Record Fetch Start
-    termsReviewRecords(): void
+    dynamicDatePickerChange()
     {
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        
-        var drawId = filter.drawId;
-        var tradingId = filter.tradingId;
-        var formID = filter.formId;
-        var chartererId = filter.chartererId;
-        var companyId = filter.companyId;
-        var isTrading = filter.isTrading;
-
-        this.tradingId = tradingId;
-        this.drawId = drawId;
-        this.formId = formID;
-        this.chartererId = chartererId;
-
-        localStorage.setItem('tradingId', tradingId);
-        localStorage.setItem('drawId', drawId);
-        localStorage.setItem('cpFormId', formID);
-
-        this.commonClausesArray = [];
-        localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
-
-        this.commonClausesCustomArray = [];
-        localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
-
-        this.commonClausesCustomClauseTermArray = [];
-        localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
-
-        if (isTrading == '2')
-        {
-            var drawCondition = {};
-                drawCondition["dcm.id"] = drawId;
-
-            try
-            {
-                this._userService.drawRecordsServerSide(drawCondition).pipe(first()).subscribe((res) =>
-                {
-                    this.drawResponse = res;
-                    if (this.drawResponse.success === true)
-                    {
-
-                        var cpDate = this.drawResponse.data[0].cpDate;
-                        var cpTime = this.drawResponse.data[0].cpTime;
-                        var cpCity = this.drawResponse.data[0].cpCity;
-
-                        console.log(cpDate);
-                        console.log(cpTime);
-                        console.log(cpCity);
-
-                        var current_date = (cpDate != '' && cpDate != null) ? cpDate : moment(new Date()).format("YYYY-MM-DD")
-                        var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
-                        var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
-
-                        console.log(current_date);
-                        console.log(current_time);
-                        console.log(cityID);
-
-                        this.OwnersFirstCounterForm = this._formBuilder.group
-                        (
-                            {
-                                cpTime: [current_time, Validators.required],
-                                cityId: [cityID, Validators.required],
-                                cpDate: [current_date, Validators.required],
-                            }
-                        );
-
-
-                        var commonClauses = this.drawResponse.data[0].common_clauses;
-                        
-                        if(commonClauses != '' && commonClauses != null)
-                        {
-                            this.commonClausesArray = commonClauses.split(',');
-                        } else {
-                            this.commonClausesArray = [];
-                        }
-
-                        localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
-                        var commonClausesArray = JSON.parse(localStorage.getItem('commonClausesArray'));
-
-                        var custom_term_clause = this.drawResponse.data[0].custom_term_clause;
-                        
-                        if(custom_term_clause != '' && custom_term_clause != null)
-                        {
-                            this.commonClausesCustomArray = custom_term_clause.split(',');
-                        } else {
-                            this.commonClausesCustomArray = [];
-                        }
-                        
-                        localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
-                        var commonClausesCustomArray = JSON.parse(localStorage.getItem('commonClausesCustomArray'));
-
-                        var custom_common_clause = this.drawResponse.data[0].custom_common_clause;
-                        
-                        if(custom_common_clause != '' && custom_common_clause != null)
-                        {
-                            this.commonClausesCustomClauseTermArray = custom_common_clause.split(',');
-                        } else {
-                            this.commonClausesCustomClauseTermArray = [];
-                        }
-                        
-                        localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
-                        var commonClausesCustomClauseTermArray = JSON.parse(localStorage.getItem('commonClausesCustomClauseTermArray'));
-
-                        this.checkedClauseCategory = [];
-
-                        var checked_clauses = this.drawResponse.data[0].checked_clauses;
-                        
-                        if(checked_clauses != '' && checked_clauses != null)
-                        {
-                            this.checkedClauseCategory = checked_clauses.split(',');
-                        } else {
-                            this.checkedClauseCategory = [];
-                        }
-
-                        localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
-
-                        var checkedCheckBoxArray = this.commonClausesArray;
-                        this.checkedCheckBox = [];
-                        for (let subIndex = 0; subIndex < checkedCheckBoxArray.length; subIndex++)
-                        {
-                            this.checkedCheckBox.push(Number(checkedCheckBoxArray[subIndex]));
-                        }
-
-                        var customArray1 = this.commonClausesCustomArray;
-                        this.checkedCheckBoxCustom = [];
-                        for (let subIndex = 0; subIndex < customArray1.length; subIndex++)
-                        {
-                            this.checkedCheckBoxCustom.push(Number(customArray1[subIndex]));
-                        }
-
-                        var customArray2 = this.commonClausesCustomClauseTermArray;
-                        this.checkedCheckBoxCustomClauseTerms = [];
-                        for (let subIndex = 0; subIndex < customArray2.length; subIndex++)
-                        {
-                            this.checkedCheckBoxCustomClauseTerms.push(Number(customArray2[subIndex]));
-                        }
-
-                        var customArray3 = this.checkedClauseCategory;
-                        this.checkedClauseCategory = [];
-                        for (let subIndex = 0; subIndex < customArray3.length; subIndex++)
-                        {
-                            this.checkedClauseCategory.push(Number(customArray3[subIndex]));
-                        }
-
-                        console.log(this.checkedClauseCategory);
-                        
-                        var customArray4 = this.checkedClauseCategory;
-                        var startLength = 0;
-                        var endLength = 0;
-                        for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
-                        {
-                            startLength = startLength + 1;
-                            if(customArray4.indexOf(this.clauseCategoryRecordResponseData[index].id) >= 0)
-                            {
-                                endLength = endLength + 1;
-                            }
-                        }
-
-                        this.clauseCategoryRecordResponseDataAllChecked =  'N';
-                        if (startLength == endLength )
-                        {
-                            this.clauseCategoryRecordResponseDataAllChecked =  'Y';
-                        }
-
-                        this.termsReviewRecordsData = [];
-
-                        var clauseCategoryFilterCondition = {};
-                            clauseCategoryFilterCondition["cpFormId"] = formID;
-                            clauseCategoryFilterCondition["drawId"] = drawId;
-                            clauseCategoryFilterCondition["companyId"] = companyId;
-                            clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
-                            clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
-                            clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
-
-                            this.termsReviewRecordsData = [];
-                        try
-                        {
-                            this._userService.mainClauseScreenDataRecords(clauseCategoryFilterCondition).pipe(first()).subscribe((res) =>
-                            {
-                                this.termsReviewRecordsResponse = res;
-                                if (this.termsReviewRecordsResponse.success === true)
-                                {
-                                    this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
-                                    console.log("test",this.termsReviewRecordsData);
-                                    
-                                    var totalCount = 0;
-                                    for (let index = 0; index < this.termsReviewRecordsData.length; index++)
-                                    {
-                                        totalCount = totalCount + 1;
-                                        for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
-                                        {
-                                            this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-                                        }
-                                        for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
-                                        {
-                                            this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-                                        }
-                                    }
-                                    this.totalTermsReviewRecords = totalCount;
-                                    this.customClauseDataRecords();
-                                }
-                            },
-                            err =>
-                            {
-                                this.alertService.error(err, 'Error');
-                            });
-                        } catch (err) {}
-                    }
-                });
-            } catch (err) { }
-
-        } else {
-            
-            var drawCondition = {};    
-                drawCondition["id"] = tradingId;
-            try
-            {
-                this._userService.TradingData(drawCondition).pipe(first()).subscribe((res) =>
-                {
-                    this.tradingResponse = res;
-                    if (this.tradingResponse.success === true)
-                    {
-                        var cpDate = this.tradingResponse.data[0].cpDate;
-                        var cpTime = this.tradingResponse.data[0].cpTime;
-                        var cpCity = this.tradingResponse.data[0].cpCity;
-
-                        var current_date = (cpDate != '' && cpDate != null) ? cpDate : moment(new Date()).format("YYYY-MM-DD")
-                        var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
-                        var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
-                        
-                        this.OwnersFirstCounterForm = this._formBuilder.group
-                        (
-                            {
-                                cpTime: [current_time, Validators.required],
-                                cityId: [cityID, Validators.required],
-                                cpDate: [current_date, Validators.required],
-                            }
-                        );
-
-                        
-                        var commonClauses = this.tradingResponse.data[0].common_clauses;
-                    
-                        if(commonClauses != '' && commonClauses != null)
-                        {
-                            this.commonClausesArray = commonClauses.split(',');
-                        } else {
-                            this.commonClausesArray = [];
-                        }
-
-                        localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
-                        var commonClausesArray = JSON.parse(localStorage.getItem('commonClausesArray'));
-
-                        var custom_term_clause = this.tradingResponse.data[0].custom_term_clause;
-                        
-                        if(custom_term_clause != '' && custom_term_clause != null)
-                        {
-                            this.commonClausesCustomArray = custom_term_clause.split(',');
-                        } else {
-                            this.commonClausesCustomArray = [];
-                        }
-                        
-                        localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
-                        var commonClausesCustomArray = JSON.parse(localStorage.getItem('commonClausesCustomArray'));
-
-                        var custom_common_clause = this.tradingResponse.data[0].custom_common_clause;
-                        
-                        if(custom_common_clause != '' && custom_common_clause != null)
-                        {
-                            this.commonClausesCustomClauseTermArray = custom_common_clause.split(',');
-                        } else {
-                            this.commonClausesCustomClauseTermArray = [];
-                        }
-                        
-                        localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
-                        var commonClausesCustomClauseTermArray = JSON.parse(localStorage.getItem('commonClausesCustomClauseTermArray'));
-
-                        var checkedCheckBoxArray = this.commonClausesArray;
-                        this.checkedCheckBox = [];
-                        for (let subIndex = 0; subIndex < checkedCheckBoxArray.length; subIndex++)
-                        {
-                            this.checkedCheckBox.push(Number(checkedCheckBoxArray[subIndex]));
-                        }
-
-                        var commonClauseCustomArray = this.commonClausesCustomArray;
-                        this.checkedCheckBoxCustom = [];
-                        for (let subIndex = 0; subIndex < commonClauseCustomArray.length; subIndex++)
-                        {
-                            this.checkedCheckBoxCustom.push(Number(commonClauseCustomArray[subIndex]));
-                        }
-
-                        var checkboxCustomArrayTerm = this.commonClausesCustomClauseTermArray;
-                        this.checkedCheckBoxCustomClauseTerms = [];
-                        for (let subIndex = 0; subIndex < checkboxCustomArrayTerm.length; subIndex++)
-                        {
-                            this.checkedCheckBoxCustomClauseTerms.push(Number(checkboxCustomArrayTerm[subIndex]));
-                        }
-
-                        // var checkedCheckBoxArray = this.checkedClauseCategory;
-                        // var startLength = 0;
-                        // var endLength = 0;
-                        // for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
-                        // {
-                        //     startLength = startLength + 1;
-                        //     if(checkedCheckBoxArray.indexOf(this.clauseCategoryRecordResponseData[index].id) >= 0)
-                        //     {
-                        //         endLength = endLength + 1;
-                        //     }
-                        // }
-                        // this.clauseCategoryRecordResponseDataAllChecked =  'N';
-                        // if (startLength == endLength )
-                        // {
-                        //     this.clauseCategoryRecordResponseDataAllChecked =  'Y';
-                        // }
-
-                        this.termsReviewRecordsData = [];
-            
-                        var clauseCategoryFilterCondition = {};
-                            clauseCategoryFilterCondition["cpFormId"] = formID;
-                            clauseCategoryFilterCondition["tradingId"] = tradingId;
-                            clauseCategoryFilterCondition["companyId"] = companyId;
-                            clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
-                            clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
-                            clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
-
-                        try
-                        {
-                            this._userService.mainClauseScreenDataRecordsTrading(clauseCategoryFilterCondition).pipe(first()).subscribe((res) =>
-                            {
-                                this.termsReviewRecordsResponse = res;
-                                if (this.termsReviewRecordsResponse.success === true)
-                                {
-                                    this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
-                                    var totalCount = 0;
-                                    for (let index = 0; index < this.termsReviewRecordsData.length; index++)
-                                    {
-                                        totalCount = totalCount + 1;
-                                        for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
-                                        {
-                                            this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-                                        }
-                                        for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
-                                        {
-                                            this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
-                                        }
-                                    }
-                                    this.totalTermsReviewRecords = totalCount;
-                                    this.customClauseDataRecords();
-                                }
-                            },
-                            err =>
-                            {
-                                this.alertService.error(err, 'Error');
-                            });
-                        } catch (err) {}
-                    }
-                });
-            } catch (err) {}
+        this.dynamicStringUpdateArray = [];
+        var slides = document.getElementsByClassName("dynamicInputValueForAll");
+        for(var i = 0; i < slides.length; i++)
+        {  
+            var valueInfo = slides[i];
+            this.dynamicStringUpdateArray.push(valueInfo['value']);
         }
+        console.log(this.dynamicStringUpdateArray);
     }
 
-    
+      // Main Data Record Fetch Start
+      termsReviewRecords(): void
+      {
+          var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+          
+          var drawId = filter.drawId;
+          var tradingId = filter.tradingId;
+          var formID = filter.formId;
+          var chartererId = filter.chartererId;
+          var companyId = filter.companyId;
+          var isTrading = filter.isTrading;
+  
+          this.tradingId = tradingId;
+          this.drawId = drawId;
+          this.formId = formID;
+          this.chartererId = chartererId;
+  
+          localStorage.setItem('tradingId', tradingId);
+          localStorage.setItem('drawId', drawId);
+          localStorage.setItem('cpFormId', formID);
+  
+          this.commonClausesArray = [];
+          localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
+  
+          this.commonClausesCustomArray = [];
+          localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
+  
+          this.commonClausesCustomClauseTermArray = [];
+          localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
+  
+          if (isTrading == '2')
+          {
+              var drawCondition = {};
+                  drawCondition["dcm.id"] = drawId;
+  
+              try
+              {
+                  this._userService.drawRecordsServerSide(drawCondition).pipe(first()).subscribe((res) =>
+                  {
+                      this.drawResponse = res;
+                      if (this.drawResponse.success === true)
+                      {
+  
+                          var cpDate = this.drawResponse.data[0].cpDate;
+                          var cpTime = this.drawResponse.data[0].cpTime;
+                          var cpCity = this.drawResponse.data[0].cpCity;
+  
+                          console.log(cpDate);
+                          console.log(cpTime);
+                          console.log(cpCity);
+  
+                          var current_date = (cpDate != '' && cpDate != null) ? cpDate : moment(new Date()).format("YYYY-MM-DD")
+                          var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
+                          var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
+  
+                          console.log(current_date);
+                          console.log(current_time);
+                          console.log(cityID);
+  
+                          this.OwnersFirstCounterForm = this._formBuilder.group
+                          (
+                              {
+                                  cpTime: [current_time, Validators.required],
+                                  cityId: [cityID, Validators.required],
+                                  cpDate: [current_date, Validators.required],
+                              }
+                          );
+  
+  
+                          var commonClauses = this.drawResponse.data[0].common_clauses;
+                          
+                          if(commonClauses != '' && commonClauses != null)
+                          {
+                              this.commonClausesArray = commonClauses.split(',');
+                          } else {
+                              this.commonClausesArray = [];
+                          }
+  
+                          localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
+                          var commonClausesArray = JSON.parse(localStorage.getItem('commonClausesArray'));
+  
+                          var custom_term_clause = this.drawResponse.data[0].custom_term_clause;
+                          
+                          if(custom_term_clause != '' && custom_term_clause != null)
+                          {
+                              this.commonClausesCustomArray = custom_term_clause.split(',');
+                          } else {
+                              this.commonClausesCustomArray = [];
+                          }
+                          
+                          localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
+                          var commonClausesCustomArray = JSON.parse(localStorage.getItem('commonClausesCustomArray'));
+  
+                          var custom_common_clause = this.drawResponse.data[0].custom_common_clause;
+                          
+                          if(custom_common_clause != '' && custom_common_clause != null)
+                          {
+                              this.commonClausesCustomClauseTermArray = custom_common_clause.split(',');
+                          } else {
+                              this.commonClausesCustomClauseTermArray = [];
+                          }
+                          
+                          localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
+                          var commonClausesCustomClauseTermArray = JSON.parse(localStorage.getItem('commonClausesCustomClauseTermArray'));
+  
+                          this.checkedClauseCategory = [];
+  
+                          var checked_clauses = this.drawResponse.data[0].checked_clauses;
+                          
+                          if(checked_clauses != '' && checked_clauses != null)
+                          {
+                              this.checkedClauseCategory = checked_clauses.split(',');
+                          } else {
+                              this.checkedClauseCategory = [];
+                          }
+  
+                          localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
+  
+                          var checkedCheckBoxArray = this.commonClausesArray;
+                          this.checkedCheckBox = [];
+                          for (let subIndex = 0; subIndex < checkedCheckBoxArray.length; subIndex++)
+                          {
+                              this.checkedCheckBox.push(Number(checkedCheckBoxArray[subIndex]));
+                          }
+  
+                          var customArray1 = this.commonClausesCustomArray;
+                          this.checkedCheckBoxCustom = [];
+                          for (let subIndex = 0; subIndex < customArray1.length; subIndex++)
+                          {
+                              this.checkedCheckBoxCustom.push(Number(customArray1[subIndex]));
+                          }
+  
+                          var customArray2 = this.commonClausesCustomClauseTermArray;
+                          this.checkedCheckBoxCustomClauseTerms = [];
+                          for (let subIndex = 0; subIndex < customArray2.length; subIndex++)
+                          {
+                              this.checkedCheckBoxCustomClauseTerms.push(Number(customArray2[subIndex]));
+                          }
+  
+                          var customArray3 = this.checkedClauseCategory;
+                          this.checkedClauseCategory = [];
+                          for (let subIndex = 0; subIndex < customArray3.length; subIndex++)
+                          {
+                              this.checkedClauseCategory.push(Number(customArray3[subIndex]));
+                          }
+  
+                          console.log(this.checkedClauseCategory);
+                          
+                          var customArray4 = this.checkedClauseCategory;
+                          var startLength = 0;
+                          var endLength = 0;
+                          for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
+                          {
+                              startLength = startLength + 1;
+                              if(customArray4.indexOf(this.clauseCategoryRecordResponseData[index].id) >= 0)
+                              {
+                                  endLength = endLength + 1;
+                              }
+                          }
+  
+                          this.clauseCategoryRecordResponseDataAllChecked =  'N';
+                          if (startLength == endLength )
+                          {
+                              this.clauseCategoryRecordResponseDataAllChecked =  'Y';
+                          }
+  
+                          this.termsReviewRecordsData = [];
+  
+                          var clauseCategoryFilterCondition = {};
+                              clauseCategoryFilterCondition["cpFormId"] = formID;
+                              clauseCategoryFilterCondition["drawId"] = drawId;
+                              clauseCategoryFilterCondition["companyId"] = companyId;
+                              clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
+                              clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
+                              clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
+  
+                              this.termsReviewRecordsData = [];
+                          try
+                          {
+                              this._userService.mainClauseScreenDataRecords(clauseCategoryFilterCondition).pipe(first()).subscribe((res) =>
+                              {
+                                  this.termsReviewRecordsResponse = res;
+                                  if (this.termsReviewRecordsResponse.success === true)
+                                  {
+                                      this.mainDynamicStringArray = [];
+  
+                                      this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
+  
+                                      var totalCount = 0;
+                                      for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+                                      {
+                                          totalCount = totalCount + 1;
+                                          for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+                                          {
+                                            var number =   sindex + 1;
+                                            var timeStamp = 'dynamicInputValueForAll'+Date.now()+number;
+  
+                                              var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+  
+                                              if(mainString != '' && mainString != null && mainString != undefined)
+                                              {
+                                                  mainString = mainString.replace(/<[^>]*>/g, '');
+                                                  console.log(mainString,"Main String Print");
+                                                  this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = 
+                                                  this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
+                                              } else {
+                                                  this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = '';
+                                              }
+  
+                                              this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainString'] = mainString;
+                                              this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['timeStamp'] = timeStamp;
+                                              
+                                              this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                                          }
+                                          
+                                          for (let sindexCustom = 0; sindexCustom < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindexCustom++)
+                                          {
+                                            var number =   sindexCustom + 1;
+                                            var timeStamp = 'dynamicInputValueForAll'+Date.now()+number;
+  
+                                              var mainString = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustom'];
+  
+                                              if(mainString != '' && mainString != null && mainString != undefined)
+                                              {
+                                                  mainString = mainString.replace(/<[^>]*>/g, '');
+                                                  this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustomArray'] = 
+                                                  this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
+                                              } else {
+                                                  this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustomArray'] = '';
+                                              }
+  
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainString'] = mainString;
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['timeStamp'] = timeStamp;
+  
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['identifier'] = String.fromCharCode(97 + sindexCustom);
+                                          }
+                                      }
+  
+                                      console.log(this.termsReviewRecordsData);
+  
+                                      this.totalTermsReviewRecords = totalCount;
+                                      this.customClauseDataRecords();
+                                  }
+                              },
+                              err =>
+                              {
+                                  this.alertService.error(err, 'Error');
+                              });
+                          } catch (err) {}
+                      }
+                  });
+              } catch (err) { }
+  
+          } else {
+              
+              var drawCondition = {};    
+                  drawCondition["id"] = tradingId;
+              try
+              {
+                  this._userService.TradingData(drawCondition).pipe(first()).subscribe((res) =>
+                  {
+                      this.tradingResponse = res;
+                      if (this.tradingResponse.success === true)
+                      {
+                          var cpDate = this.tradingResponse.data[0].cpDate;
+                          var cpTime = this.tradingResponse.data[0].cpTime;
+                          var cpCity = this.tradingResponse.data[0].cpCity;
+  
+                          var current_date = (cpDate != '' && cpDate != null) ? cpDate : moment(new Date()).format("YYYY-MM-DD")
+                          var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
+                          var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
+                          
+                          this.OwnersFirstCounterForm = this._formBuilder.group
+                          (
+                              {
+                                  cpTime: [current_time, Validators.required],
+                                  cityId: [cityID, Validators.required],
+                                  cpDate: [current_date, Validators.required],
+                              }
+                          );
+  
+                          
+                          var commonClauses = this.tradingResponse.data[0].common_clauses;
+                      
+                          if(commonClauses != '' && commonClauses != null)
+                          {
+                              this.commonClausesArray = commonClauses.split(',');
+                          } else {
+                              this.commonClausesArray = [];
+                          }
+  
+                          localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
+                          var commonClausesArray = JSON.parse(localStorage.getItem('commonClausesArray'));
+  
+                          var custom_term_clause = this.tradingResponse.data[0].custom_term_clause;
+                          
+                          if(custom_term_clause != '' && custom_term_clause != null)
+                          {
+                              this.commonClausesCustomArray = custom_term_clause.split(',');
+                          } else {
+                              this.commonClausesCustomArray = [];
+                          }
+                          
+                          localStorage.setItem('commonClausesCustomArray', JSON.stringify(this.commonClausesCustomArray));
+                          var commonClausesCustomArray = JSON.parse(localStorage.getItem('commonClausesCustomArray'));
+  
+                          var custom_common_clause = this.tradingResponse.data[0].custom_common_clause;
+                          
+                          if(custom_common_clause != '' && custom_common_clause != null)
+                          {
+                              this.commonClausesCustomClauseTermArray = custom_common_clause.split(',');
+                          } else {
+                              this.commonClausesCustomClauseTermArray = [];
+                          }
+                          
+                          localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
+                          var commonClausesCustomClauseTermArray = JSON.parse(localStorage.getItem('commonClausesCustomClauseTermArray'));
+  
+                          var checkedCheckBoxArray = this.commonClausesArray;
+                          this.checkedCheckBox = [];
+                          for (let subIndex = 0; subIndex < checkedCheckBoxArray.length; subIndex++)
+                          {
+                              this.checkedCheckBox.push(Number(checkedCheckBoxArray[subIndex]));
+                          }
+  
+                          var commonClauseCustomArray = this.commonClausesCustomArray;
+                          this.checkedCheckBoxCustom = [];
+                          for (let subIndex = 0; subIndex < commonClauseCustomArray.length; subIndex++)
+                          {
+                              this.checkedCheckBoxCustom.push(Number(commonClauseCustomArray[subIndex]));
+                          }
+  
+                          var checkboxCustomArrayTerm = this.commonClausesCustomClauseTermArray;
+                          this.checkedCheckBoxCustomClauseTerms = [];
+                          for (let subIndex = 0; subIndex < checkboxCustomArrayTerm.length; subIndex++)
+                          {
+                              this.checkedCheckBoxCustomClauseTerms.push(Number(checkboxCustomArrayTerm[subIndex]));
+                          }
+  
+                          // var checkedCheckBoxArray = this.checkedClauseCategory;
+                          // var startLength = 0;
+                          // var endLength = 0;
+                          // for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
+                          // {
+                          //     startLength = startLength + 1;
+                          //     if(checkedCheckBoxArray.indexOf(this.clauseCategoryRecordResponseData[index].id) >= 0)
+                          //     {
+                          //         endLength = endLength + 1;
+                          //     }
+                          // }
+                          // this.clauseCategoryRecordResponseDataAllChecked =  'N';
+                          // if (startLength == endLength )
+                          // {
+                          //     this.clauseCategoryRecordResponseDataAllChecked =  'Y';
+                          // }
+  
+                          this.termsReviewRecordsData = [];
+              
+                          var clauseCategoryFilterCondition = {};
+                              clauseCategoryFilterCondition["cpFormId"] = formID;
+                              clauseCategoryFilterCondition["tradingId"] = tradingId;
+                              clauseCategoryFilterCondition["companyId"] = companyId;
+                              clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
+                              clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
+                              clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
+  
+                          try
+                          {
+                              this._userService.mainClauseScreenDataRecordsTrading(clauseCategoryFilterCondition).pipe(first()).subscribe((res) =>
+                              {
+                                  this.termsReviewRecordsResponse = res;
+                                  if (this.termsReviewRecordsResponse.success === true)
+                                  {
+                                      this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
+                                      var totalCount = 0;
+                                      for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+                                      {
+                                          totalCount = totalCount + 1;
+                                          for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+                                          {
+                                              this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                                          }
+                                          for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+                                          {
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                                          }
+                                      }
+                                      this.totalTermsReviewRecords = totalCount;
+                                      this.customClauseDataRecords();
+                                  }
+                              },
+                              err =>
+                              {
+                                  this.alertService.error(err, 'Error');
+                              });
+                          } catch (err) {}
+                      }
+                  });
+              } catch (err) {}
+          }
+      }
 
-    customClauseDataRecords() : void
+      customClauseDataRecords() : void
     {
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         var drawId = filter.drawId;
@@ -1951,6 +2032,23 @@ export class DrawCpClausesComponent implements OnInit
                         newCount = newCount + 1;
                         for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTerms.length; sindex++)
                         {
+                            var number =   sindex + 1;
+                            var timeStamp = 'dynamicInputValueForAll'+Date.now()+number;
+
+                            var mainString = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+
+                            if(mainString != '' && mainString != null && mainString != undefined)
+                            {
+                                mainString = mainString.replace(/<[^>]*>/g, '');
+                                this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainTermRecordCustomArray'] = 
+                                this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
+                            } else {
+                                this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainTermRecordCustomArray'] = '';
+                            }
+
+                            this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainString'] = mainString;
+                            this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['timeStamp'] = timeStamp;
+
                             this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
                         }
                         for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
@@ -1968,6 +2066,521 @@ export class DrawCpClausesComponent implements OnInit
         } catch (err) { }
     }
 
+  
+
+    updateDynamicString(className,type)
+    {
+       
+        console.log('HERE In TIME PICKER ON CHANGE');
+        console.log(className);
+
+        var mainDataArrayOfString = this.mainDynamicStringArray;
+
+        var valueInfo = '';
+        var timeStampInfo = '';
+        var mainString = '';
+
+        for(var i = 0; i < mainDataArrayOfString.length; i++)
+        {
+            valueInfo = mainDataArrayOfString[i];
+            timeStampInfo = valueInfo['timeStamp'];
+            if(timeStampInfo == className)
+            {
+                mainString = valueInfo['mainString'];
+                // return false;
+            }
+        }
+
+        var updatedStringValuesArray = [];
+
+        var slides = document.getElementsByClassName(className);
+        
+        var finalString = mainString
+
+        if(slides.length > 0)
+        {
+            var mainString = finalString;
+            finalString = '';
+            
+            for(var i = 0; i < slides.length; i++)
+            {  
+                var valueOfUpdatedSting = slides[i];
+                updatedStringValuesArray.push(valueOfUpdatedSting['value']);
+            }
+
+            var dynamicStringArray = mainString.split(' ');
+            var stringNumber = 0;
+            for (let index = 0; index < dynamicStringArray.length; index++)
+            {
+                var stringToAttach = dynamicStringArray[index];
+
+                var currentData = dynamicStringArray[index];
+                var currentDataInfo = currentData.split('@');
+
+                var currentTimer = dynamicStringArray[index];
+                var currentTimerInfo = currentTimer.split('||');
+
+                var currentNumber = dynamicStringArray[index];
+                var currentNumberInfo = currentNumber.split('$');
+
+                if(currentDataInfo[1] != '' && currentDataInfo[1] != null && currentDataInfo[1] != undefined)
+                {   
+                    var date = moment(updatedStringValuesArray[stringNumber]).format("YYYY-MM-DD");
+                    stringToAttach = '#date@'+date;
+                    stringNumber = stringNumber + 1;
+                }
+
+                if(currentTimerInfo[1] != '' && currentTimerInfo[1] != null && currentTimerInfo[1] != undefined)
+                {
+                    var time = updatedStringValuesArray[stringNumber];
+                    stringToAttach = '#time||'+time;
+                    stringNumber = stringNumber + 1;
+                }
+
+                if(currentNumberInfo[1] != '' && currentNumberInfo[1] != null && currentNumberInfo[1] != undefined)
+                {
+                    var number = updatedStringValuesArray[stringNumber];
+                    stringToAttach = '#number$'+number;
+                    stringNumber = stringNumber + 1;
+                }
+                finalString += ' '+stringToAttach;
+            }
+        }
+        console.log(finalString);
+        
+        if(type == 'CustomClauseTerms')
+        {
+            for (let index = 0; index < this.customClauseDataResponseData.length; index++)
+            {
+                for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTerms.length; sindex++)
+                {
+                    var mainTimeStamp = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['timeStamp'];
+                    var mainTermString = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainString'];
+
+                    if(mainTimeStamp == className)
+                    {
+                        this.customTermsOfCustomClauseEditCustomClauseID = this.customClauseDataResponseData[index].id;
+                        this.customTermsOfCustomClauseEditParentID = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex].id;
+                        this.tmpeditclausetext = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex].termsName;
+                        this.termsName = finalString;
+
+                        const req =
+                        {   
+                            mainUserId: localStorage.getItem('userId'),
+                            companyId: localStorage.getItem('companyId'),
+                            drawId: this.drawId,
+                            tradingId: this.tradingId,
+                            formId: this.formId,
+                            customCluaseCategoryId: this.customTermsOfCustomClauseEditCustomClauseID,
+                            customClauseTermsId: this.customTermsOfCustomClauseEditParentID,
+                            nos: '1',
+                            termsNameOrginal: '',
+                            termsName: finalString,
+                            createdBy: localStorage.getItem('userId'),
+                            updatedBy: localStorage.getItem('userId'),
+                            isCustom: 'Y'
+                        };
+
+                        try
+                        {
+                            const header = new HttpHeaders(); header.append('Content-Type', 'application/json');
+                            const headerOptions = { headers: header }
+                            this.http.post(`${config.baseUrl}/CustomClauseTermsInsert`, req, headerOptions).subscribe(res =>
+                            {   this.termsUpdateRes = res; this.editclausetext = '';    });
+                        } catch (err) {}
+                    }
+                }
+            }
+        } else {
+            for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+            {
+                if(type == 'Main')
+                {
+                    for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+                    {
+                        var mainTimeStamp = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['timeStamp'];
+                        var mainTermString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainString'];
+
+                        if(mainTimeStamp == className)
+                        {
+                            this.editClauseTermOfMainClauseCategoryID = this.termsReviewRecordsData[index].id;
+                            this.editClauseTermOfMainClauseID = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].id;
+                            this.tmpeditclausetext = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].termsName;
+                            this.termsName = finalString;
+
+                            const req =
+                            {   
+                                mainUserId: localStorage.getItem('userId'),
+                                companyId: localStorage.getItem('companyId'),
+                                drawId: this.drawId,
+                                tradingId: this.tradingId,
+                                formId: this.formId,
+                                clauseCategoryId: this.editClauseTermOfMainClauseCategoryID,
+                                clauseTermsId: this.editClauseTermOfMainClauseID,
+                                
+                                nos: '1',
+                                termsNameOrginal: this.tmpeditclausetext,
+                                termsName: finalString,
+                                createdBy: localStorage.getItem('userId'),
+                                updatedBy: localStorage.getItem('userId'),
+                                // isCustom: 'Y'
+                            };
+
+                            try
+                            {
+                                const header = new HttpHeaders(); header.append('Content-Type', 'application/json');
+                                const headerOptions = { headers: header }
+                                this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(res =>
+                                {   this.termsUpdateRes = res; this.editclausetext = '';    });
+                            } catch (err) {}
+                        }
+                    
+                    }
+                }
+
+                if(type == 'Custom')
+                {
+                    for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+                    {
+                        var mainTimeStamp = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['timeStamp'];
+                        
+                        if(mainTimeStamp == className)
+                        {
+                        
+                            this.editClauseTermOfMainClauseCategoryID = this.termsReviewRecordsData[index].id;
+                            this.editClauseTermOfMainClauseID = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex].id;
+                            this.tmpeditclausetext = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex].termsName;
+                            this.termsName = finalString;
+
+                            const req =
+                            {   
+                                mainUserId: localStorage.getItem('userId'),
+                                companyId: localStorage.getItem('companyId'),
+                                drawId: this.drawId,
+                                tradingId: this.tradingId,
+                                formId: this.formId,
+                                clauseCategoryId: this.editClauseTermOfMainClauseCategoryID,
+                                clauseTermsId: this.editClauseTermOfMainClauseID,
+                                parentId: this.editClauseTermOfMainClauseID,
+                                nos: '1',
+                                termsNameOrginal: this.tmpeditclausetext,
+                                termsName: finalString,
+                                createdBy: localStorage.getItem('userId'),
+                                updatedBy: localStorage.getItem('userId'),
+                                isCustom: 'Y'
+                            };
+
+                            try
+                            {
+                                const header = new HttpHeaders(); header.append('Content-Type', 'application/json');
+                                const headerOptions = { headers: header }
+                                this.http.post(`${config.baseUrl}/customClauseDetailsInsert`, req, headerOptions).subscribe(res =>
+                                {   this.termsUpdateRes = res; this.editclausetext = ''; this.editCustomClauseTermDataInput = '';    });
+                            } catch (err) {}
+                        }
+                    }
+                }
+            }
+        }
+
+        
+    }
+
+    createNewString()
+    {
+        console.log('HERE');
+        var finalStringArray = [];
+        var mainDataArrayOfString = this.mainDynamicStringArray;
+        console.log(mainDataArrayOfString);
+        
+        for(var i = 0; i < mainDataArrayOfString.length; i++)
+        {  
+        //     var valueInfo = mainDataArrayOfString[i];
+        //     var timeStamp = valueInfo.timeStamp;
+        //     var updatedStringValuesArray = [];
+        //     var slides = document.getElementsByClassName(timeStamp);
+        //     var finalString = valueInfo.mainString;
+        //     if(slides.length > 0)
+        //     {
+        //         var mainString = finalString;
+        //         finalString = '';
+        //         for(var i = 0; i < slides.length; i++)
+        //         {  
+        //             var valueOfUpdatedSting = slides[i];
+        //             updatedStringValuesArray.push(valueOfUpdatedSting['value']);
+        //         }
+                
+        //         var dynamicStringArray = mainString.split(' ');
+        //         var stringNumber = 0;
+        //         for (let index = 0; index < dynamicStringArray.length; index++)
+        //         {
+        //             var stringToAttach = dynamicStringArray[index];
+
+        //             var currentData = dynamicStringArray[index];
+        //                 currentData = currentData.split('@');
+
+        //             var currentTimer = dynamicStringArray[index];
+        //                 currentTimer = currentTimer.split('||');
+
+        //             var currentNumber = dynamicStringArray[index];
+        //                 currentNumber = currentNumber.split('$');
+
+        //             if(currentData[1] != '' && currentData[1] != null && currentData[1] != undefined)
+        //             {   
+        //                 var date = moment(updatedStringValuesArray[stringNumber]).format("YYYY-MM-DD");
+        //                 stringToAttach = '#date@'+date;
+        //                 stringNumber = stringNumber + 1;
+        //             }
+
+        //             if(currentTimer[1] != '' && currentTimer[1] != null && currentTimer[1] != undefined)
+        //             {
+        //                 var time = updatedStringValuesArray[stringNumber];
+        //                 stringToAttach = '#time||'+time;
+        //                 stringNumber = stringNumber + 1;
+        //             }
+
+        //             if(currentNumber[1] != '' && currentNumber[1] != null && currentNumber[1] != undefined)
+        //             {
+        //                 var number = updatedStringValuesArray[stringNumber];
+        //                 stringToAttach = '#number$'+number;
+        //                 stringNumber = stringNumber + 1;
+        //             }
+        //             finalString += ' '+stringToAttach;
+        //         }
+        //     }
+            
+            // var newUpdateData = {};
+            //     newUpdateData['timeStamp'] = timeStamp;
+            //     newUpdateData['mainString'] = finalString;
+
+            // finalStringArray.push(newUpdateData);
+        }
+
+        console.log(finalStringArray);
+        return false;
+
+        var updateClauseTermsArray = [];
+
+        for (let index = 0; index < this.termsReviewRecordsData.length; index++)
+        {
+            for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
+            {
+                var mainTimeStamp = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['timeStamp'];
+                var mainTermString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainString'];
+                
+                for (let mainIndex = 0; mainIndex < finalStringArray.length; mainIndex++)
+                {
+                    if(mainTimeStamp == finalStringArray[mainIndex]['timeStamp'] && mainTermString != finalStringArray[mainIndex]['mainString'])
+                    {
+                        this.editClauseTermOfMainClauseCategoryID = this.termsReviewRecordsData[index].id;
+                        this.editClauseTermOfMainClauseID = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].id;
+                        this.tmpeditclausetext = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].termsName;
+                        this.termsName = finalStringArray[mainIndex]['mainString'];
+
+                        const req =
+                        {   
+                            mainUserId: localStorage.getItem('userId'),
+                            companyId: localStorage.getItem('companyId'),
+                            drawId: this.drawId,
+                            tradingId: this.tradingId,
+                            formId: this.formId,
+                            clauseCategoryId: this.editClauseTermOfMainClauseCategoryID,
+                            clauseTermsId: this.editClauseTermOfMainClauseID,
+                            nos: '1',
+                            termsNameOrginal: this.tmpeditclausetext,
+                            termsName: finalStringArray[mainIndex]['mainString'],
+                            createdBy: localStorage.getItem('userId'),
+                            updatedBy: localStorage.getItem('userId'),
+                            isCustom: 'Y'
+                        };
+
+                        updateClauseTermsArray.push(req);
+
+                        console.log(req);
+                        
+                        // try
+                        // {
+                        //     const header = new HttpHeaders(); header.append('Content-Type', 'application/json');
+                        //     const headerOptions = { headers: header }
+                        //     this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(res =>
+                        //     {   this.termsUpdateRes = res; this.editclausetext = '';    });
+                        // } catch (err) {}
+                    }
+                }
+            }
+        }
+
+        // this.submit();
+        console.log(finalStringArray);
+        console.log(updateClauseTermsArray);
+    }
+
+    updateDynamicTerms()
+    {
+        var mainUserId = localStorage.getItem('userId');
+        var companyId = localStorage.getItem('companyId');
+        var drawId = this.drawId;
+        var tradingId = this.tradingId;
+        var formId = this.formId;
+        var clauseCategoryId = this.editClauseTermOfMainClauseCategoryID;
+        var clauseTermsId = this.editClauseTermOfMainClauseID;
+        var nos = '1';
+        var termsNameOrginal = this.tmpeditclausetext;
+        var termsName = this.editclausetext;
+
+        const req =
+        {
+
+            mainUserId: mainUserId,
+            companyId: companyId,
+            drawId: drawId,
+            tradingId: tradingId,
+            formId: formId,
+            clauseCategoryId: clauseCategoryId,
+            clauseTermsId: clauseTermsId,
+            nos: nos,
+            termsNameOrginal: termsNameOrginal,
+            termsName: termsName,
+            createdBy: localStorage.getItem('userId'),
+            updatedBy: localStorage.getItem('userId'),
+            isCustom: 'Y'
+        };
+
+        
+        try
+        {
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions =
+            {
+                headers: header
+            }
+            this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(
+                res => {
+                    this.termsUpdateRes = res;
+                    if (this.termsUpdateRes.success === true)
+                    {
+                        this.editclausetext = '';
+                    }
+                }
+            );
+        } catch (err) {}
+    }
+    
+    createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp)
+    {
+        this.dynamicStringArray = mainString.split(' ');
+
+        for (let index = 0; index < this.dynamicStringArray.length; index++)
+        {
+            var newNumber = this.dynamicInputNumber + 1;
+            
+            this.dynamicInputNumber = newNumber;
+
+            var currentData = this.dynamicStringArray[index];
+                currentData = currentData.split('@');
+
+            var currentTimer = this.dynamicStringArray[index];
+                currentTimer = currentTimer.split('||');
+
+            var currentNumber = this.dynamicStringArray[index];
+                currentNumber = currentNumber.split('$');
+
+            var stringInfo = this.dynamicStringArray[index];
+
+            if(currentData[1] != '' && currentData[1] != null && currentData[1] != undefined)
+            {
+                stringInfo = '#date';
+            }
+
+            if(currentTimer[1] != '' && currentTimer[1] != null && currentTimer[1] != undefined)
+            {
+                stringInfo = '#time';
+            }
+
+            if(currentNumber[1] != '' && currentNumber[1] != null && currentNumber[1] != undefined)
+            {
+                stringInfo = '#number';
+            }
+
+            var number = index + 1;
+            
+            var mainData = {};
+                
+                mainData['string'] = stringInfo;
+
+                mainData['timeStamp'] = timeStamp;
+
+                mainData['dynamicInputNumber'] = this.dynamicInputNumber;
+
+                mainData['hasValue'] = '';
+                mainData['inputIdentifier'] = '';
+
+                mainData['hasTimeValue'] = moment().format("HH:mm A");
+                mainData['inputTimeIdentifier'] = '';
+
+                mainData['hasNumberValue'] = '';
+                mainData['inputNumberIdentifier'] = '';
+
+                mainData['hasNumberPicker'] = '';
+
+            if(currentData[1] != '' && currentData[1] != null && currentData[1] != undefined)
+            {
+                var dateInfo  = moment(currentData[1]).format("YYYY-MM-DD");
+                mainData['hasValue'] = dateInfo;
+                mainData['inputIdentifier'] = 'dynamicDatePicker'+number;
+            }
+
+            if(currentTimer[1] != '' && currentTimer[1] != null && currentTimer[1] != undefined)
+            {   
+                var time = currentTimer[1];
+                    time = time.replace('&#160;','');
+                console.log(mainString);
+                console.log(this.dynamicStringArray[index]);
+                console.log(time);
+                console.log(currentTimer[1],"Timer");
+                mainData['hasTimeValue'] = time;
+                mainData['inputTimeIdentifier'] = 'dynamicTimePicker'+number;
+            }
+
+            if(currentNumber[1] != '' && currentNumber[1] != null && currentNumber[1] != undefined)
+            {
+                mainData['hasNumberValue'] = currentNumber[1];
+                mainData['inputNumberIdentifier'] = 'numberPicker'+number;
+
+                var finalNumberPicker = [];
+
+                for (let index = 0; index < 100; index++)
+                {
+                    var number = index + 1;
+                    var mainNumberData = {};
+                        mainNumberData['number'] = number;
+                        mainNumberData['selected'] = (number == currentNumber[1]) ? 'selected' : '';
+
+                    finalNumberPicker[index] = mainNumberData;
+                }
+
+                mainData['hasNumberPicker'] = finalNumberPicker;
+            }
+
+            this.dynamicStringArray[index] = mainData;
+        }
+
+        var arrayData = {};
+        arrayData['timeStamp'] = timeStamp;
+        arrayData['dataArray'] = this.dynamicStringArray;
+        arrayData['mainString'] = mainString;
+
+        this.mainDynamicStringArray.push(arrayData);
+        console.log(this.mainDynamicStringArray);
+
+        return this.dynamicStringArray;
+    }
+
+  
+    
+
+    
     
     customClauseDataRecordsRecap() : void
     {
@@ -2073,6 +2686,7 @@ export class DrawCpClausesComponent implements OnInit
     // Custom Clause
     customClauseToggleOpen(key): void
     {
+        this.clauseTitle = '';
         this._fuseSidebarService.getSidebar(key).toggleOpen();
     }
 
@@ -2535,19 +3149,17 @@ export class DrawCpClausesComponent implements OnInit
     submit()
     {
         var fromUserId = localStorage.getItem('userId');
-        var notification = 'New Draw Charter Party Available';
+        var notification = 'New Draw C/p Available';
         var toUserId = this.chartererId;
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         var isTrading = filter.isTrading;
         this.isTrading = filter.isTrading;
-        let borkerName: 'broker3';
-        let formName :'NYPE Form 2015'
+
         this.drawId = filter.drawId;
 
         var checkedCheckBox = this.checkedCheckBox.join();
         var checkedCheckBoxCustom = this.checkedCheckBoxCustom.join();
         var checkedCheckBoxCustomClauseTerms = this.checkedCheckBoxCustomClauseTerms.join();
-
         
 
         if (this.isTrading == '2')
@@ -2567,7 +3179,7 @@ export class DrawCpClausesComponent implements OnInit
                 {
                     fromUserId: localStorage.getItem('userId'),
                     toUserId: toUserId,
-                    notification: this.brokerName+ 'creates charter party form' + formName,
+                    notification: 'New Notification',
                     createdBy: localStorage.getItem('userId'),
                     updatedBy: localStorage.getItem('userId')
                 };
@@ -2689,7 +3301,7 @@ export class DrawCpClausesComponent implements OnInit
                 {
                     fromUserId: localStorage.getItem('userId'),
                     toUserId: toUserId,
-                    notification: this.brokerName+'creates charter party form'+ formName,
+                    notification: 'New Notification For Trading Platform',
                     createdBy: localStorage.getItem('userId'),
                     updatedBy: localStorage.getItem('userId')
                 };
