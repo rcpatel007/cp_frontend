@@ -403,7 +403,10 @@ export class UserService {
         {
             return this.http.post(`${config.baseUrl}/companyRecordsServerSide`,req)
         }
-
+        fetchTradingStdBidReady(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchTradingStdBidReady`,req)
+        }
 
     DrawFormCopyCreate(req)
     {
