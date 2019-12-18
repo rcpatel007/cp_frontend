@@ -96,7 +96,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
                     <td mat-cell  *matCellDef="let row" class="action" >
                         <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
-                            (click)="editView(row.id,row.formId,row.chartererId)">
+                            (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                         </button>
                         <button mat-button class="click-icon click-icon--done" 
@@ -114,10 +114,17 @@
             <button *ngIf="existingDrawCPButton" id="submitButtonDrawCP" class="add-item add-item--back-button" style="float:right; margin: 30px !important;" (click)="getTermsReviewData()"> {{ buttonInfo }} </button>
             <!-- Existing Trading Platform Records -->
             <!-- Charter Party Type Selection Start -->
-                <mat-radio-group *ngIf="mainDrawCPDiv" aria-label="Please select the applicable Charter Party." class="customFormfullWidth" style="margin-top: 20px;">
+                <mat-radio-group *ngIf="mainDrawCPDiv" aria-label="Please select the applicable Charter Party." 
+                class="customFormfullWidth" style="margin-top: 20px;">
                     <mat-label class="labelCustom">Please select the applicable Charter Party.</mat-label>
                     <br>
-                    <mat-radio-button name="charterPartyTypeID" style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " class="customFormfullWidth" *ngFor="let CharterPartyTypeArray of CharterPartyTypeArray" [ngClass]="{'d-none': CharterPartyTypeArray.isActive === 'N'}"  [value]="CharterPartyTypeArray.id" (click)="setApplicabelCharterParty(CharterPartyTypeArray.id)"> {{CharterPartyTypeArray.name}} </mat-radio-button>
+                    <mat-radio-button name="charterPartyTypeID" 
+                    style="margin-left: 40px !important; margin-top: 20px !important; margin-bottom: 20px !important; " 
+                    class="customFormfullWidth" *ngFor="let CharterPartyTypeArray of CharterPartyTypeArray" 
+                    [ngClass]="{'d-none': CharterPartyTypeArray.isActive === 'N'}"
+                    [checked]= "CharterPartyTypeArray.isChecked == 'Y'"
+                    [value]="CharterPartyTypeArray.id" 
+                    (click)="setApplicabelCharterParty(CharterPartyTypeArray.id)"> {{CharterPartyTypeArray.name}} </mat-radio-button>
                 </mat-radio-group>
             <!-- Charter Party Type Selection End -->
 
@@ -268,7 +275,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
                     <td mat-cell  *matCellDef="let row" class="action" >
                         <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
-                            (click)="editView(row.id,row.formId,row.chartererId)">
+                            (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                         </button>
                         <button mat-button class="click-icon click-icon--done" 
@@ -286,7 +293,7 @@
         <!-- Draw Datatable End -->
 
         <!-- Draw Form Div Start -->
-            <div class="content-card" *ngIf="drawFormDivShow" style="margin-top: -40px !important">
+            <div class="content-card" *ngIf="drawFormDivShow" style="margin-top: -25px !important">
                 <form [formGroup]="DrawManagementForm" (ngSubmit)="onSubmit()">
                     <!-- <br> -->
                     <!-- <mat-label class="labelCustom" style="margin-left: 10px !important">Select charter party type and it's year.</mat-label> -->
@@ -329,6 +336,94 @@
                 </form>
             </div>
         <!-- Draw Form Div End -->
+
+        <!-- Std Div Start -->
+        <div class="content-card" *ngIf="stdDivShow" style="margin-top: -25px !important">
+
+            <form [formGroup]="stdDivManagementForm" (ngSubmit)="onSubmitStdBidOffer()">
+                
+                <mat-form-field class="customFormfullWidth" appearance="outline">
+                    <mat-label>CP Form*</mat-label>
+                    <mat-select formControlName="formIdStdBid" matSelect (selectionChange)="changeCPForm($event)">
+                        <mat-option *ngFor="let cpFormData of cpFormData" [ngClass]="{'d-none': cpFormData.isActive === 'N'}" [value]="cpFormData.id"> {{cpFormData.cpformName}} </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="stdDivManagementForm.get('formIdStdBid').hasError('required')"> CP Form Is Required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="customFormfullWidth" appearance="outline">
+                    <mat-label> Std Bid Name* </mat-label>
+                    <input matInput formControlName="std_bid_name"  >
+                    <mat-error *ngIf="stdDivManagementForm.get('std_bid_name').hasError('required')"> Std Bid Name is required </mat-error>
+                </mat-form-field>
+                <mat-form-field class="customFormfullWidth" appearance="outline">
+
+                    <mat-label>Charterer*</mat-label>
+                    <mat-select formControlName="chartererIdStdBid" [disabled]="chartererStatusInfo == 'Y'"  matSelect (selectionChange)="changeChartererType($event)">
+                        <mat-option *ngFor="let ChartereInfoData of ChartereInfoData" [ngClass]="{'d-none': ChartereInfoData.isActive === 'N'}" 
+                        [value]="ChartereInfoData.id"> {{ChartereInfoData.username}} </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="stdDivManagementForm.get('chartererIdStdBid').hasError('required')"> Charterer Is Required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="customFormfullWidth" appearance="outline">
+                    <mat-label>Owner</mat-label>
+                    <mat-select formControlName="ownerIdStdBid" [disabled]="ownerStatusInfo == 'Y'"  matSelect (selectionChange)="onChangeOwner($event)" >
+                        <mat-option *ngFor="let ownerRecordData of ownerRecordData" [ngClass]="{'d-none': ownerRecordData.isActive === 'N'}" 
+                        [value]="ownerRecordData.id" > {{ownerRecordData.username}} </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="stdDivManagementForm.get('ownerIdStdBid').hasError('required')"> Owner Is Required</mat-error>
+                </mat-form-field>
+                <button *ngIf="stdDivButtonShow" style="margin-right: 200px; margin-top: 10px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
+            </form>
+            <br>
+            <br>
+            <br>
+            <table *ngIf="stdTableView"            
+                style="
+                    background: white;
+                    border: 0.1px #00000045 solid;
+                    /* border-radius: 50px; */
+                    padding: 1%;
+                    margin-top: -80px;
+                    clear: both;
+                    width: 90%;
+                    margin-left: 50px;
+                    margin-bottom: 60px;
+                "
+            >
+                <tr style="text-align: center;">
+                    <th>
+                        <table>
+                            <tr>
+                                <th colspan="5" style="padding: 10px;background: #67aeec;color: white;font-size: 22px;margin-bottom: 10px;">{{ companyName }}</th>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <th style="border: 1px #bababa solid;font-size: 22px;font-weight: bold;">Invited User</th>
+                                <th style="border: 1px #bababa solid;font-size: 22px;font-weight: bold;">Role</th>
+                                <th style="border: 1px #bababa solid;font-size: 22px;font-weight: bold;">Email</th>
+                                <th style="border: 1px #bababa solid;font-size: 22px;font-weight: bold;">Mobile</th>
+                                <th style="border: 1px #bababa solid;font-size: 22px;font-weight: bold;">Status</th>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ ownerName }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> Owner </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ ownerEmailID }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ ownerMobileNumber }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ ownerStatus }} </td>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ chartererName }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> Charterer </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ chartererEmailID }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ chartererMobileNumber }} </td>
+                                <td style="border: 1px #bababa solid;font-size: 22px;color: #474343;font-weight: bold;"> {{ chartererStatus }} </td>
+                            </tr>
+                        </table>
+                    </th>
+                </tr>
+            </table>
+        </div>
+        <!-- Std Div End -->
 
         </div>
     </div>

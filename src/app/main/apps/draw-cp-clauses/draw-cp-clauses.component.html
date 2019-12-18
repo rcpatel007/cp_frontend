@@ -14,48 +14,320 @@
         </div>
         <div class="mat-elevation-z8">
 
-                <!-- <input [format]=24 class="timePickerCustomCSS testimepicker " [ngxTimepicker]="testimepicker" (change)="timePickerTimeTest($event)">
-                <ngx-material-timepicker #testimepicker   ></ngx-material-timepicker> -->
-                <!-- <ng-template #cancelButton>
-                    <button style="padding: 5px !important;background: transparent !important;border: none !important;
-                    color: deepskyblue !important;font-size: 18px !important;font-weight: 600 !important; margin-left: 15px;"> CANCEL </button>
-                </ng-template>
-                <ng-template #confirmBtn>
-                    <button style="padding: 5px !important;background: transparent !important;border: none !important;
-                    color: deepskyblue !important;font-size: 18px !important;font-weight: 600 !important;
-                    margin-left: 15px;" (click)="timePickerTimeTest(testimepicker)"> UPDATE </button>
-                </ng-template> -->
+            <div class="content-card" *ngIf="firstScreenStdBid" style="margin-left: -10px !important; margin-top: 20px !important">
+               
+                <table style="float: right; width: 500px !important;" >
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Owner</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.ownerName }}</td>
+                    </tr>
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Charterer</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.chartererName }}</td>
+                    </tr>
+                    <tr class="tableTr">
+                        <td style="width: 200px;color: #1e88e5;">Broker</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">{{ this.brokerName }}</td>
+                    </tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                    <tr class="tableTr"><td style="width: 200px;"></td><td style="width: 100px;"></td><td style="width: 200px;"></td></tr>
+                </table>
+            
+                <table style="margin-top: 40px; clear: both;" > 
+                    <tr>
+                        <td class="customFontWeight" style="width: 25%;"></td>
+                        <td class="customFontWeight" style="width: 33%; text-align: center; font-size: 25px; font-weight: bold;">{{ cpFormName }}</td>
+                        <td class="customFontWeight" style="width: 33%;;"></td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">THIS CHARTER PARTY, made and concluded in {{ cityName }} on {{ dateMonthYearString }} </h4>
+                            <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; margin-bottom: 40px;">
+                                as *Registered Owners/*Disponent Owners/*Time Chartered Owners (the “Owners”) of the Vessel described below *delete as applicable
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> This fixture is subject to : {{ fixture_subject }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -40px;">
+                                Which is to be lifted by {{ lifted_time }} on {{ lifted_date }}  at {{ lifted_city }}
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -40px;">
+                                Charter Party Place {{ lifted_charter_party_place }}
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -40px;">
+                                Charteres fully style {{ lifted_charter_fully_style }} and Domicile {{ lifted_charter_domicile }}
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3">
+                            <h4 class="tableTDFont" style="margin-top: -40px;">
+                                Owners full style {{ lifted_owner_fully_style }} and Domicile {{ lifted_owner_domicile }} as {{ lifted_owner_type }}
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> IMO : {{ lifted_vessel_imo }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Flag : {{ lifted_vessel_flag }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Built (year) : {{ lifted_vessel_year_built }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Dwat Metric Tons : {{ lifted_vessel_dwat_metric_tons }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Draft Summer Marks  : {{ lifted_vessel_draft_on_marks }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Length Overall (LOA)  : {{ lifted_vessel_loa }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Beam  : {{ lifted_vessel_beam }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Holds  : {{ lifted_vessel_holds }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Hatches  : {{ lifted_vessel_hatches }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Gear  : {{ lifted_vessel_gear }} </h4> </td>
+                    </tr>
+                    <tr>
+                        <td class="customFontWeight" colspan="3"> <h4 class="tableTDFont" style="margin-top: -40px;"> Safe Working Load  (SWL)  : {{ lifted_vessel_swl }} </h4> </td>
+                    </tr>
+                </table>
 
-            <!-- <h4 *ngFor="let dynamicData of dynamicStringArray; let i= index; ">
+                <table style="float: right; width: 500px !important;" >
+                    <tr class="tableTr">
+                        <td style="width: 200px;"></td>
+                        <td style="width: 100px;"></td>
+                        <td style="width: 200px;">
+                            <button class="submit-item submit-item--back-button" *ngIf="firstScreen" style="float: right;  margin: 35px;"
+                            (click)="secondScreenView()">Next</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-card" *ngIf="firstScreenStdBidBroker" style="margin-left: -10px !important; margin-top: 20px !important;">
                 
-                <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
-                
-                <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
-                    <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
-                    (dateChange)="dynamicDatePickerChange()">
-                    <mat-datepicker-toggle class="datePickerDynamicCustom" matSuffix [for]="i"></mat-datepicker-toggle>
-                    <mat-datepicker #i></mat-datepicker>
-                </h4>
+                <h4  style="margin-top: -35px;
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: -25px;
+                padding: 30px;
+                    ">Charterer are pleased to bid firm to owners for reply.</h4>
+                <hr style="width: 99%;" >
 
-                <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
-                    <input class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
-                    <ngx-material-timepicker #i></ngx-material-timepicker>
-                </h4>
+               
+                <form  [formGroup]="stdBidForm" >
+                    
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label> <i class="material-icons">access_time</i>  CP Time* </mat-label>
+                        <input [format]=24 matInput formControlName="cpTimeStdBid" class="timePickerCustomCSS " [ngxTimepicker]="cpTimeStdBid" >
+                        <ngx-material-timepicker #cpTimeStdBid ></ngx-material-timepicker>
+                        <mat-error *ngIf="stdBidForm.get('cpTimeStdBid').hasError('required')"> CP Time is required </mat-error>
+                    </mat-form-field>
 
-                <h4 class="timePickerDivCustomCSS" *ngIf="dynamicData.string == '#number'">
-                    <select class="numberPickerCustom {{dynamicData.timeStamp}} ">
-                        <option *ngFor="let dynamicDropDownData of dynamicData.hasNumberPicker" [selected]="dynamicDropDownData.selected" [value]="dynamicDropDownData.number"> {{dynamicDropDownData.number}}</option>
-                    </select>
-                </h4>
-                
-            </h4>
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+
+                        <mat-label><i class="material-icons">location_city</i> City</mat-label>
+                        <mat-select formControlName="cityIdStdBid"  matSelect>
+                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
+                        </mat-select>
+
+                        <mat-error *ngIf="stdBidForm.get('cityIdStdBid').hasError('required')"> City Is Required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field  class="customFormfullWidth" appearance="outline">
+                        <mat-label> <i class="material-icons">date_range</i> C/P Date* </mat-label>
+                        <input formControlName="cpDateStdBid" matInput [matDatepicker]="cpDateStdBid" placeholder="C/P Date" >
+                        <mat-datepicker-toggle matSuffix [for]="cpDateStdBid"></mat-datepicker-toggle>
+                        <mat-datepicker #cpDateStdBid></mat-datepicker>
+                        <mat-error *ngIf="stdBidForm.get('cpDateStdBid').hasError('required')">
+                            Date is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>This fixture is subject to</mat-label>
+                        <input matInput formControlName="fixture_subject">
+                    </mat-form-field>
+
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Which is to be lifted by characters by</mat-label>
+                        <input matInput formControlName="lifted_by">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label> <i class="material-icons">access_time</i> Time</mat-label>
+                        <input [format]=24 matInput formControlName="lifted_time"  class="timePickerCustomCSS " [ngxTimepicker]="lifted_time" >
+                        <ngx-material-timepicker #lifted_time ></ngx-material-timepicker>
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label> <i class="material-icons">date_range</i> Date</mat-label>
+                        <input formControlName="lifted_date" matInput [matDatepicker]="lifted_date" placeholder="C/P Date" >
+                        <mat-datepicker-toggle matSuffix [for]="lifted_date"></mat-datepicker-toggle>
+                        <mat-datepicker #lifted_date></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label><i class="material-icons">location_city</i> City</mat-label>
+                        <mat-select formControlName="lifted_city"  matSelect>
+                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label><i class="material-icons">location_city</i> Charter Party Place</mat-label>
+                        <mat-select formControlName="lifted_charter_party_place"  matSelect>
+                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Charterer Fully Style</mat-label>
+                        <input matInput formControlName="lifted_charter_fully_style">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Domicile</mat-label>
+                        <input matInput formControlName="lifted_charter_domicile">
+                    </mat-form-field>
+
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Owner Fully Style</mat-label>
+                        <input matInput formControlName="lifted_owner_fully_style">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Domicile</mat-label>
+                        <input matInput formControlName="lifted_owner_domicile">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Owner Type</mat-label>
+                        <mat-select formControlName="lifted_owner_type"  matSelect>
+                            <mat-option [value]="1"> Type 1 </mat-option>
+                            <mat-option [value]="2"> Type 2 </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Vessel Name</mat-label>
+                        <input matInput formControlName="lifted_vessel_name">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>IMO Number</mat-label>
+                        <input matInput formControlName="lifted_vessel_imo">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Flag</mat-label>
+                        <input matInput formControlName="lifted_vessel_flag">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Year Built</mat-label>
+                        <input matInput formControlName="lifted_vessel_year_built">
+                    </mat-form-field>
+
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Dwat Metric Tons</mat-label>
+                        <input matInput formControlName="lifted_vessel_dwat_metric_tons">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Draft Summer Marks</mat-label>
+                        <input matInput formControlName="lifted_vessel_draft_on_marks">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Length Oveall (LOA)</mat-label>
+                        <input matInput formControlName="lifted_vessel_loa">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Beam</mat-label>
+                        <input matInput formControlName="lifted_vessel_beam">
+                    </mat-form-field>
+                    
+                    <br>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Holds</mat-label>
+                        <input matInput formControlName="lifted_vessel_holds">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Hatches</mat-label>
+                        <input matInput formControlName="lifted_vessel_hatches">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Gear</mat-label>
+                        <input matInput formControlName="lifted_vessel_gear">
+                    </mat-form-field>
+
+                    <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-label>Safe Working Load ( SWL )</mat-label>
+                        <input matInput formControlName="lifted_vessel_swl">
+                    </mat-form-field>
+
+                </form>
+
+                <table style="float: right; width: 500px !important;" >
+                    <tr class="tableTr">
+                        <td style="width: 200px;"></td>
+                        <td style="width: 100px;"></td>
+                        <td style="width: 200px;">
+                            <button class="submit-item submit-item--back-button" *ngIf="firstScreenStdBidBroker" style="float: right;  margin: 35px;"
+                            (click)="secondScreenView()">Next</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
 
             <br>
             <br>
             <br>
             <br>
-
-            <button (click)="createNewString()">Create A New String</button> -->
 
             <div class="content-card" *ngIf="firstScreen" style="margin-left: -10px !important; margin-top: 20px !important">
                 <table style="float: right; width: 500px !important;">
@@ -220,7 +492,10 @@
                     <br>
                     <mat-form-field class="customFormfullWidth" appearance="outline">
                         <mat-label>CP Time* </mat-label>
-                        <input matInput formControlName="cpTime">
+                        <!-- <input matInput formControlName="cpTime"> -->
+                        <input [format]=24 matInput formControlName="cpTime"  class="timePickerCustomCSS " [ngxTimepicker]="cpTime" >
+                        <ngx-material-timepicker #cpTime ></ngx-material-timepicker>
+                        
                         <mat-error *ngIf="OwnersFirstCounterForm.get('cpTime').hasError('required')">
                             CP Time is required
                         </mat-error>
@@ -287,7 +562,7 @@
                                                 </h4>
 
                                                 <h4 style="float: left; margin-top: -20px;" *ngIf="dynamicData.string == '#time'">
-                                                    <input [format]=24  class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
+                                                    <input [format]=24   class="timePickerCustomCSS {{dynamicData.timeStamp}} " [ngxTimepicker]="i" [value]="dynamicData.hasTimeValue">
                                                     <ngx-material-timepicker #i [cancelBtnTmpl]="cancelButton"  [confirmBtnTmpl]="confirmBtn"></ngx-material-timepicker>
                                                     <ng-template #cancelButton>
                                                         <button style="padding: 5px !important;

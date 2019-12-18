@@ -108,7 +108,20 @@ var childrenArrayInfo = {};
 
     childrenArray.push(childrenArrayInfo);
 
-var childrenArrayInfo = {};
+
+
+// var childrenArrayInfo = {};
+//     childrenArrayInfo["id"] = 'STD  Biding ';
+//     childrenArrayInfo["title"] = 'Draw C/P';
+//     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
+//     childrenArrayInfo["type"] = 'item';
+//     childrenArrayInfo["icon"] = 'StdbidManagementModule';
+//     childrenArrayInfo["url"] = '/apps/bid-management';
+
+//     childrenArray.push(childrenArrayInfo);
+
+
+    var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'Trading Platform';
     childrenArrayInfo["title"] = 'Trading Platform';
     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
@@ -129,7 +142,7 @@ var childrenArrayInfo = {};
 
     console.log(childrenArray);
 }
-
+if (JSON.parse(localStorage.getItem('userRoleId')) == '7'){
 var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'Draw C/P';
     childrenArrayInfo["title"] = 'Draw C/P';
@@ -139,7 +152,7 @@ var childrenArrayInfo = {};
     childrenArrayInfo["url"] = '/apps/draw-management';
 
     childrenArray.push(childrenArrayInfo);
-
+}
 export const navigation: FuseNavigation[] =
 [
     

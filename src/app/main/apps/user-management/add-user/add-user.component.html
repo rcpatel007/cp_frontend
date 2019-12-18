@@ -53,6 +53,7 @@
                             <option [value]="+91">IN</option>
                         </select>
     Z -->
+    <!-- <input type="text" id="phoneField" name="phoneField" class="phone-field"> -->
                     <mat-form-field class="full-width" appearance="outline">
                         <!-- <ngx-mat-intl-tel-input
                         [preferredCountries]="['us', 'gb']"
@@ -61,8 +62,8 @@
                         name="mobileNo"
                         (countryChanged)="yourComponentMethodToTreatyCountryChangedEvent($event)" 
                         formControlName="mobileNo"></ngx-mat-intl-tel-input>       -->
-                        <mat-label>Mobile Number *</mat-label>
-                        <input type="text" (keypress)="numberOnly($event)" 
+                    
+                        <input type="text"   (keypress)="numberOnly($event)" 
                         onKeyPress="if(this.value.length==12) return false;" min="10"
                          matInput formControlName="mobileNo">
                 
@@ -157,3 +158,7 @@
     </div>
 
 </div>
+
+<script>
+
+</script>

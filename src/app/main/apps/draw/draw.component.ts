@@ -20,7 +20,6 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
-import { request } from 'http';
 
 export interface UserData
 {
@@ -29,6 +28,7 @@ export interface UserData
     formId: string;
     vesselId: string;
     ownerId: string;
+    brokerId: string;
     chartererId: string;
     chartererBrokerId: string;
     ownerBrokerId: string;
@@ -54,6 +54,7 @@ export interface PeriodicElement
     formId: string;
     vesselId: string;
     ownerId: string;
+    brokerId: string;
     chartererId: string;
     chartererBrokerId: string;
     ownerBrokerId: string;
@@ -89,8 +90,7 @@ export interface PeriodicElement
 
 export class DrawComponent implements OnInit
 {
-    displayedColumns: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted','newAction'];
-    displayedColumnsFilter: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','newAction'];
+    displayedColumns: string[] = ['identifier','cpDateInfo','companyName','ownerName','brokerName','chartererName','vesselName', 'progress','statusInfo','isAccepted','newAction'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
     dataSourceFilter = new MatTableDataSource<PeriodicElement>();
@@ -121,6 +121,7 @@ export class DrawComponent implements OnInit
     formId: string;
     vesselId: string;
     ownerId: string;
+    brokerId: string;
     chartererBrokerId: string;
     ownerBrokerId: string;
     cpDate: string;
@@ -162,8 +163,11 @@ export class DrawComponent implements OnInit
     drawRecordsListData: any;
 
     DrawManagementSearchForm: FormGroup;
+    DrawManagementSearchFormDocument: FormGroup;
 
     DrawManagementForm: FormGroup;
+    DrawManagementFormForDocumentUser: FormGroup;
+
     loading = false;
     submitted = false;
     createtypeRes :any;
@@ -197,8 +201,20 @@ export class DrawComponent implements OnInit
     clauseCategoryTermsResponse : any;
     clauseCategoryTermsData = [];
 
+    companyRecordResponse : any;
+    companyRecordData = [];
+
     clauseCategoryTermsReviewResponse : any;
     clauseCategoryTermsReviewData = [];
+
+    ownerRecordResponse : any;
+    ownerRecordData = [];
+
+    brokerRecordResponse : any;
+    brokerRecordData = [];
+
+    chartererRecordResponse : any;
+    chartererRecordData = [];
 
     CharterPartyTypeArray = [];
 
@@ -222,6 +238,7 @@ export class DrawComponent implements OnInit
     mainDrawCPDiv = false;
 
     drawRecordsFilterShow = true;
+    drawRecordsFilterForDocumentShow = true;
     drawRecordsTableShow = false;
     drawRecordsTableShowButton = false;
 
@@ -231,6 +248,7 @@ export class DrawComponent implements OnInit
     clauseViewButtonShow = false;
 
     drawFormDivShow = false;
+    drawFormDivShowForDocumentUser = false;
 
     drawCharteAcceptRejectResponse : any;
     drawCharteAcceptRejectResponseData = [];
@@ -250,8 +268,10 @@ export class DrawComponent implements OnInit
     isEditView = false;
     isRecapView = false;
     isPdfView = false;
-    charterName:String;
-    formName:String;
+
+    isCompanyTableView = false;
+    isBrokerTableView = false;
+
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -303,6 +323,17 @@ export class DrawComponent implements OnInit
         
         });
 
+        this.DrawManagementFormForDocumentUser = this._formBuilder.group(
+        {
+            companyIdDocForm: ['', Validators.required],
+            ownerIdDocForm: ['', Validators.required],
+            brokerIdDocForm: ['', Validators.required],
+            chartererIdDocForm: ['', Validators.required],
+            formIdDocForm: ['', Validators.required],
+            vesselIdDocForm: ['', Validators.required],
+            cpDateDocForm: ['', Validators.required],
+        });
+
         this.DrawManagementSearchForm = this._formBuilder.group(
         {
             formIdSearch: ['', ''],
@@ -311,23 +342,50 @@ export class DrawComponent implements OnInit
             drawCPIDSearch: ['', ''],
         });
 
+        this.DrawManagementSearchFormDocument = this._formBuilder.group(
+        {
+            companyIdDocSearch: ['', ''],
+            ownerIdDocSearch: ['', ''],
+            brokerIdDocSearch: ['', ''],
+            chartererIdDocSearch: ['', ''],
+            formIdDocSearch: ['', ''],
+            vesselIdDocSearch: ['', ''],
+            cpDateDocSearch: ['', ''],
+            drawCPIDDocSearch: ['', ''],
+        });
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
             this.isEditView = true;    
             this.isRecapView = true;
             this.isPdfView = true;
+            this.fetchChartererData();
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
             this.isRecapView = true;
             this.isPdfView = true;
+            this.fetchChartererData();
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
             this.isRecapView = true;
+            this.fetchChartererData();
         }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '7')
+        {
+            this.isEditView = true;    
+            this.isRecapView = true;
+
+            this.isCompanyTableView = true;
+            this.isBrokerTableView = true;
+        }
+
+        this.isCompanyTableView = false;
+        this.isBrokerTableView = true;
 
         this.CPTypeId = '1';
 
@@ -364,8 +422,8 @@ export class DrawComponent implements OnInit
         this.vesselRecords();
         this.CPRecords();
         this.ChartereRecords();
-        this.drawCPRecords();
-
+        this.companyRecordsServerSide();
+        
         this.charterPartyTypeID = '2';
 
         if(localStorage.getItem('userRoleId') != '3')
@@ -373,10 +431,159 @@ export class DrawComponent implements OnInit
             this.brokerDivShow = false;
         }
 
+        if(localStorage.getItem('userRoleId') == '7')
+        {
+            this.brokerDivShow = true;
+        }
+
         this.drawRecordsFilterShow = false;
+        this.drawRecordsFilterForDocumentShow = false;
 
-        // this.clauseCategoryDummyData();
+    }
 
+    // Company Records Server Side
+    companyRecordsServerSide(): void
+    {
+        var filter = {};
+        this._userService.companyRecordsServerSide(filter).pipe(first())
+        .subscribe(res =>
+        {
+            this.companyRecordResponse = res;
+            if (this.companyRecordResponse.success === true)
+            {
+                this.companyRecordData = this.companyRecordResponse.data;
+            }   
+        }); 
+    }
+
+    // Company On Change
+    onChangeCompany(event)
+    {
+        this.companyId = event.value;
+        this.fetchOwnerData();
+        this.fetchBrokerData();
+        this.fetchChartererData();
+        // this.fetchOwnerData();
+    }
+
+    // Fetch Owner Data
+    fetchOwnerData()
+    {
+        var filter = {};
+            filter['companyId'] = this.companyId;
+            filter['userRoleId'] = '6';
+        try
+        {
+            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+            {
+                this.ownerRecordResponse = res;
+                if (this.ownerRecordResponse.success === true)
+                {
+                    this.ownerRecordData = this.ownerRecordResponse.data;
+                }
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    // Owner On Change
+    onChangeOwner(event)
+    {
+        this.ownerId = event.value;
+        // this.fetchBrokerData();
+    }
+
+    // Fetch Broker Data
+    fetchBrokerData()
+    {
+        var filter = {};
+            filter['companyId'] = this.companyId;
+            filter['userRoleId'] = '3';
+        try
+        {
+            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+            {
+                this.brokerRecordResponse = res;
+                if (this.brokerRecordResponse.success === true)
+                {
+                    this.brokerRecordData = this.brokerRecordResponse.data;
+                }
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    // Broker On Change
+    onChangeBroker(event)
+    {
+        this.brokerId = event.value;
+        // this.fetchChartererData();
+    }
+
+    // Fetch Charterer Data
+    fetchChartererData()
+    {
+        if(JSON.parse(localStorage.getItem('userRoleId')) != '7')
+        {
+            this.companyId = JSON.parse(localStorage.getItem('companyId'));
+        }
+        var filter = {};
+            filter['companyId'] = this.companyId;
+            filter['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+            {
+                this.chartererRecordResponse = res;
+                if (this.chartererRecordResponse.success === true)
+                {
+                    this.chartererRecordData = this.chartererRecordResponse.data;
+                }
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    // Existing Draw Records Server Side
+    drawManagementRecords(): void
+    {
+        this.drawManagementData = [];
+        var arrfilterInfo = {};
+       
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
+        {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        }
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+        }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
+        }
+        try
+        {
+            this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
+            {
+                this.drawManagementRes = res;
+                if (this.drawManagementRes.success === true)
+                {
+                    this.drawManagementData = this.drawManagementRes.data;
+                    this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
+                    this.dataSource.paginator = this.paginator;
+                    this.dataSource.sort = this.sort;
+                }
+            },
+            err =>
+            {
+                this.alertService.error(err, 'Error');
+            });
+        } catch (err){}
     }
 
     recapView(drawId,formId,chartererId)
@@ -587,65 +794,18 @@ export class DrawComponent implements OnInit
         this.mainDrawCPDiv = false;
         this.mainDrawCPDiv = false;
         this.drawRecordsFilterShow = false;
+        this.drawRecordsFilterForDocumentShow = false;
         this.drawRecordsTableShow = false;
         this.drawRecordsTableShowButton = false;
         this.standardOffersFormDivShow = false;
         this.standardOffersFormTableShow = false;
         this.drawFormDivShow = false;
+        this.drawFormDivShowForDocumentUser = false;
 
         this.drawManagementRecords();
     }
 
-    drawManagementRecords(): void
-    {
     
-        this.drawManagementData = [];
-        var arrfilterInfo = {};
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
-        {
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        }
-
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            // arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
-        }
-
-        arrfilterInfo["dcm.is_existing"] = '1';
-        
-        try
-        {
-            this._userService.drawRecordsServerSide(arrfilterInfo)
-                .pipe(first())
-                .subscribe((res) =>
-                {
-                    this.drawManagementRes = res;
-                    if (this.drawManagementRes.success === true)
-                    {
-                        this.drawManagementData = this.drawManagementRes.data;
-                        this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-                        this.dataSource.paginator = this.paginator;
-                        this.dataSource.sort = this.sort;
-
-                        console.log(this.drawManagementData,"Draw Records Server Side");
-
-                    }
-                    console.log(this.drawManagementRes,"Draw Records Server Side");
-
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                });
-            } catch (err)
-            {
-            }
-    }
 
 
     drawIdServerSide() : void
@@ -697,12 +857,10 @@ export class DrawComponent implements OnInit
         {
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
-
                 this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
+                this.drawFormDivShowForDocumentUser = false;
                 this.drawRecordsTableShow = true;
-                console.log(this.drawManagementResFilter.data,"hello");
-                
                 this.drawManagementData = this.drawManagementResFilter.data;
                 this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
                 this.dataSourceFilter.paginator = this.paginator;
@@ -752,20 +910,48 @@ export class DrawComponent implements OnInit
             arrfilterInfo["dcm.chartererId"] = this.chartererIdValueForDrawRecords;
         }
 
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         }
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
         }
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
         }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '7')
+        {
+            if(this.companyId != '' && this.companyId != null)
+            {
+                arrfilterInfo["dcm.companyId"] = (this.companyId != '' && this.companyId != null) ? this.companyId : null;
+            }
+            if(this.ownerId != '' && this.ownerId != null)
+            {
+                arrfilterInfo["dcm.ownerId"] = (this.ownerId != '' && this.ownerId != null) ? this.ownerId : null;
+            }
+            if(this.brokerId != '' && this.brokerId != null)
+            {
+                arrfilterInfo["dcm.brokerId"] = (this.brokerId != '' && this.brokerId != null) ? this.brokerId : null;
+            }
+            if(this.chartererId != '' && this.chartererId != null)
+            {
+                arrfilterInfo["dcm.chartererId"] = (this.chartererId != '' && this.chartererId != null) ? this.chartererId : null;
+            }
+            
+            // arrfilterInfo["dcm.ownerId"] = (this.ownerId != '' && this.ownerId != null) ? this.ownerId : null;
+            // arrfilterInfo["dcm.brokerId"] = (this.brokerId != '' && this.brokerId != null) ? this.brokerId : null;
+            // arrfilterInfo["dcm.chartererId"] = (this.chartererId != '' && this.chartererId != null) ? this.chartererId : null;
+        }
+
+        arrfilterInfo["dcm.progress"] = 100;
 
         // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
 
@@ -774,20 +960,12 @@ export class DrawComponent implements OnInit
         try
         {
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
-
             {
-            console.log(res);
-            this.drawManagementResFilter = res;
-
-                for (let index = 0; index < this.drawManagementResFilter.data.length; index++) {
-                    if (this.drawManagementResFilter.data[index].progress == 100) {
-                        this.drawManagementData.push(this.drawManagementResFilter.data[index]);    
-                        
-                    }
-                    
-                }
+                this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
+                this.drawFormDivShowForDocumentUser = false;
                 this.drawRecordsTableShow = true;
+                this.drawManagementData = this.drawManagementResFilter.data;
 
                 setTimeout(() => {
                     this.updateFilterPaginator();
@@ -808,86 +986,9 @@ export class DrawComponent implements OnInit
         }
     }
 
-    createNew(id,formId,chartererId){
-
-     
-        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-
-        
-        try
-        {
-            const drawID = {
-                id :id
-            }
-        console.log(drawID);
-            this._userService.drawFormCopyRecords(drawID).pipe(first()).subscribe((res) =>
-
-            {
-            
-            this.drawManagementResFilter = res;
-            console.log(res  ,"data fetch");
-            console.log(this.drawManagementResFilter.data ,"data fetch");
-
-            const reqData= {
-                CPTypeId: this.drawManagementResFilter.data[0].CPTypeId,
-                formId: this.drawManagementResFilter.data[0].formId,
-                vesselId: this.drawManagementResFilter.data[0].vesselId,
-                ownerId: this.drawManagementResFilter.data[0].ownerId,
-                chartererId: this.drawManagementResFilter.data[0].chartererId,
-                chartererBrokerId: this.drawManagementResFilter.data[0].chartererBrokerId,
-                ownerBrokerId: this.drawManagementResFilter.data[0].ownerBrokerId,
-                cpDate: this.drawManagementResFilter.data[0].cpDate,
-                cpTime: this.drawManagementResFilter.data[0].cpTime,
-                cpCity: this.drawManagementResFilter.data[0].cpCity,
-                cpSubject: this.drawManagementResFilter.data[0].cpSubject,
-                cpLiftDate: this.drawManagementResFilter.data[0].cpLiftDate,
-                cpLiftTime: this.drawManagementResFilter.data[0].cpLiftTime,
-                cpLiftCity: this.drawManagementResFilter.data[0].cpLiftCity,
-                companyId: this.drawManagementResFilter.data[0].companyId,
-                progress: 10,
-                signature1: this.drawManagementResFilter.data[0].signature1,
-​​                signature2: this.drawManagementResFilter.data[0].signature2,
-​​                status: 0,
-                statusInfo:'To Be Updated',
-                owner_clauses: null,  
-                metricTonValue: null,
-                owner_signed_check: 0,
-                charterer_view_check: 0,
-                charterer_accept_check: 0,
-                charterer_clauses: this.drawManagementResFilter.data[0].charterer_clauses,
-                createdBy:localStorage.getItem('userId'),
-                updatedBy:localStorage.getItem('userId'),
-                broker_clauses:this.drawManagementResFilter.data[0].broker_clauses,		
-                common_clauses:this.drawManagementResFilter.data[0].common_clauses,
-                custom_common_clause:this.drawManagementResFilter.data[0].custom_common_clause,
-                custom_term_clause:this.drawManagementResFilter.data[0].custom_term_clause,
-            }
-                           console.log(reqData,"reqdata demo");
-            this._userService.DrawFormCopyCreate(drawID).pipe(first()).subscribe((res) =>
-            {
-                let tempData =res;
-                
-                if(tempData === true){
-                    this.alertService.success('Created New Draw Charter Party', 'Success');
-                }
-            },
-            err =>{
-                this.alertService.error(err, 'Error');
-
-            });
-            },
-            err =>
-            {
-                this.alertService.error(err, 'Error');
-            });
-        } catch (err)
-        {
-        }
-    }
-
     updateFilterPaginator()
     {
-        this.dataSourceFilter = new MatTableDataSource(this.drawManagementData);
+        this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
         this.dataSourceFilter.paginator = this.paginator;
         this.dataSourceFilter.sort = this.sort;
     }
@@ -961,6 +1062,7 @@ export class DrawComponent implements OnInit
     //   matcher = new MyErrorStateMatcher();
 
     get f() { return this.DrawManagementForm.controls; }
+    get fDoc() { return this.DrawManagementFormForDocumentUser.controls; }
     get fSearch() { return this.DrawManagementSearchForm.controls; }
 
     // Draw CP Form Records Fetch Start
@@ -1206,17 +1308,30 @@ export class DrawComponent implements OnInit
             // this.DrawManagementForm.reset(); 
 
             this.drawRecordsFilterShow = false;
+            this.drawRecordsFilterForDocumentShow= false;
             this.drawRecordsTableShow = false;
             this.drawRecordsTableShowButton = false;
             this.drawFormDivShow = false;
+            this.drawFormDivShowForDocumentUser = false;
             this.CPTypeId = Type;
             if(Type == 1)
             {
-                this.drawRecordsFilterShow = true;
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '7')
+                {
+                    this.drawRecordsFilterForDocumentShow = true;
+                } else {
+                    this.drawRecordsFilterShow = true;
+                }
+                
             }
             if(Type == 2)
             {
-                this.drawFormDivShow = true;
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '7')
+                {
+                    this.drawFormDivShowForDocumentUser = true;
+                } else {
+                    this.drawFormDivShow = true;
+                }
             }
         }
 
@@ -1239,6 +1354,7 @@ export class DrawComponent implements OnInit
 
             const req =
             {
+                brokerId:localStorage.getItem('userId'),
                 CPTypeId:this.CPTypeId,
                 formId:this.formIdValueForDrawRecords,
                 vesselId: this.vesselIdValueForDrawRecords,
@@ -1305,6 +1421,91 @@ export class DrawComponent implements OnInit
             } 
         }
     }
+
+    onSubmitDoc(): void
+    {
+        this.submitted = true;
+        this.alertService.clear();
+        if (this.DrawManagementFormForDocumentUser.invalid)
+        { 
+            return;
+        } else {
+
+            var convertedDate = moment(this.fDoc.cpDateDocForm.value).format("YYYY-MM-DD");
+            this.formIdValueForDrawRecords      =       this.fDoc.formIdDocForm.value;
+            this.vesselIdValueForDrawRecords    =       this.fDoc.vesselIdDocForm.value,
+            this.cpDateValueForDrawRecords      =       convertedDate,
+            this.chartererIdValueForDrawRecords =       this.fDoc.chartererIdDocForm.value;
+
+            const req =
+            {
+                companyId:this.companyId,
+                ownerId:this.ownerId,
+                brokerId:this.brokerId,
+                chartererId:this.chartererIdValueForDrawRecords,
+
+                CPTypeId:this.CPTypeId,
+                formId:this.formIdValueForDrawRecords,
+                vesselId: this.vesselIdValueForDrawRecords,
+                cpDate: this.cpDateValueForDrawRecords,
+                chartererBrokerId: localStorage.getItem('userId'),
+                ownerBrokerId: localStorage.getItem('userId'),
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+            };
+            
+            localStorage.setItem('cpFormId',req.formId);
+            
+            this.loading = true;
+            try
+            {
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions =
+                {
+                    headers: header
+                }
+                this.http.post(`${config.baseUrl}/DrawFormCreate`, req, headerOptions).subscribe(
+                    res =>
+                    {
+                        this.createtypeRes = res;
+                        if (this.createtypeRes.success === true)
+                        {
+                            this.drawId = this.createtypeRes.data[0];
+                            console.log(this.drawId);
+
+                            this.alertService.success(this.createtypeRes.message, 'Success');
+                            this.DrawManagementFormForDocumentUser.reset();
+                            this.drawIdServerSide();
+                            
+                            const reqData =
+                            {
+                                mainUserId: localStorage.getItem('userId'),
+                                companyId: localStorage.getItem('companyId'),
+                                drawId: this.drawId,
+                                formId : req.formId,
+                                chartererId : this.chartererIdValueForDrawRecords,
+                                isTrading : '2',
+                            };
+                            console.log(reqData);
+                            localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+                            this.router.navigate(['/apps/drawCp-Clauses-management']);
+
+                            // this.drawRecordsServerSide();
+                        } else {
+                            this.alertService.error(this.createtypeRes.message, 'Error');
+                        }
+                    },
+                    err =>
+                    {
+                        this.alertService.error(err, 'Error');
+                    }
+                );
+            } catch (err)
+            {
+            } 
+        }
+    }
     
 
     fetchDrawRecords(): void
@@ -1339,6 +1540,43 @@ export class DrawComponent implements OnInit
             if(this.fSearch.chartererIdSearch.value)
             {
                 this.chartererIdValueForDrawRecords      =       this.fSearch.chartererIdSearch.value;
+            }
+            this.drawRecordsServerSide();
+        }
+    }
+
+    fetchDrawRecordsDocument(): void
+    {
+        this.alertService.clear();
+        
+        var isValid = 1;
+
+        if(isValid == 0)
+        {
+            return;
+        }  else {
+
+            var convertedDate = moment(this.fSearch.cpDateSearch.value).format("YYYY-MM-DD");
+
+            if(this.fSearch.formIdDocSearch.value)
+            {
+                this.formIdValueForDrawRecords      =       this.fSearch.formIdDocSearch.value;
+            }
+            if(this.fSearch.vesselIdDocSearch.value)
+            {
+                this.vesselIdValueForDrawRecords      =       this.fSearch.vesselIdDocSearch.value;
+            }
+            if(this.fSearch.cpDateDocSearch.value)
+            {
+                this.cpDateValueForDrawRecords      =       convertedDate;
+            }
+            if(this.fSearch.drawCPIDDocSearch.value)
+            {
+                this.drawCPIDForDrawRecords      =       this.fSearch.drawCPIDDocSearch.value;
+            }
+            if(this.fSearch.chartererIdDocSearch.value)
+            {
+                this.chartererIdValueForDrawRecords      =       this.fSearch.chartererIdDocSearch.value;
             }
             this.drawRecordsServerSide();
         }
@@ -1409,7 +1647,7 @@ export class DrawComponent implements OnInit
         });
 
         var chartererAccept = (req.isAccepted == 'Y') ? 20 : 0;
-        let charterName = localStorage.getItem('userId');
+
         const newReq =
         {
             id: this.drawId,
@@ -1422,25 +1660,6 @@ export class DrawComponent implements OnInit
         const headerOptions = { headers: header }
         this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
         {
-            const req =
-                {
-                    fromUserId: localStorage.getItem('userId'),
-                    toUserId: this.ownerId,
-                    notification: charterName+'Accepts charter party form NYPE Form 2015 request',
-                    createdBy: localStorage.getItem('userId'),
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
-                    {
-                        headers: header
-                    }
-                    this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
-                    res =>
-                    {});
-                } catch (err) {}
         });
     }
 
@@ -1473,8 +1692,4 @@ export class DrawComponent implements OnInit
     {
         this.inActiveModalStatus = !this.inActiveModalStatus;
     }
-
-
-    
-    
 }

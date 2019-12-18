@@ -41,6 +41,7 @@ export interface UserData
     companyId: string;
     isAccepted : string;
     newAction : string;
+    std_bid_name : string;
 }
 
 export interface PeriodicElement
@@ -74,6 +75,8 @@ export interface PeriodicElement
     ownerBrokerName: string;
     
     newAction : string;
+    
+    std_bid_name : string;
 }
 
 @Component(
@@ -141,6 +144,8 @@ export class TradingPlatformManagementComponent implements OnInit
     cpDateSearch: string;
     drawCPIDSearch: string;
 
+    std_bid_name : string;
+
     createdBy: string;
     createdAt: string;
     updatedBy: string;
@@ -161,6 +166,8 @@ export class TradingPlatformManagementComponent implements OnInit
     DrawManagementSearchForm: FormGroup;
 
     DrawManagementForm: FormGroup;
+    stdDivManagementForm: FormGroup;
+
     loading = false;
     submitted = false;
     createtypeRes :any;
@@ -228,6 +235,9 @@ export class TradingPlatformManagementComponent implements OnInit
 
     drawFormDivShow = false;
 
+    stdDivShow = false;
+    stdDivButtonShow = true;
+
     drawCharteAcceptRejectResponse : any;
     drawCharteAcceptRejectResponseData = [];
 
@@ -244,6 +254,35 @@ export class TradingPlatformManagementComponent implements OnInit
     isEditView = false;
     isRecapView = false;
     isPdfView = false;
+
+    ownerRecordResponse : any;
+    ownerRecordData = [];
+
+    ownerMultiple = [];
+
+    ownerName :  string;
+    ownerEmailID : string;
+    ownerMobileNumber : string;
+    ownerStatus : string;
+    ownerStatusInfo : string;
+
+    chartererName : string;
+    chartererEmailID : string;
+    chartererMobileNumber : string;
+    chartererStatus : string;
+    chartererStatusInfo : string;
+
+    companyName : string;
+    stdTableView = false;
+
+    companyResponse : any;
+    companyResponseData = [];
+
+    tradingInfoResponse: any;
+    tradingInfoResponseData = [];
+
+    tradingStatusInfoResponse: any;
+    tradingStatusInfoResponseData = [];
     
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -277,6 +316,12 @@ export class TradingPlatformManagementComponent implements OnInit
 
     ngOnInit()
     {
+        this.ownerStatusInfo = 'P';
+        this.chartererStatusInfo = 'P';
+
+        this.ownerStatus = 'Pending';
+        this.chartererStatus = 'Pending';
+
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
@@ -302,6 +347,17 @@ export class TradingPlatformManagementComponent implements OnInit
         
         });
 
+        this.stdDivManagementForm = this._formBuilder.group(
+        {
+            formIdStdBid: ['', Validators.required],
+            // invited_owners: ['', Validators.required],
+            std_bid_name: ['', Validators.required],
+            // vesselIdStdBid: ['', Validators.required],
+            // cpDateStdBid: ['', Validators.required],
+            chartererIdStdBid: ['', Validators.required],
+            ownerIdStdBid: ['', Validators.required],
+        });
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
             this.isEditView = true;    
@@ -311,8 +367,16 @@ export class TradingPlatformManagementComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
-            this.isRecapView = true;
-            this.isPdfView = true;
+            this.isEditView = true;    
+            this.isRecapView = false;
+            this.isPdfView = false;
+        }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            this.isEditView = true;    
+            this.isRecapView = false;
+            this.isPdfView = false;
         }
 
         this.CPTypeId = '1';
@@ -341,6 +405,8 @@ export class TradingPlatformManagementComponent implements OnInit
         this.CPRecords();
         this.ChartereRecords();
         this.tradingPlatformRecordsServerSide();
+        this.fetchOwnerData();
+        this.getCompanyName();
 
         this.charterPartyTypeID = '2';
 
@@ -350,8 +416,64 @@ export class TradingPlatformManagementComponent implements OnInit
         }
 
         this.buttonInfo = 'View / Update Clause';
-
     }
+
+     // Fetch Company Data
+     getCompanyName()
+     {
+        var filter = {};
+            filter['id'] = localStorage.getItem('companyId');
+        try
+        {
+            this._userService.getCompanyName(filter).pipe(first()).subscribe((res) =>
+            {
+                this.companyResponse = res;
+                if (this.companyResponse.success === true)
+                {
+                    this.companyResponseData = this.companyResponse.data;
+                    this.companyName = this.companyResponseData[0].companyName;
+                    console.log(this.companyName);
+                }
+            }, err => {  });
+        } catch (err){  }
+     }
+
+    // Fetch Owner Data
+    fetchOwnerData()
+    {
+        var filter = {};
+            filter['companyId'] = this.companyId;
+            filter['userRoleId'] = '6';
+        try
+        {
+            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+            {
+                this.ownerRecordResponse = res;
+                if (this.ownerRecordResponse.success === true)
+                {
+                    this.ownerRecordData = this.ownerRecordResponse.data;
+                }
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    // Owner On Change
+    onChangeOwner(event)
+    {
+        this.ownerId =  event.value;
+        let target = event.source.selected._element.nativeElement;
+        this.ownerName = target.innerText.trim();
+        for(let index = 0; index < this.ownerRecordData.length; index++)
+        {
+            if(this.ownerId == this.ownerRecordData[index].id)
+            {
+                this.ownerEmailID = this.ownerRecordData[index].email;
+                this.ownerMobileNumber = this.ownerRecordData[index].mobileNo;
+            }
+        }
+    }
+
 
     recapView(tradingId,formId,chartererId)
     {
@@ -369,8 +491,14 @@ export class TradingPlatformManagementComponent implements OnInit
         this.router.navigate(['/apps/recap-management']);
     }
 
-    editView(tradingId,formId,chartererId) : void
+    editView(tradingId,formId,chartererId,isStdBid,ownerId,std_bid_name) : void
     {
+        console.log(isStdBid);
+        this.tradingId = tradingId;
+        this.chartererId = chartererId;
+        this.ownerId = ownerId;
+        console.log(std_bid_name);
+
         const reqData =
         {
             mainUserId: localStorage.getItem('userId'),
@@ -379,10 +507,100 @@ export class TradingPlatformManagementComponent implements OnInit
             formId : formId,
             chartererId : chartererId,
             isTrading : '1',
+            isStdBid : isStdBid,
+            std_bid_name : std_bid_name,
         };
         console.log(reqData);
+
         localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-        this.router.navigate(['/apps/drawCp-Clauses-management']);
+        if(isStdBid == 'N')
+        {
+            this.router.navigate(['/apps/drawCp-Clauses-management']);
+        } else {
+
+            this.existingDrawCP = false;
+            this.brokerDivShow = false;
+            this.existingDrawCPButton = false;
+            this.drawRecordsFilterShow = false;
+            this.drawRecordsTableShow = false;
+            this.drawRecordsTableShowButton = false;
+            this.drawFormDivShow = false;
+
+            var filter = {};
+                filter['tradingId'] = tradingId;
+                filter['ownerId'] = this.ownerId;
+                filter['chartererId'] = this.chartererId;
+            try
+            {
+                this._userService.fetchTradingStdBidReady(filter).pipe(first()).subscribe((res) =>
+                {
+                    this.tradingStatusInfoResponse = res;
+                    if (this.tradingStatusInfoResponse.success === true)
+                    {
+                        this.tradingStatusInfoResponseData = this.tradingStatusInfoResponse.data;
+
+                        this.ownerStatusInfo =  this.tradingStatusInfoResponseData['isOwnerAccepted'];
+                        this.chartererStatusInfo =  this.tradingStatusInfoResponseData['isChartererAccepted'];
+                        
+                        if(this.ownerStatusInfo == 'Y' && this.chartererStatusInfo == 'Y')
+                        {
+                            this.router.navigate(['/apps/drawCp-Clauses-management']);
+                        } else {
+                            this.ownerStatus = (this.ownerStatusInfo == 'Y') ? 'Accepted' : this.ownerStatus;
+                            this.ownerStatus = (this.ownerStatusInfo == 'N') ? 'Rejected' : this.ownerStatus;
+
+                            this.chartererStatus = (this.chartererStatusInfo == 'Y') ? 'Accepted' : this.chartererStatus;
+                            this.chartererStatus = (this.chartererStatusInfo == 'N') ? 'Rejected' : this.chartererStatus;
+
+                            this.stdDivManagementForm = this._formBuilder.group(
+                            {
+                                formIdStdBid        :   [formId, Validators.required],
+                                std_bid_name        :   [std_bid_name, Validators.required],
+                                chartererIdStdBid   :   [chartererId, Validators.required],
+                                ownerIdStdBid       :   [ownerId, Validators.required],
+                            });
+                
+                            for(let index = 0; index < this.ownerRecordData.length; index++)
+                            {
+                                if(this.ownerId == this.ownerRecordData[index].id)
+                                {
+                                    this.ownerName = this.ownerRecordData[index].username;
+                                    this.ownerEmailID = this.ownerRecordData[index].email;
+                                    this.ownerMobileNumber = this.ownerRecordData[index].mobileNo;
+                                }
+                            }
+                
+                            for(let index = 0; index < this.ChartereInfoData.length; index++)
+                            {
+                                if(this.chartererId == this.ChartereInfoData[index].id)
+                                {
+                                    this.chartererName = this.ChartereInfoData[index].username;
+                                    this.chartererEmailID = this.ChartereInfoData[index].email;
+                                    this.chartererMobileNumber = this.ChartereInfoData[index].mobileNo;
+                                }
+                            }
+                            
+                            this.mainDrawCPDiv = true;
+                            this.stdDivShow = true;
+                
+                            this.CharterPartyTypeArray = [];
+                
+                            for(let index = 0; index < this.CharterPartyTypeData.length; index++)
+                            {
+                                this.CharterPartyTypeData[index]['isChecked'] = 'N';
+                                if(this.CharterPartyTypeData[index].id == '3')
+                                {
+                                    this.CharterPartyTypeData[index]['isChecked'] = 'Y';
+                                }
+                                this.CharterPartyTypeArray.push(this.CharterPartyTypeData[index]);
+                            }
+                            this.stdTableView = true;
+                        }
+                    }
+                }, err => { console.log(err); });
+            } catch (err)
+            { console.log(err); }
+        }
     }
 
     setDrawID(tradingId,formId,chartererId) : void
@@ -515,6 +733,7 @@ export class TradingPlatformManagementComponent implements OnInit
         this.standardOffersFormDivShow = false;
         this.standardOffersFormTableShow = false;
         this.drawFormDivShow = false;
+        this.stdDivShow = false;
         this.TradingFormRecords();
     }
 
@@ -622,6 +841,8 @@ export class TradingPlatformManagementComponent implements OnInit
             arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
         }
         // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+
+        arrfilterInfo["dcm.progress"] = '100';
         
         try
         {
@@ -629,6 +850,7 @@ export class TradingPlatformManagementComponent implements OnInit
             {
                 this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
+                this.stdDivShow = false;
                 this.drawRecordsTableShow = true;
                 this.drawManagementData = this.drawManagementResFilter.data;
                 this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
@@ -699,12 +921,14 @@ export class TradingPlatformManagementComponent implements OnInit
             arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
         }
         // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        arrfilterInfo["dcm.progress"] = '100';
         try
         {
             this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
                 this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
+                this.stdDivShow = false;
                 this.drawRecordsTableShow = true;
                 this.drawManagementData = this.drawManagementResFilter.data;
                 
@@ -804,6 +1028,7 @@ export class TradingPlatformManagementComponent implements OnInit
     //   matcher = new MyErrorStateMatcher();
 
     get f() { return this.DrawManagementForm.controls; }
+    get fStdBid() { return this.stdDivManagementForm.controls; }
     get fSearch() { return this.DrawManagementSearchForm.controls; }
 
     // Draw CP Form Records Fetch Start
@@ -963,12 +1188,8 @@ export class TradingPlatformManagementComponent implements OnInit
                         {
                             this.CharterPartyTypeList.data.forEach(valueData  => 
                             {
-                                if(valueData.id != 3)
-                                {
-                                    this.CharterPartyTypeArray.push(valueData);
-                                }
+                                this.CharterPartyTypeArray.push(valueData);
                             });
-                            
                         }
 
                     },
@@ -992,36 +1213,37 @@ export class TradingPlatformManagementComponent implements OnInit
 
         ChartereRecords(): void
         {
+        
+            var filter = {};
+                filter['companyId'] = JSON.parse(localStorage.getItem('companyId'));
+                filter['userRoleId'] = '4';
             try
             {
-                this.http.get(`${config.baseUrl}/userList`).subscribe(
-                    res =>
+                this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+                {
+                    this.ChartereInfoList = res;
+                    if (this.ChartereInfoList.success === true)
                     {
-                        this.ChartereInfoList = res;
-                        if (this.ChartereInfoList.success)
-                        {
-                            this.ChartereInfoList.data.forEach(valueData  => 
-                            {
-                                if(valueData.userRoleId === 4)
-                                {
-                                    this.ChartereInfoData.push(valueData);
-                                }
-                            });
-                            
-                        }
-                    },
-                    err =>
-                    {
+                        this.ChartereInfoData = this.ChartereInfoList.data;
                     }
-                );
+                }, err => { console.log(err); });
             } catch (err)
-            {
-            }
+            { console.log(err); }
         }
 
         changeChartererType(event): void
         {
             this.chartererId = event.value;
+            let target = event.source.selected._element.nativeElement;
+            this.chartererName = target.innerText.trim();
+            for(let index = 0; index < this.ChartereInfoData.length; index++)
+            {
+                if(this.chartererId == this.ChartereInfoData[index].id)
+                {
+                    this.chartererEmailID = this.ChartereInfoData[index].email;
+                    this.chartererMobileNumber = this.ChartereInfoData[index].mobileNo;
+                }
+            }
         }
 
     // Charter Party Type Records Fetch End
@@ -1051,6 +1273,17 @@ export class TradingPlatformManagementComponent implements OnInit
                 cpDate: ['', Validators.required],
                 chartererId: ['', Validators.required],
             });
+
+            this.stdDivManagementForm = this._formBuilder.group(
+            {
+                formIdStdBid: ['', Validators.required],
+                // invited_owners: ['', Validators.required],
+                std_bid_name: ['', Validators.required],
+                // vesselIdStdBid: ['', Validators.required],
+                // cpDateStdBid: ['', Validators.required],
+                chartererIdStdBid: ['', Validators.required],
+                ownerIdStdBid: ['', Validators.required],
+            });
     
             this.DrawManagementSearchForm = this._formBuilder.group(
             {
@@ -1068,6 +1301,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.drawRecordsTableShow = false;
             this.drawRecordsTableShowButton = false;
             this.drawFormDivShow = false;
+            this.stdDivShow = false;
             this.CPTypeId = Type;
             if(Type == 1)
             {
@@ -1076,6 +1310,10 @@ export class TradingPlatformManagementComponent implements OnInit
             if(Type == 2)
             {
                 this.drawFormDivShow = true;
+            }
+            if(Type == 3)
+            {
+                this.stdDivShow = true;
             }
         }
 
@@ -1166,6 +1404,112 @@ export class TradingPlatformManagementComponent implements OnInit
         }
     }
     
+    onSubmitStdBidOffer(): void
+    {
+        console.log('HERE IN STD BID SUBMIT');
+        this.submitted = true;
+        this.alertService.clear();
+        if (this.stdDivManagementForm.invalid)
+        { 
+            console.log(this.stdDivManagementForm);
+            return;
+        } else {
+
+            // var convertedDate = moment(this.fStdBid.cpDateStdBid.value).format("YYYY-MM-DD");
+
+            this.formIdValueForDrawRecords      =       this.fStdBid.formIdStdBid.value;
+            // this.vesselIdValueForDrawRecords    =       this.fStdBid.vesselIdStdBid.value,
+            // this.cpDateValueForDrawRecords      =       convertedDate,
+            // this.chartererIdValueForDrawRecords =       this.fStdBid.chartererIdStdBid.value;
+            this.std_bid_name = this.fStdBid.std_bid_name.value;
+
+            var owners = this.ownerMultiple.join();
+            console.log(owners);
+            
+            const req =
+            {
+                CPTypeId:this.CPTypeId,
+                formId:this.formIdValueForDrawRecords,
+                vesselId: null,
+                ownerId:this.ownerId,
+                std_bid_name:this.std_bid_name,
+                invited_owners:'',
+                cpDate: this.cpDateValueForDrawRecords,
+                chartererBrokerId: localStorage.getItem('userId'),
+                chartererId: this.chartererId,
+                ownerBrokerId: localStorage.getItem('userId'),
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+                companyId: localStorage.getItem('companyId'),
+            };
+
+            console.log(req);
+            
+            localStorage.setItem('cpFormId',req.formId);
+            
+            this.loading = true;
+            try
+            {
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions =
+                {
+                    headers: header
+                }
+                this.http.post(`${config.baseUrl}/TradingStandardFormCreate`, req, headerOptions).subscribe(
+                res =>
+                {
+                    this.createtypeRes = res;
+                    if (this.createtypeRes.success === true)
+                    {
+                        this.tradingId = this.createtypeRes.data[0];
+                        
+                        const ownerNotificationData =
+                        {
+                            fromUserId      :       localStorage.getItem('userId'),
+                            toUserId        :       this.ownerId,
+                            ownerId         :       this.ownerId,
+                            chartererId     :       null,
+                            tradingId       :       this.tradingId,
+                            email           :       this.ownerEmailID,
+                            notification    :       'You are invited for trading standard bid',
+                            createdBy       :       localStorage.getItem('userId'),
+                            updatedBy       :       localStorage.getItem('userId')
+                        };
+
+                        this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
+
+                        const chartererNotificatioNData =
+                        {
+                            fromUserId      :       localStorage.getItem('userId'),
+                            toUserId        :       this.chartererId,
+                            ownerId         :       null,
+                            chartererId     :       this.chartererId,
+                            tradingId       :       this.tradingId,
+                            email           :       this.chartererEmailID,
+                            notification    :       'You are invited for trading standard bid',
+                            createdBy       :       localStorage.getItem('userId'),
+                            updatedBy       :       localStorage.getItem('userId')
+                        };
+
+                        this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, chartererNotificatioNData, headerOptions).subscribe(res =>{},err =>{});
+
+                        this.stdTableView = true;
+                        this.stdDivButtonShow = false;
+
+                    }
+                },
+                err =>
+                {
+                    this.alertService.error(err, 'Error');
+                });
+            } catch (err)
+            {
+            } 
+        }
+    }
+
+
 
     fetchDrawRecords(): void
     {

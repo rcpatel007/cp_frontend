@@ -16,6 +16,7 @@ import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 
+declare var $: any;
 export interface UserData {
     id: string;
     username: string;
@@ -123,6 +124,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+
         this.userManagementForm = this._formBuilder.group({
             username: ['', Validators.required],
             password: ['', Validators.required],
@@ -147,6 +149,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
         this.userList();
         this.roleList();
         this.companyList(); 
+        $("#phoneField").CcPicker();
+
     }
     /**
      * On destroy

@@ -6,6 +6,8 @@
         background-color: white !important;
     }
 
+    
+
     .mat-progress-bar::after {
    
         background-color: #5cb85c !important;
@@ -1204,3 +1206,9 @@
 {
     fill : white !important;
 }
+
+.customTableTHCSS
+    {
+        border-right: 0.5px #bababa solid !important;
+        font-size: 20px !important;
+    }

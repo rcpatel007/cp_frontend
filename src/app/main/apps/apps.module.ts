@@ -9,6 +9,7 @@ import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.compon
 import { SettingsComponent } from './settings/settings.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DrawcpComponent } from './drawcp/drawcp.component';
+import { StdbidManagementComponent } from './stdbid-management/stdbid-management.component';
 // import { CountryPickerModule } from 'angular2-countrypicker';
 // import { DrawFirstCounterManagementComponent } from './draw-first-counter-management/draw-first-counter-management.component';
 // import { DrawCpCounterComponent } from './draw-cp-counter/draw-cp-counter.component';
@@ -19,6 +20,10 @@ const routes = [
     {
         path: 'dashboards/analytics',
         loadChildren: './dashboards/analytics/analytics.module#AnalyticsDashboardModule',
+    },
+    {
+        path: 'bid-management',
+        loadChildren: './stdbid-management/stdbid-management.module#StdbidManagementModule',
     },
     // {
     //     path        : 'dashboards/project',
@@ -143,6 +148,6 @@ const routes = [
 @NgModule({
     imports: [RouterModule.forChild(routes), FuseSharedModule
      ],
-    declarations: [],
+    declarations: [StdbidManagementComponent],
 })
 export class AppsModule {}

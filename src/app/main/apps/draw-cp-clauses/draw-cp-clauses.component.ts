@@ -144,11 +144,13 @@ export class DrawCpClausesComponent implements OnInit
     totalTermsReviewRecords : any;
 
     cpTime: string;
+    cpTimeInfo: string;
     cityId: string;
     cpDate: string;
     formId: string;
     pageTitle: String;
     OwnersFirstCounterForm: FormGroup;
+    stdBidForm: FormGroup;
     drawcluases = [];
     drawManagementRes: any;
     clusesId = [];
@@ -243,6 +245,8 @@ export class DrawCpClausesComponent implements OnInit
     mainScreen = true;
 
     firstScreen = true;
+    firstScreenStdBid = true;
+    firstScreenStdBidBroker = true;
     secondScreen = false;
     thirdScreen = false;
 
@@ -302,6 +306,43 @@ export class DrawCpClausesComponent implements OnInit
 
     timePickerValue : any;
 
+    cpTimeStdBid : any;
+    cityIdStdBid : any;
+    cpDateStdBid : any;
+    fixture_subject : any;
+    lifted_by : any;
+    lifted_time : any;
+    lifted_date : any;
+    lifted_city : any;
+    lifted_charter_party_place : any;
+    lifted_charter_fully_style : any;
+    lifted_charter_domicile : any;
+    lifted_owner_type : any;
+    lifted_owner_fully_style : any;
+    lifted_owner_domicile : any;
+
+    lifted_vessel_name : any;
+    lifted_vessel_imo : any;
+    lifted_vessel_flag : any;
+    lifted_vessel_year_built : any;
+
+    lifted_vessel_dwat_metric_tons : any;
+    lifted_vessel_draft_on_marks : any;
+    lifted_vessel_loa : any;
+    lifted_vessel_beam : any;
+    lifted_vessel_holds : any;
+    lifted_vessel_hatches : any;
+    lifted_vessel_gear : any;
+    lifted_vessel_swl : any;
+    
+    isStdBid : any;
+    
+    loading = false;
+    submitted = false;
+
+    isDisabled : any;
+
+
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -331,6 +372,8 @@ export class DrawCpClausesComponent implements OnInit
         this.dataSource = new MatTableDataSource(this.viewCustomTermsOfCustomClauseResponseData);
     }
 
+    get fStdBidSubmit() { return this.stdBidForm.controls; }
+
     htmlStr: string = '<strong>The Tortoise</strong> &amp; the Hare <button></button>';
 
     ngOnInit()
@@ -339,7 +382,8 @@ export class DrawCpClausesComponent implements OnInit
         // console.log(moment(new Date('13:11')).format("HH:mm"));
         // return false;
 
-        this.timePickerValue = '11:44';
+
+
 
         this.mainDynamicStringArray = [];
         this.dynamicInputNumber = 0;
@@ -354,6 +398,31 @@ export class DrawCpClausesComponent implements OnInit
         this.formId = filter.formId;
         this.tradingId = filter.tradingId;
         this.isTrading = filter.isTrading;
+        this.isStdBid = filter.isStdBid;
+
+        this.isDisabled = 'Y';
+
+        console.log(JSON.parse(localStorage.getItem('userRoleId')));
+
+        console.log(this.isStdBid);
+
+        if(this.isStdBid == 'Y')
+        {
+            if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
+            {
+                this.firstScreenStdBidBroker = true;
+                this.firstScreenStdBid = false;
+            } else {
+                this.firstScreenStdBid = true;
+                this.firstScreenStdBidBroker = false;
+            }
+            this.firstScreen = false;
+        } else {
+            this.firstScreenStdBid = false;
+            this.firstScreenStdBidBroker = false;
+            this.firstScreen = true;
+        }
+
 
         var current_date = moment(new Date()).format("YYYY-MM-DD");
         var current_time = moment().format("HH:mm A");
@@ -363,6 +432,38 @@ export class DrawCpClausesComponent implements OnInit
                 cpTime: [current_time, Validators.required],
                 cityId: ['', Validators.required],
                 cpDate: [current_date, Validators.required],
+            }
+        );
+
+        this.stdBidForm = this._formBuilder.group
+        (
+            {
+                cpTimeStdBid: [current_time, Validators.required],
+                cityIdStdBid: ['', Validators.required],
+                cpDateStdBid: [current_date, Validators.required],
+                fixture_subject: ['', ''],
+                lifted_by: ['', ''],
+                lifted_time: ['', ''],
+                lifted_date: ['', ''],
+                lifted_city: ['', ''],
+                lifted_charter_party_place: ['', ''],
+                lifted_charter_fully_style: ['', ''],
+                lifted_charter_domicile: ['', ''],
+                lifted_owner_fully_style: ['', ''],
+                lifted_owner_domicile: ['', ''],
+                lifted_owner_type: ['', ''],
+                lifted_vessel_name: ['', ''],
+                lifted_vessel_imo: ['', ''],
+                lifted_vessel_flag: ['', ''],
+                lifted_vessel_year_built: ['', ''],
+                lifted_vessel_dwat_metric_tons : ['', ''],
+                lifted_vessel_draft_on_marks : ['', ''],
+                lifted_vessel_loa : ['', ''],
+                lifted_vessel_beam : ['', ''],
+                lifted_vessel_holds : ['', ''],
+                lifted_vessel_hatches : ['', ''],
+                lifted_vessel_gear : ['', ''],
+                lifted_vessel_swl : ['', ''],
             }
         );
 
@@ -405,6 +506,7 @@ export class DrawCpClausesComponent implements OnInit
         this.clauseTermsCheckBox = true;
         this.cpFormData();
     }
+    
 
     timePickerTimeTest(event)
     {
@@ -425,7 +527,6 @@ export class DrawCpClausesComponent implements OnInit
         }
         console.log(updatedStringValuesArray);
     }
-
   
     // Preamble Screen Data
     fetchDrawDataRecap()
@@ -900,6 +1001,68 @@ export class DrawCpClausesComponent implements OnInit
                         this.signature2DemoView = true;
                     }
 
+                    console.log(this.tradingResponseInformation.data[0].cpCity);
+                    console.log(this.tradingResponseInformation.data[0].lifted_charter_party_place);
+                    console.log(this.tradingResponseInformation.data[0].lifted_owner_type);
+
+                    this.stdBidForm = this._formBuilder.group
+                    (
+                        {
+                            cpTimeStdBid: [this.cpTime, Validators.required],
+                            cityIdStdBid: [this.tradingResponseInformation.data[0].cpCity, Validators.required],
+                            cpDateStdBid: [this.cpDate, Validators.required],
+                            fixture_subject: [this.tradingResponseInformation.data[0].fixture_subject, ''],
+                            lifted_by: [this.tradingResponseInformation.data[0].lifted_by, ''],
+                            lifted_time: [this.tradingResponseInformation.data[0].lifted_time, ''],
+                            lifted_date: [this.tradingResponseInformation.data[0].lifted_date, ''],
+                            lifted_city: [this.tradingResponseInformation.data[0].lifted_city, ''],
+                            lifted_charter_party_place: [this.tradingResponseInformation.data[0].lifted_charter_party_place, ''],
+                            lifted_charter_fully_style: [this.tradingResponseInformation.data[0].lifted_charter_fully_style, ''],
+                            lifted_charter_domicile: [this.tradingResponseInformation.data[0].lifted_charter_domicile, ''],
+                            lifted_owner_fully_style: [this.tradingResponseInformation.data[0].lifted_owner_fully_style, ''],
+                            lifted_owner_domicile: [this.tradingResponseInformation.data[0].lifted_owner_domicile, ''],
+                            lifted_owner_type: [this.tradingResponseInformation.data[0].lifted_owner_type, ''],
+                            lifted_vessel_name: [this.tradingResponseInformation.data[0].lifted_vessel_name, ''],
+                            lifted_vessel_imo: [this.tradingResponseInformation.data[0].lifted_vessel_imo, ''],
+                            lifted_vessel_flag: [this.tradingResponseInformation.data[0].lifted_vessel_flag, ''],
+                            lifted_vessel_year_built: [this.tradingResponseInformation.data[0].lifted_vessel_year_built, ''],
+                            lifted_vessel_dwat_metric_tons : [this.tradingResponseInformation.data[0].lifted_vessel_dwat_metric_tons, ''],
+                            lifted_vessel_draft_on_marks : [this.tradingResponseInformation.data[0].lifted_vessel_draft_on_marks, ''],
+                            lifted_vessel_loa : [this.tradingResponseInformation.data[0].lifted_vessel_loa, ''],
+                            lifted_vessel_beam : [this.tradingResponseInformation.data[0].lifted_vessel_beam, ''],
+                            lifted_vessel_holds : [this.tradingResponseInformation.data[0].lifted_vessel_holds, ''],
+                            lifted_vessel_hatches : [this.tradingResponseInformation.data[0].lifted_vessel_hatches, ''],
+                            lifted_vessel_gear : [this.tradingResponseInformation.data[0].lifted_vessel_gear, ''],
+                            lifted_vessel_swl : [this.tradingResponseInformation.data[0].lifted_vessel_swl, ''],
+                        }
+                    );
+
+                    this.fixture_subject= this.tradingResponseInformation.data[0].fixture_subject;
+                    this.lifted_by= this.tradingResponseInformation.data[0].lifted_by;
+                    this.lifted_time= this.tradingResponseInformation.data[0].lifted_time;
+                    this.lifted_date= this.tradingResponseInformation.data[0].lifted_date;
+                    this.lifted_city= this.tradingResponseInformation.data[0].lifted_city;
+                    this.lifted_charter_party_place= this.tradingResponseInformation.data[0].lifted_charter_party_place;
+                    this.lifted_charter_fully_style= this.tradingResponseInformation.data[0].lifted_charter_fully_style;
+                    this.lifted_charter_domicile= this.tradingResponseInformation.data[0].lifted_charter_domicile;
+                    this.lifted_owner_fully_style= this.tradingResponseInformation.data[0].lifted_owner_fully_style;
+                    this.lifted_owner_domicile= this.tradingResponseInformation.data[0].lifted_owner_domicile;
+                    this.lifted_owner_type= this.tradingResponseInformation.data[0].lifted_owner_type;
+                    this.lifted_vessel_name= this.tradingResponseInformation.data[0].lifted_vessel_name;
+                    this.lifted_vessel_imo= this.tradingResponseInformation.data[0].lifted_vessel_imo;
+                    this.lifted_vessel_flag= this.tradingResponseInformation.data[0].lifted_vessel_flag;
+                    this.lifted_vessel_year_built= this.tradingResponseInformation.data[0].lifted_vessel_year_built;
+                    this.lifted_vessel_dwat_metric_tons = this.tradingResponseInformation.data[0].lifted_vessel_dwat_metric_tons;
+                    this.lifted_vessel_draft_on_marks = this.tradingResponseInformation.data[0].lifted_vessel_draft_on_marks;
+                    this.lifted_vessel_loa = this.tradingResponseInformation.data[0].lifted_vessel_loa;
+                    this.lifted_vessel_beam = this.tradingResponseInformation.data[0].lifted_vessel_beam;
+                    this.lifted_vessel_holds = this.tradingResponseInformation.data[0].lifted_vessel_holds;
+                    this.lifted_vessel_hatches = this.tradingResponseInformation.data[0].lifted_vessel_hatches;
+                    this.lifted_vessel_gear = this.tradingResponseInformation.data[0].lifted_vessel_gear;
+                    this.lifted_vessel_swl = this.tradingResponseInformation.data[0].lifted_vessel_swl;
+
+                    this.lifted_date = moment(this.lifted_date).format("YYYY-MM-DD");
+
                     this.fetchVesselData();
 
                     this.clauseCategoryRecordsServerSideRecap();
@@ -965,7 +1128,50 @@ export class DrawCpClausesComponent implements OnInit
     // First Screen View
     firstScreenView()
     {
-        this.firstScreen = true;
+        if(this.isStdBid == 'Y')
+        {
+            this.stdBidForm = this._formBuilder.group
+            (
+                {
+                    cpTimeStdBid: [this.cpTime, Validators.required],
+                    cityIdStdBid: [this.cityId, Validators.required],
+                    cpDateStdBid: [this.cpDate, Validators.required],
+                    fixture_subject: [this.fixture_subject, ''],
+                    lifted_by: [this.lifted_by, ''],
+                    lifted_time: [this.lifted_time, ''],
+                    lifted_date: [this.lifted_date, ''],
+                    lifted_city: [this.lifted_city, ''],
+                    lifted_charter_party_place: [this.lifted_charter_party_place, ''],
+                    lifted_charter_fully_style: [this.lifted_charter_fully_style, ''],
+                    lifted_charter_domicile: [this.lifted_charter_domicile, ''],
+                    lifted_owner_fully_style: [this.lifted_owner_fully_style, ''],
+                    lifted_owner_domicile: [this.lifted_owner_domicile, ''],
+                    lifted_owner_type: [this.lifted_owner_type, ''],
+                    lifted_vessel_name: [this.lifted_vessel_name, ''],
+                    lifted_vessel_imo: [this.lifted_vessel_imo, ''],
+                    lifted_vessel_flag: [this.lifted_vessel_flag, ''],
+                    lifted_vessel_year_built: [this.lifted_vessel_year_built, ''],
+                    lifted_vessel_dwat_metric_tons : [this.lifted_vessel_dwat_metric_tons, ''],
+                    lifted_vessel_draft_on_marks : [this.lifted_vessel_draft_on_marks, ''],
+                    lifted_vessel_loa : [this.lifted_vessel_loa, ''],
+                    lifted_vessel_beam : [this.lifted_vessel_beam, ''],
+                    lifted_vessel_holds : [this.lifted_vessel_holds, ''],
+                    lifted_vessel_hatches : [this.lifted_vessel_hatches, ''],
+                    lifted_vessel_gear : [this.lifted_vessel_gear, ''],
+                    lifted_vessel_swl : [this.lifted_vessel_swl, ''],
+                }
+            );
+
+            if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
+            {
+                this.firstScreenStdBidBroker= true;
+            } else {
+                this.firstScreenStdBid = true;
+            }
+            
+        } else {
+            this.firstScreen = true;
+        }
         this.secondScreen = false;
         this.thirdScreen = false;
     }
@@ -974,16 +1180,117 @@ export class DrawCpClausesComponent implements OnInit
     secondScreenView()
     {
         this.firstScreen = false;
+        this.firstScreenStdBid = false;
+        this.firstScreenStdBidBroker = false;
         this.secondScreen = true;
         this.thirdScreen = false;
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         this.isTrading = filter.isTrading;
 
-        if(filter.isTrading == '2')
+        if(filter.isStdBid == 'Y')
         {
-            this.customInputDrawDataUpdate();
-            this.fetchDrawData();    
+            this.stdBidSubmit();
         } else {
+            if(filter.isTrading == '2')
+            {
+                this.customInputDrawDataUpdate();
+                this.fetchDrawData();    
+            } else {
+                this.customInputTradingDataUpdate();
+                this.fetchTradingData();
+            }
+        }
+    }
+
+    stdBidSubmit()
+    {
+        this.submitted = true;
+        this.alertService.clear();
+        if (this.stdBidForm.invalid)
+        { 
+            return;
+        } else {
+
+            var convertedDate = moment(this.fStdBidSubmit.cpDateStdBid.value).format("YYYY-MM-DD");
+
+            this.cpTime = this.fStdBidSubmit.cpTimeStdBid.value;
+            this.cpDate = convertedDate;
+            this.cityId = this.fStdBidSubmit.cityIdStdBid.value;
+            
+            this.fixture_subject = this.fStdBidSubmit.fixture_subject.value;
+            this.lifted_by = this.fStdBidSubmit.lifted_by.value;
+            this.lifted_time = this.fStdBidSubmit.lifted_time.value;
+            this.lifted_date = this.fStdBidSubmit.lifted_date.value;
+            this.lifted_city = this.fStdBidSubmit.lifted_city.value;
+            this.lifted_charter_party_place = this.fStdBidSubmit.lifted_charter_party_place.value;
+            this.lifted_charter_fully_style = this.fStdBidSubmit.lifted_charter_fully_style.value;
+            this.lifted_charter_domicile = this.fStdBidSubmit.lifted_charter_domicile.value;
+            this.lifted_owner_fully_style = this.fStdBidSubmit.lifted_owner_fully_style.value;
+            this.lifted_owner_domicile = this.fStdBidSubmit.lifted_owner_domicile.value;
+            this.lifted_owner_type = this.fStdBidSubmit.lifted_owner_type.value;
+            this.lifted_vessel_name = this.fStdBidSubmit.lifted_vessel_name.value;
+            this.lifted_vessel_imo = this.fStdBidSubmit.lifted_vessel_imo.value;
+            this.lifted_vessel_flag = this.fStdBidSubmit.lifted_vessel_flag.value;
+            this.lifted_vessel_year_built = this.fStdBidSubmit.lifted_vessel_year_built.value;
+            this.lifted_vessel_dwat_metric_tons = this.fStdBidSubmit.lifted_vessel_dwat_metric_tons.value;
+            this.lifted_vessel_draft_on_marks = this.fStdBidSubmit.lifted_vessel_draft_on_marks.value;
+            this.lifted_vessel_loa = this.fStdBidSubmit.lifted_vessel_loa.value;
+            this.lifted_vessel_beam = this.fStdBidSubmit.lifted_vessel_beam.value;
+            this.lifted_vessel_holds = this.fStdBidSubmit.lifted_vessel_holds.value;
+            this.lifted_vessel_hatches = this.fStdBidSubmit.lifted_vessel_hatches.value;
+            this.lifted_vessel_gear = this.fStdBidSubmit.lifted_vessel_gear.value;
+            this.lifted_vessel_swl = this.fStdBidSubmit.lifted_vessel_swl.value;
+            
+            const req =
+            {
+                tradingId : this.tradingId,
+                
+                cpTime:this.cpTime,
+                cpDate:this.cpDate,
+                cpCity:this.cityId,
+                fixture_subject:this.fixture_subject,
+                lifted_by:this.lifted_by,
+                lifted_time:this.lifted_time,
+                lifted_date:this.lifted_date,
+                lifted_city:this.lifted_city,
+                lifted_charter_party_place:this.lifted_charter_party_place,
+                lifted_charter_fully_style:this.lifted_charter_fully_style,
+                lifted_charter_domicile:this.lifted_charter_domicile,
+                lifted_owner_fully_style:this.lifted_owner_fully_style,
+                lifted_owner_domicile:this.lifted_owner_domicile,
+                lifted_owner_type:this.lifted_owner_type,
+                lifted_vessel_name:this.lifted_vessel_name,
+                lifted_vessel_imo:this.lifted_vessel_imo,
+                lifted_vessel_flag:this.lifted_vessel_flag,
+                lifted_vessel_year_built:this.lifted_vessel_year_built,
+                lifted_vessel_dwat_metric_tons:this.lifted_vessel_dwat_metric_tons,
+                lifted_vessel_draft_on_marks:this.lifted_vessel_draft_on_marks,
+                lifted_vessel_loa:this.lifted_vessel_loa,
+                lifted_vessel_beam:this.lifted_vessel_beam,
+                lifted_vessel_holds:this.lifted_vessel_holds,
+                lifted_vessel_hatches:this.lifted_vessel_hatches,
+                lifted_vessel_gear:this.lifted_vessel_gear,
+                lifted_vessel_swl:this.lifted_vessel_swl,
+
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+                
+                companyId: localStorage.getItem('companyId'),
+
+            };
+            
+            this.loading = true;
+            try
+            {
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions =
+                {
+                    headers: header
+                }
+                this.http.post(`${config.baseUrl}/StandardBidFormDataUpdate`, req, headerOptions).subscribe(res =>{},err =>{this.alertService.error(err, 'Error');});
+            } catch (err){} 
+
             this.customInputTradingDataUpdate();
             this.fetchTradingData();
         }
@@ -1013,12 +1320,16 @@ export class DrawCpClausesComponent implements OnInit
             this.http.post(`${config.baseUrl}/updateCheckedClauses`, req, headerOptions).subscribe( res =>
             {
                 this.firstScreen = false;
+                this.firstScreenStdBid = false;
+                this.firstScreenStdBidBroker = false;
                 this.secondScreen = false;
                 this.thirdScreen = true;
                 this.termsReviewRecords();
             });
         } else {
             this.firstScreen = false;
+            this.firstScreenStdBid = false;
+            this.firstScreenStdBidBroker = false;
             this.secondScreen = false;
             this.thirdScreen = true;
             // console.log('Here In Condition');
@@ -1039,6 +1350,8 @@ export class DrawCpClausesComponent implements OnInit
             this.http.post(`${config.baseUrl}/updateCheckedClausesTrading`, req, headerOptions).subscribe( res =>
             {
                 this.firstScreen = false;
+                this.firstScreenStdBid = false;
+                this.firstScreenStdBidBroker = false;
                 this.secondScreen = false;
                 this.thirdScreen = true;
                 this.termsReviewRecords();
@@ -1981,11 +2294,45 @@ export class DrawCpClausesComponent implements OnInit
                                           totalCount = totalCount + 1;
                                           for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
                                           {
+                                                var number =   sindex + 1;
+                                                var timeStamp = 'dynamicInputValueForAll'+Date.now()+number;
+    
+                                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+    
+                                                if(mainString != '' && mainString != null && mainString != undefined)
+                                                {
+                                                    mainString = mainString.replace(/<[^>]*>/g, '');
+                                                    console.log(mainString,"Main String Print");
+                                                    this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = 
+                                                    this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
+                                                } else {
+                                                    this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = '';
+                                                }
+    
+                                                this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainString'] = mainString;
+                                                this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['timeStamp'] = timeStamp;
                                               this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
                                           }
-                                          for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
+                                          for (let sindexCustom = 0; sindexCustom < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindexCustom++)
                                           {
-                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+                                            var number =   sindexCustom + 1;
+                                            var timeStamp = 'dynamicInputValueForAll'+Date.now()+number;
+  
+                                              var mainString = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustom'];
+  
+                                              if(mainString != '' && mainString != null && mainString != undefined)
+                                              {
+                                                  mainString = mainString.replace(/<[^>]*>/g, '');
+                                                  this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustomArray'] = 
+                                                  this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
+                                              } else {
+                                                  this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustomArray'] = '';
+                                              }
+  
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainString'] = mainString;
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['timeStamp'] = timeStamp;
+  
+                                              this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['identifier'] = String.fromCharCode(97 + sindexCustom);
                                           }
                                       }
                                       this.totalTermsReviewRecords = totalCount;
@@ -2071,6 +2418,7 @@ export class DrawCpClausesComponent implements OnInit
     updateDynamicString(className,type)
     {
        
+        console.log(this.cpTimeInfo);
         console.log('HERE In TIME PICKER ON CHANGE');
         console.log(className);
 
@@ -2577,7 +2925,10 @@ export class DrawCpClausesComponent implements OnInit
         return this.dynamicStringArray;
     }
 
-  
+    setTime()
+    {
+        console.log(this.cpTime);
+    }
     
 
     

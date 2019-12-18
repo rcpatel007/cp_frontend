@@ -399,6 +399,11 @@ export class UserService {
     {
         return this.http.post(`${config.baseUrl}/drawFormCopyRecords`,req)
     }
+     companyRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/companyRecordsServerSide`,req)
+        }
+
 
     DrawFormCopyCreate(req)
     {
@@ -680,5 +685,24 @@ export class UserService {
         tradingDataSignatureUpadate(req)
         {
             return this.http.post(`${config.baseUrl}/tradingDataSignatureUpadate`,req)
+        }
+        userRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/userRecordsServerSide`,req)
+        }
+
+        TradingStandardFormCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingStandardFormCreate`,req)
+        }
+
+        tradingEmailIDAndNotificationSend(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`,req)
+        }
+
+        getCompanyName(req)
+        {
+            return this.http.post(`${config.baseUrl}/getCompanyName`,req)
         }
 }
