@@ -428,7 +428,11 @@
             <div class="content-card " *ngIf="secondScreen" style="margin-left: -10px !important; margin-top: 20px !important; clear: both;">
                     <mat-checkbox style="margin-left: 35px"
                         (change)="checkUncheckAllForClauseTermsSecondScreen($event)"  [checked]="clauseCategoryRecordResponseDataAllChecked === 'Y'"
-                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" >
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        
+                        [disabled]=" isCheckboxDisabled == 'Y' "
+
+                        >
                         Check All
                     </mat-checkbox>
                     <br>
@@ -446,7 +450,7 @@
                         
                         class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
                         
-                        [disabled]="clauseCategoryData.isChecked === 'Y'"
+                        [disabled]="clauseCategoryData.isChecked === 'Y' || isCheckboxDisabled == 'Y' "
 
                         matTooltip="
                         {{clauseCategoryData.name}}
@@ -550,9 +554,25 @@
                                         <td style="width:100%" >
                                             
                                             <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
-                                            <h4 *ngFor="let dynamicData of ct.mainTermRecordArray; let i= index">
-                
-                                                <h4 class="inputStringCustomDynamic" *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "> {{ dynamicData.string }} </h4>
+                                            
+                                            <h4 *ngIf="ct.crossTerm != ''">
+                                                <h4 
+                                                    class="inputStringCustomDynamic" style="text-decoration: line-through;"
+                                                > 
+                                                    {{ ct.crossTerm }} 
+                                                </h4>
+                                                <br>
+                                            </h4>
+                                            
+                                            <h4  *ngFor="let dynamicData of ct.mainTermRecordArray; let i= index">
+                                                
+                                                <h4 
+                                                    class="inputStringCustomDynamic" 
+                                                    *ngIf="dynamicData.string != '#date' && dynamicData.string != '#time' && dynamicData.string != '#number' "
+                                                       
+                                                > 
+                                                    {{ dynamicData.string }} 
+                                                </h4>
                 
                                                 <h4 class="datePickerMainDivCustom" *ngIf="dynamicData.string == '#date'">
                                                     <input class="datePickerInputDynamicCustom {{dynamicData.timeStamp}}" [matDatepicker]="i" [value]="dynamicData.hasValue" 
@@ -621,6 +641,15 @@
                                             <!-- <div style="margin-left: 10px;"  [innerHTML]="ct.mainTermRecordCustom" ></div> -->
                                             
                                             <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
+
+                                            <h4 *ngIf="ct.crossTermCustom != ''">
+                                                <h4 
+                                                    class="inputStringCustomDynamic" style="text-decoration: line-through;"
+                                                > 
+                                                    {{ ct.crossTermCustom }} 
+                                                </h4>
+                                                <br>
+                                            </h4>
 
                                             <h4 *ngFor="let dynamicData of ct.mainTermRecordCustomArray; let i= index">
                 
@@ -713,6 +742,15 @@
                                         <td style="width:100%" >
 
                                                 <span class="inputStringIdentifierCustomDynamic"><b>{{ct.identifier}})</b> </span>
+
+                                                <h4 *ngIf="ct.crossTerm != ''">
+                                                    <h4 
+                                                        class="inputStringCustomDynamic" style="text-decoration: line-through;"
+                                                    > 
+                                                        {{ ct.crossTerm }} 
+                                                    </h4>
+                                                    <br>
+                                                </h4>
 
                                                 <h4 *ngFor="let dynamicData of ct.mainTermRecordCustomArray; let i= index">
                     

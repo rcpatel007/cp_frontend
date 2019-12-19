@@ -342,6 +342,8 @@ export class DrawCpClausesComponent implements OnInit
 
     isDisabled : any;
 
+    isCheckboxDisabled : any;
+
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -383,7 +385,7 @@ export class DrawCpClausesComponent implements OnInit
         // return false;
 
 
-
+        this.isCheckboxDisabled = 'Y';
 
         this.mainDynamicStringArray = [];
         this.dynamicInputNumber = 0;
@@ -474,6 +476,7 @@ export class DrawCpClausesComponent implements OnInit
         
         if (JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
+            this.isCheckboxDisabled = 'N';
             if(filter.isTrading == '2')
             {
                 this.pageTitle = 'Draw C/P Clauses';

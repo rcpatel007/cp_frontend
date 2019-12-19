@@ -368,14 +368,14 @@ export class TradingPlatformManagementComponent implements OnInit
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
             this.isEditView = true;    
-            this.isRecapView = false;
+            this.isRecapView = true;
             this.isPdfView = false;
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
             this.isEditView = true;    
-            this.isRecapView = false;
+            this.isRecapView = true;
             this.isPdfView = false;
         }
 

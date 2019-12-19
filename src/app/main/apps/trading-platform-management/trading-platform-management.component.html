@@ -21,7 +21,7 @@
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Trading Platform</button>
+                        <button class="add-item add-item--main-button" style="float:right" (click)="drawCPFormView()"> Create Trading </button>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                     <div class="row-col-6"></div>
 
                     <div class="row-col-3">
-                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()"> Existing Trading Platform</button>
+                        <button class="add-item add-item--back-button" style="float:right" (click)="existingDrawCPView()"> Back </button>
                     </div>
                 </div>
             </div>
@@ -43,12 +43,6 @@
             <hr *ngIf="brokerDivShow">
             <!-- Existing Trading Platform Records -->
             <table mat-table [dataSource]="dataSource" *ngIf="existingDrawCP">
-                <!-- <ng-container matColumnDef="action">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head"> </th>
-                    <td mat-cell *matCellDef="let element" class="action">
-                        <mat-radio-button name="checkboxData" [value]="element.id" [ngClass]="{'d-none': element.isAccepted === 'N' || element.isAccepted === 'P'}" (click)="setDrawID(element.id,element.formId,element.chartererId)"> </mat-radio-button>
-                    </td>
-                </ng-container> -->
                 <ng-container matColumnDef="identifier">
                     <th mat-header-cell *matHeaderCellDef> Identifier </th>
                     <td mat-cell *matCellDef="let element"> {{element.identifier}} </td>
@@ -82,25 +76,50 @@
                 <ng-container matColumnDef="isAccepted" >
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" [ngClass]="{'d-none': chartererDivShow === 'N'}"> Accept / Reject</th>
                     <td mat-cell  *matCellDef="let row" class="action" [ngClass]="{'d-none': chartererDivShow === 'N'}">
-                        <button mat-button class="click-icon click-icon--done" [disabled]="row.isAccepted === 'Y'"
+                        
+                        <button [ngClass]="{'d-none': row.isAccepted != 'P'}"  mat-button class="click-icon click-icon--done" [disabled]="row.isAccepted === 'Y'"
                             (click)="showActiveModal('Y', row.drawStatusId)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">done</mat-icon>
                         </button>
-                        <button mat-button class="click-icon click-icon--clear" [disabled]="row.isAccepted === 'N'"
+
+                        <h4 style="font-size: 22px;font-weight: bold; color: #23da28;" [ngClass]="{'d-none': row.isAccepted != 'Y'}" >Accepted</h4>
+
+
+                        <button [ngClass]="{'d-none': row.isAccepted != 'P'}" mat-button class="click-icon click-icon--clear" [disabled]="row.isAccepted === 'N'"
                             (click)="showInActiveModal('N', row.drawStatusId)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">clear</mat-icon>
                         </button>
+
+                        <h4 style="font-size: 22px;font-weight: bold; color: #78b8ef;" [ngClass]="{'d-none': row.isAccepted != 'N'}">Rejected</h4>
+                        
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="newAction" >
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="action-head" > Action </th>
                     <td mat-cell  *matCellDef="let row" class="action" >
-                        <button mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
+
+                        <button [ngClass]="{'d-none': row.isAccepted != 'Y' && chartererDivShow == 'Y'}" mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
                             (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                         </button>
-                        <button mat-button class="click-icon click-icon--done" 
-                        [ngClass]="{'d-none': row.isAccepted === 'N' || row.isAccepted === 'P'}"  
+                        <button 
+                        
+                        mat-button class="click-icon click-icon--done" 
+                        [ngClass]="{'d-none': row.isAccepted != 'Y' &&  chartererDivShow == 'Y'}"  
+                        
+                        *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                        </button>
+
+                        <button [ngClass]="{'d-none': chartererDivShow == 'N' }" mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
+                            (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                        </button>
+                        <button 
+                        
+                        mat-button class="click-icon click-icon--done" 
+                        [ngClass]="{'d-none': chartererDivShow == 'N'}"  
+                        
                         *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
                         </button>

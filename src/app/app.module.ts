@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,7 +57,7 @@ const appRoutes: Routes = [
         BrowserAnimationsModule,
         HttpClientModule,
         SignaturePadModule,
-        RouterModule.forRoot(appRoutes),
+        RouterModule.forRoot(appRoutes , { useHash: true }),
         ToastrModule.forRoot(), // ToastrModule added
 
         TranslateModule.forRoot(),
@@ -85,6 +86,7 @@ const appRoutes: Routes = [
         AppStoreModule
 
     ],
+    providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
