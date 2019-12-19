@@ -138,7 +138,7 @@
 	                        </button> -->
 	                        <button 
 	                        mat-button class="click-icon click-icon--done" 
-	                        [ngClass]="{'d-none': row.isAccepted != 'N' chartererDivShow == 'N'}"  
+	                        [ngClass]="{'d-none':  chartererDivShow == 'N'}"  
 	                        
 	                        *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
 	                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
