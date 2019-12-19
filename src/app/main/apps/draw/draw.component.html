@@ -123,23 +123,22 @@
 	                            (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
 	                            <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
 	                        </button>
-	                        <button 
+	                        <!-- <button 
 	                        
 	                        mat-button class="click-icon click-icon--done" 
 	                        [ngClass]="{'d-none': row.isAccepted != 'Y' &&  chartererDivShow == 'Y'}"  
 	                        
 	                        *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
 	                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
-	                        </button>
+	                        </button> -->
 	
-	                        <button [ngClass]="{'d-none': chartererDivShow == 'N' }" mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
+	                        <!-- <button [ngClass]="{'d-none': chartererDivShow == 'N' }" mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
 	                            (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
 	                            <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
-	                        </button>
+	                        </button> -->
 	                        <button 
-	                        
 	                        mat-button class="click-icon click-icon--done" 
-	                        [ngClass]="{'d-none': chartererDivShow == 'N'}"  
+	                        [ngClass]="{'d-none': row.isAccepted != 'N' chartererDivShow == 'N'}"  
 	                        
 	                        *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
 	                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
@@ -373,6 +372,18 @@
                         (click)="showInActiveModal('N', row.drawStatusId)">
                         <mat-icon aria-hidden="false" aria-label="Example home icon">clear</mat-icon>
                     </button> -->
+                    <button [ngClass]="{'d-none': row.isAccepted != 'Y'}" mat-button class="click-icon click-icon--done" *ngIf="isEditView" style="background:#f28a38;"
+                    (click)="editView(row.id,row.formId,row.chartererId,row.is_std_bid,row.ownerId,row.std_bid_name)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button 
+                
+                mat-button class="click-icon click-icon--done" 
+                [ngClass]="{'d-none': row.isAccepted != 'Y'}"  
+                
+                *ngIf="isRecapView" (click)="recapView(row.id,row.formId,row.chartererId)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                </button>
 
                     </td>
                 </ng-container>
