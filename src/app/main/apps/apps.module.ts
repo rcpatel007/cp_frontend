@@ -9,6 +9,10 @@ import { DrawCpClausesComponent } from './draw-cp-clauses/draw-cp-clauses.compon
 import { SettingsComponent } from './settings/settings.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DrawcpComponent } from './drawcp/drawcp.component';
+import { ChatManagementComponent } from './chat-management/chat-management.component';
+import { FaqManagementComponent } from './faq-management/faq-management.component';
+import { TermManagementComponent } from './term-management/term-management.component';
+
 // import { StdbidManagementComponent } from './stdbid-management/stdbid-management.component';
 // import { CountryPickerModule } from 'angular2-countrypicker';
 // import { DrawFirstCounterManagementComponent } from './draw-first-counter-management/draw-first-counter-management.component';
@@ -141,6 +145,26 @@ const routes = [
     {
         path: 'recap-management',
         loadChildren: './recap/recap.module#RecapManagementModule',
+    },
+
+    {
+        path: 'messaging-board',
+        loadChildren: './messaging-board/messaging-board.module#MessagingBoardModule',
+    },
+
+    {
+        path: 'chat-management',
+        loadChildren: './chat-management/chat-managment.module#ChatManagementModule',
+    },
+
+    {
+        path: 'faq-management',
+        loadChildren: './faq-management/faq-managment.module#FaqManagementModule',
+    },
+
+    {
+        path: 'term-management',
+        loadChildren: './term-management/term-managment.module#TermManagementModule',
     },
 
 ];

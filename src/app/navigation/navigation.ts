@@ -8,7 +8,7 @@ var childrenArrayInfo = {};
     childrenArrayInfo["title"] = 'Dashboard';
     childrenArrayInfo["translate"] = 'NAV.DASHBOARDS';
     childrenArrayInfo["type"] = 'item';
-    childrenArrayInfo["icon"] = 'dashboard';
+    childrenArrayInfo["icon"] = 'network_check';
     childrenArrayInfo["url"] = '/apps/dashboards/analytics';
 
     childrenArray.push(childrenArrayInfo);
@@ -17,39 +17,12 @@ console.log(JSON.parse(localStorage.getItem('userRoleId')));
 
 if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
 {
-    // var childrenArrayInfo = {};
-    //     childrenArrayInfo["id"] = 'owner';
-    //     childrenArrayInfo["title"] = 'Owner Management';
-    //     childrenArrayInfo["type"] = 'item';
-    //     childrenArrayInfo["icon"] = 'work';
-    //     childrenArrayInfo["url"] = '/apps/owner-management';
-
-    //     childrenArray.push(childrenArrayInfo);
-    
-    // var childrenArrayInfo = {};
-    //     childrenArrayInfo["id"] = 'broker';
-    //     childrenArrayInfo["title"] = 'Broker Management';
-    //     childrenArrayInfo["translate"] = 'NAV.BROKERMANAGEMENT';
-    //     childrenArrayInfo["type"] = 'item';
-    //     childrenArrayInfo["icon"] = 'supervisor_account';
-    //     childrenArrayInfo["url"] = '/apps/broker-management';
-
-    //     childrenArray.push(childrenArrayInfo);
-
-    // var childrenArrayInfo = {};
-    //     childrenArrayInfo["id"] = 'charter';
-    //     childrenArrayInfo["title"] = 'charter Management';
-    //     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
-    //     childrenArrayInfo["type"] = 'item';
-    //     childrenArrayInfo["icon"] = 'supervised_user_circle';
-    //     childrenArrayInfo["url"] = '/apps/charterer-management';
-
     var childrenArrayInfo = {};
         childrenArrayInfo["id"] = 'user';
         childrenArrayInfo["title"] = 'User Management';
         childrenArrayInfo["translate"] = 'NAV.USERMANAGEMENT';
         childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'supervised_user_circle';
+        childrenArrayInfo["icon"] = 'person_add';
         childrenArrayInfo["url"] = '/apps/user-management';
 
         childrenArray.push(childrenArrayInfo);
@@ -59,7 +32,7 @@ if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
         childrenArrayInfo["title"] = 'CP Form Management';
         childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
         childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'format_align_center';
+        childrenArrayInfo["icon"] = 'assignment';
         childrenArrayInfo["url"] = '/apps/cp-form-management';
 
         childrenArray.push(childrenArrayInfo);
@@ -69,7 +42,7 @@ if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
         childrenArrayInfo["title"] = 'Clause Catgegory Management';
         childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
         childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'format_align_justify';
+        childrenArrayInfo["icon"] = 'blur_linear';
         childrenArrayInfo["url"] = '/apps/clause-category-management';
 
         childrenArray.push(childrenArrayInfo);
@@ -79,7 +52,7 @@ if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
         childrenArrayInfo["title"] = 'Clause Terms Management';
         childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
         childrenArrayInfo["type"] = 'item';
-        childrenArrayInfo["icon"] = 'format_list_numbered';
+        childrenArrayInfo["icon"] = 'ballot';
         childrenArrayInfo["url"] = '/apps/clause-terms-management';
 
         childrenArray.push(childrenArrayInfo);
@@ -103,7 +76,7 @@ var childrenArrayInfo = {};
     childrenArrayInfo["title"] = 'Draw C/P';
     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
     childrenArrayInfo["type"] = 'item';
-    childrenArrayInfo["icon"] = 'color_lens';
+    childrenArrayInfo["icon"] = 'brush';
     childrenArrayInfo["url"] = '/apps/draw-management';
 
     childrenArray.push(childrenArrayInfo);
@@ -126,9 +99,42 @@ var childrenArrayInfo = {};
     childrenArrayInfo["title"] = 'Trading Platform';
     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
     childrenArrayInfo["type"] = 'item';
-    childrenArrayInfo["icon"] = 'sync';
+    childrenArrayInfo["icon"] = 'merge_type';
     childrenArrayInfo["url"] = '/apps/trading-platform-management';
 
+    childrenArray.push(childrenArrayInfo);
+
+    var childrenArrayInfo = {};
+    childrenArrayInfo["id"] = 'Messaging Board';
+    childrenArrayInfo["title"] = 'Messaging Board';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'message';
+    childrenArrayInfo["url"] = '/apps/messaging-board';
+
+    childrenArray.push(childrenArrayInfo);
+
+var childrenArrayInfo = {};
+    childrenArrayInfo["id"] = 'Chat Management';
+    childrenArrayInfo["title"] = 'Chat Management';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'chat_bubble';
+    childrenArrayInfo["url"] = '/apps/chat-management';
+    childrenArray.push(childrenArrayInfo);
+
+var childrenArrayInfo = {};
+    childrenArrayInfo["id"] = 'FAQ';
+    childrenArrayInfo["title"] = 'FAQ';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'notes';
+    childrenArrayInfo["url"] = '/apps/faq-management';
+    childrenArray.push(childrenArrayInfo);
+
+var childrenArrayInfo = {};
+    childrenArrayInfo["id"] = 'Term';
+    childrenArrayInfo["title"] = 'Term';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'speaker_notes';
+    childrenArrayInfo["url"] = '/apps/term-management';
     childrenArray.push(childrenArrayInfo);
 
 var childrenArrayInfo = {};
@@ -148,7 +154,7 @@ var childrenArrayInfo = {};
     childrenArrayInfo["title"] = 'Draw C/P';
     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
     childrenArrayInfo["type"] = 'item';
-    childrenArrayInfo["icon"] = 'color_lens';
+    childrenArrayInfo["icon"] = 'brush';
     childrenArrayInfo["url"] = '/apps/draw-management';
 
     childrenArray.push(childrenArrayInfo);

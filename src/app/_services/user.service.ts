@@ -708,4 +708,90 @@ export class UserService {
         {
             return this.http.post(`${config.baseUrl}/getCompanyName`,req)
         }
+
+        drawDataUpdateCommon(req)
+        {
+            return this.http.post(`${config.baseUrl}/drawDataUpdateCommon`,req)
+        }
+
+        sendNotificationToCharterer(req)
+        {
+            return this.http.post(`${config.baseUrl}/sendNotificationToCharterer`,req)
+        }
+
+        TradingPlatformRequestStatusUpdateCommon(req)
+        {
+            return this.http.post(`${config.baseUrl}/TradingPlatformRequestStatusUpdateCommon`,req)
+        }
+
+        updateChartererToTrade(req)
+        {
+            return this.http.post(`${config.baseUrl}/updateChartererToTrade`,req)
+        }
+
+        updateOwnerToTrade(req)
+        {
+            return this.http.post(`${config.baseUrl}/updateOwnerToTrade`,req)
+        }
+
+        updateChartererToDraw(req)
+        {
+            return this.http.post(`${config.baseUrl}/updateChartererToDraw`,req)
+        }
+
+        messageCenterCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/messageCenterCreate`,req)
+        }
+
+        messageCenterRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/messageCenterRecordsServerSide`,req)
+        }
+
+        messageCenterDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/messageCenterDataUpdate`,req)
+        }
+
+        // Chat Management Routes
+        chatCreate(req)
+        {
+            return this.http.post(`${config.baseUrl}/chatCreate`,req)
+        }
+
+        chatRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/chatRecordsServerSide`,req)
+        }
+
+        fetchChatDetails(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchChatDetails`,req)
+        }
+
+        chatDataUpdate(req)
+        {
+            return this.http.post(`${config.baseUrl}/chatDataUpdate`,req)
+        }
+
+        fetchRealTimeChatData(req)
+        {
+            return this.http.post(`${config.baseUrl}/fetchRealTimeChatData`,req)
+        }
+
+        realTimeChatRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/realTimeChatRecordsServerSide`,req)
+        }
+
+        faqlist()
+        {
+            return this.http.get(`${config.baseUrl}/faqlist`)
+        }
+
+        tclist()
+        {
+            return this.http.get(`${config.baseUrl}/tclist`)
+        }
 }

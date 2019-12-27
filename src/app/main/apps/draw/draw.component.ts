@@ -43,6 +43,8 @@ export interface UserData
     companyId: string;
     identifier : string;
     newAction : string;
+    drawStatusInfoCharterer : string;
+    drawStatusInfoOwner : string;
 }
 
 export interface PeriodicElement
@@ -77,6 +79,8 @@ export interface PeriodicElement
     ownerBrokerName: string;
 
     newAction : string;
+    drawStatusInfoCharterer : string;
+    drawStatusInfoOwner : string;
 }
 
 @Component(
@@ -90,7 +94,9 @@ export interface PeriodicElement
 
 export class DrawComponent implements OnInit
 {
-    displayedColumns: string[] = ['identifier','cpDateInfo','companyName','ownerName','brokerName','chartererName','vesselName', 'progress','statusInfo','isAccepted','newAction'];
+    displayedColumns: string[] = ['identifier','cpDateInfo','companyName','ownerName','brokerName',
+                                'chartererName','vesselName', 'progress','statusInfo'
+                                ,'newAction'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
     dataSourceFilter = new MatTableDataSource<PeriodicElement>();
@@ -116,6 +122,9 @@ export class DrawComponent implements OnInit
     
     drawId : string;
     chartererId: string;
+
+    drawStatusInfoCharterer : string;
+    drawStatusInfoOwner : string;
 
     CPTypeId: string;
     formId: string;
@@ -272,6 +281,12 @@ export class DrawComponent implements OnInit
     isCompanyTableView = false;
     isBrokerTableView = false;
 
+    acceptRejectTitle : any;    
+    chartererUpdateID : any;
+
+    isBrokerLogin : any;
+    isChartererLogin : any;
+    isOwnerLogin : any;
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -354,8 +369,13 @@ export class DrawComponent implements OnInit
             drawCPIDDocSearch: ['', ''],
         });
 
+        this.isBrokerLogin = 'N';
+        this.isChartererLogin = 'N';
+        this.isOwnerLogin = 'N';
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
+            this.isBrokerLogin = 'Y';
             this.isEditView = true;    
             this.isRecapView = true;
             this.isPdfView = true;
@@ -364,6 +384,8 @@ export class DrawComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
+            this.isChartererLogin = 'Y';
+            this.acceptRejectTitle = 'Bid Accept / Reject';
             this.isRecapView = true;
             this.isPdfView = true;
             this.fetchChartererData();
@@ -371,6 +393,9 @@ export class DrawComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
+            this.isOwnerLogin = 'Y';
+            this.isEditView = false;
+            this.acceptRejectTitle = 'Offer Accept / Reject';
             this.isRecapView = true;
             this.fetchChartererData();
         }
@@ -418,6 +443,8 @@ export class DrawComponent implements OnInit
             this.buttonInfo = 'View Recap';
         }
 
+        console.log(this.chartererDivShow);
+
         this.cpFormsRecords();
         this.vesselRecords();
         this.CPRecords();
@@ -440,6 +467,36 @@ export class DrawComponent implements OnInit
         this.drawRecordsFilterForDocumentShow = false;
 
     }
+
+     // Update Charterer If He/She Reject Broker Request
+     updateChartererAndSendRequest(event,drawId): void
+     {
+         this.chartererUpdateID = event.value;
+ 
+         var updateData = {};
+             updateData['chartererId'] = this.chartererUpdateID;
+             updateData['drawId'] = drawId;
+             updateData['createdBy'] = localStorage.getItem('userId');
+             updateData['updatedBy'] = localStorage.getItem('userId');
+             updateData['email'] = '';
+ 
+         for(let index = 0; index < this.ChartereInfoData.length; index++)
+         {
+             if(this.chartererUpdateID == this.ChartereInfoData[index].id)
+             {
+                 updateData['email'] = this.ChartereInfoData[index].email;
+             }
+         }
+         console.log(updateData);
+         try
+         {
+             this._userService.updateChartererToDraw(updateData).pipe(first()).subscribe((res) =>
+             {
+                 this.drawManagementRecords();
+             }, err => { console.log(err); });
+         } catch (err)
+         { console.log(err); }
+     }
 
     // Company Records Server Side
     companyRecordsServerSide(): void
@@ -559,12 +616,14 @@ export class DrawComponent implements OnInit
         {
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.is_submitted"] = '1';
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.is_submitted"] = '1';
         }
         try
         {
@@ -986,6 +1045,10 @@ export class DrawComponent implements OnInit
         }
     }
 
+
+    createNew(data){
+    console.log(data,"data");
+    }
     updateFilterPaginator()
     {
         this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
@@ -1588,7 +1651,8 @@ export class DrawComponent implements OnInit
         var arrfilterInfo = {};
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
         arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
+        arrfilterInfo["dcm.is_submitted"] = '1';
+        // arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
         try
         {
             this._userService.drawRecordsServerSideCharterer(arrfilterInfo)

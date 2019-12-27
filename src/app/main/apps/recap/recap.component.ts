@@ -182,6 +182,15 @@ export class RecapComponent implements OnInit
     updateSignatureButtonViewCharterer = false;
     updateSignatureButtonViewOwner = false;
 
+    isChartererAccepted : any;
+
+    checkedCheckClause = [];
+
+    dynamicStringArray : any;
+    dynamicInputNumber : any;
+    mainDynamicStringArray = [];
+    
+
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -279,7 +288,7 @@ export class RecapComponent implements OnInit
 
         this.currentSignature1 = '';
 
-        this.clauseCategoryRecordsServerSide();
+        
         this.cpFormData();
 
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
@@ -292,9 +301,41 @@ export class RecapComponent implements OnInit
             this.fetchDrawData();
             this.drawStatusInfoUpdate();
         } else {
+            this.clauseCategoryRecordsServerSide();
             this.fetchTradingData();
         }
+
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
         
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            const newReq =
+            {
+                id: this.drawId,
+                charterer_view_check: 20,
+                statusInfo: 'Charterer Viewed',
+                updatedBy: localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
+            {
+            });
+        }
+
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            const newReq =
+            {
+                id: this.drawId,
+                owner_view_check: 20,
+                statusInfo: 'Owner Viewed',
+                updatedBy: localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
+            {
+            });
+        }
     }
 
      // Custom Input Draw Data Update
@@ -612,6 +653,26 @@ export class RecapComponent implements OnInit
                 {
                     this.drawResponseInformationData = this.drawResponseInformation.data[0];
 
+                    this.isChartererAccepted = this.drawResponseInformation.data[0].isChartererAccepted;
+
+                    if(this.isChartererAccepted != 'Y')
+                    {
+                        this.nonPrintView = false;
+                        this.printView = true;
+                    }
+
+                    if(this.drawResponseInformation.data[0].signature1 != '' && this.drawResponseInformation.data[0].signature1 != null && this.drawResponseInformation.data[0].signature1 != undefined)
+                    {   
+                        this.updateSignatureButtonViewOwner = false;
+                    }
+
+                    if(this.drawResponseInformation.data[0].signature2 != '' && this.drawResponseInformation.data[0].signature2 != null && this.drawResponseInformation.data[0].signature2 != undefined)
+                    {   
+                        this.updateSignatureButtonViewCharterer = false;
+                    }
+
+                    console.log(this.isChartererAccepted);
+
                     this.drawResponseInformationData['cityName'] = (this.drawResponseInformationData['cityName'] == null) ? '' : this.drawResponseInformationData['cityName'];
 
                     var cpTime = this.drawResponseInformationData['cpTime'];
@@ -655,6 +716,27 @@ export class RecapComponent implements OnInit
                         this.signature2MainImageView = true;
                     }
 
+                    var checked_clauses = this.drawResponseInformation.data[0].checked_clauses;
+                    console.log(checked_clauses,"Checked Clauses");
+                    if(checked_clauses != '' && checked_clauses != null)
+                    {
+                        this.checkedCheckClause = checked_clauses.split(',');
+                    } else {
+                        this.checkedCheckClause = [];
+                    }
+
+                    var checkedCheckBoxArray = this.checkedCheckClause;
+                    this.checkedCheckClause = [];
+                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
+                    {
+                        if(this.checkedCheckClause.indexOf(checkedCheckBoxArray[index]) < 0)
+                        {
+                            this.checkedCheckClause.push(Number(checkedCheckBoxArray[index]));
+                        }
+                    }
+
+                    console.log(this.checkedCheckClause,"Checked Clauses");
+
                     console.log(cpTime);
                     console.log(cpDate);
                     console.log(cityName);
@@ -662,6 +744,8 @@ export class RecapComponent implements OnInit
                     console.log(this.ownerName);
                     console.log(this.chartererName);
                     console.log(this.brokerName);
+
+                    this.clauseCategoryRecordsServerSide();
 
                     this.fetchVesselData();
                 }
@@ -721,12 +805,13 @@ export class RecapComponent implements OnInit
     // Clause Category Records Server Side
     clauseCategoryRecordsServerSide()
     {
+        console.log(this.checkedCheckClause,"Checked Clauses");
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         this.formId = filter.formId;
 
         var filterCondition = {};
             filterCondition['cpFormId'] = this.formId;
-            filterCondition['checkedClauseCategory'] = [];
+            filterCondition['checkedClauseCategory'] = this.checkedCheckClause;
         try
         {
             this._userService.clauseCategoryRecordsServerSide(filterCondition).pipe(first()).subscribe((res) =>
@@ -735,12 +820,27 @@ export class RecapComponent implements OnInit
                 if(this.clauseCategoryRecordResponse.success == true)
                 {
                     this.clauseCategoryRecordResponseData = this.clauseCategoryRecordResponse.data;
+
+                    console.log(this.clauseCategoryRecordResponseData, " Clause Category Data ");
+
+                    var mainClauseCategoryData = this.clauseCategoryRecordResponseData;
+
                     this.checkedClauseCategory = [];
-                    for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
+                    this.clauseCategoryRecordResponseData = [];
+                    for (let index = 0; index < mainClauseCategoryData.length; index++)
                     {
-                        this.checkedClauseCategory.push(Number(this.clauseCategoryRecordResponseData[index].id));
+                        if(this.checkedCheckClause.indexOf(mainClauseCategoryData[index].id) >= 0)
+                        {
+                            this.checkedClauseCategory.push(mainClauseCategoryData[index].id);
+                            this.clauseCategoryRecordResponseData.push(mainClauseCategoryData[index]);
+                        }  
                     }
-                    console.log(this.checkedClauseCategory);
+
+                    console.log(this.clauseCategoryRecordResponseData, " Clause Category Data ");
+
+                    this.checkedClauseCategory = this.checkedCheckClause;
+
+
                     this.termsReviewRecords();
                 }
             });
@@ -813,11 +913,29 @@ export class RecapComponent implements OnInit
 						{
 							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
 							{
+                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+  
+                                if(mainString != '' && mainString != null && mainString != undefined)
+                                {
+                                    mainString = mainString.replace(/<[^>]*>/g, '');
+                                    this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'] = 
+                                    this.createStringWithDynamicDateTimeNumberPicker(mainString);
+                                }
 								this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
 							}
-							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
-							{
-								this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
+							for (let sindexCustom = 0; sindexCustom < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindexCustom++)
+							{   
+
+                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustom'];
+
+                                if(mainString != '' && mainString != null && mainString != undefined)
+                                {
+                                    mainString = mainString.replace(/<[^>]*>/g, '');
+                                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['mainTermRecordCustom'] = 
+                                    this.createStringWithDynamicDateTimeNumberPicker(mainString);
+                                }
+
+                                this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindexCustom]['identifier'] = String.fromCharCode(97 + sindexCustom);
 							}
                         }
                         
@@ -848,10 +966,24 @@ export class RecapComponent implements OnInit
 						{
 							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
 							{
+                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+                                if(mainString != '' && mainString != null && mainString != undefined)
+                                {
+                                    mainString = mainString.replace(/<[^>]*>/g, '');
+                                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['mainTermRecord'] = 
+                                    this.createStringWithDynamicDateTimeNumberPicker(mainString);
+                                }
 								this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
 							}
 							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
 							{
+                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordCustom'];
+                                if(mainString != '' && mainString != null && mainString != undefined)
+                                {
+                                    mainString = mainString.replace(/<[^>]*>/g, '');
+                                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['mainTermRecordCustom'] = 
+                                    this.createStringWithDynamicDateTimeNumberPicker(mainString);
+                                }
 								this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['identifier'] = String.fromCharCode(97 + sindex);
 							}
 						}
@@ -866,6 +998,48 @@ export class RecapComponent implements OnInit
             this.tradingProgressUpdate();
         }
         
+    }
+
+    createStringWithDynamicDateTimeNumberPicker(mainString)
+    {
+        this.dynamicStringArray = mainString.split(' ');
+
+        var mainStringInfo = '';
+
+        for (let index = 0; index < this.dynamicStringArray.length; index++)
+        {
+            var currentData = this.dynamicStringArray[index];
+                currentData = currentData.split('@');
+
+            var currentTimer = this.dynamicStringArray[index];
+                currentTimer = currentTimer.split('||');
+
+            var currentNumber = this.dynamicStringArray[index];
+                currentNumber = currentNumber.split('$');
+
+            var stringInfo = this.dynamicStringArray[index];
+
+            if(currentData[1] != '' && currentData[1] != null && currentData[1] != undefined)
+            {
+                stringInfo = currentData[1];
+            }
+
+            if(currentTimer[1] != '' && currentTimer[1] != null && currentTimer[1] != undefined)
+            {
+                stringInfo = currentTimer[1]
+            }
+
+            if(currentNumber[1] != '' && currentNumber[1] != null && currentNumber[1] != undefined)
+            {
+                stringInfo = currentNumber[1];
+            }
+
+            mainStringInfo += ' '+stringInfo;
+        }
+
+        console.log(mainStringInfo);
+     
+        return mainStringInfo;
     }
 
     
@@ -898,6 +1072,13 @@ export class RecapComponent implements OnInit
                         newCount = newCount + 1;
                         for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTerms.length; sindex++)
                         {
+                            var mainString = this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainTermRecord'];
+                            if(mainString != '' && mainString != null && mainString != undefined)
+                            {
+                                mainString = mainString.replace(/<[^>]*>/g, '');
+                                this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['mainTermRecord'] = 
+                                this.createStringWithDynamicDateTimeNumberPicker(mainString);
+                            }
                             this.customClauseDataResponseData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
                         }
                         for (let sindex = 0; sindex < this.customClauseDataResponseData[index].clauseCategoryTermsUpdateCustom.length; sindex++)

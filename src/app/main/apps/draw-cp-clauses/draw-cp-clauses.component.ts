@@ -265,6 +265,9 @@ export class DrawCpClausesComponent implements OnInit
     vesselDataResponse : any;
     vesselDataResponseArray = [];
 
+    chartererDataResponse : any;
+    chartererDataResponseArray = [];
+
     cpFormName :  any;
     cityName : string;
     
@@ -344,6 +347,12 @@ export class DrawCpClausesComponent implements OnInit
 
     isCheckboxDisabled : any;
 
+    isChartererAccepted : any;
+
+    chartererEmailID : any;
+
+    counterNumberInfo : any;
+
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -408,22 +417,7 @@ export class DrawCpClausesComponent implements OnInit
 
         console.log(this.isStdBid);
 
-        if(this.isStdBid == 'Y')
-        {
-            if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
-            {
-                this.firstScreenStdBidBroker = true;
-                this.firstScreenStdBid = false;
-            } else {
-                this.firstScreenStdBid = true;
-                this.firstScreenStdBidBroker = false;
-            }
-            this.firstScreen = false;
-        } else {
-            this.firstScreenStdBid = false;
-            this.firstScreenStdBidBroker = false;
-            this.firstScreen = true;
-        }
+        
 
 
         var current_date = moment(new Date()).format("YYYY-MM-DD");
@@ -487,12 +481,14 @@ export class DrawCpClausesComponent implements OnInit
 
         if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
+            this.isCheckboxDisabled = 'N';
             this.pageTitle = 'Charterer First Counter';
             this.getCounterNumber();
         }
 
         if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
+            this.isCheckboxDisabled = 'N';
             this.pageTitle = 'Owner First Counter';
             this.getCounterNumber();
         }
@@ -501,13 +497,198 @@ export class DrawCpClausesComponent implements OnInit
 
         if(filter.isTrading == '2')
         {
+            this.firstScreenStdBidBroker = false;
+            this.firstScreenStdBid = false;
             this.fetchDrawDataRecap();
         } else {
-            console.log('Here In Condition');
-            this.fetchTradingDataRecap();
+            if(this.isStdBid == 'Y')
+            {
+                if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
+                {
+                    this.firstScreenStdBidBroker = true;
+                    this.firstScreenStdBid = false;
+                } else {
+                    this.firstScreenStdBid = true;
+                    this.firstScreenStdBidBroker = false;
+                }
+                this.firstScreen = false;
+
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    this.firstScreenStdBid = false;
+                    this.firstScreenStdBidBroker = false;
+                    this.firstScreen = false;
+                    this.secondScreen = false;
+                    this.thirdScreen = true;
+
+                    this.fetchTradingData();
+                    this.termsReviewRecords();
+                }
+
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    this.firstScreenStdBid = false;
+                    this.firstScreenStdBidBroker = false;
+                    this.firstScreen = false;
+                    this.secondScreen = false;
+                    this.thirdScreen = true;
+
+                    this.fetchTradingData();
+                    this.termsReviewRecords();
+                }
+
+            } else {
+
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    this.firstScreenStdBid = false;
+                    this.firstScreenStdBidBroker = false;
+                    this.firstScreen = false;
+                    this.secondScreen = false;
+                    this.thirdScreen = true;
+
+                    this.fetchTradingData();
+                    this.termsReviewRecords();
+                } else if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    this.firstScreenStdBid = false;
+                    this.firstScreenStdBidBroker = false;
+                    this.firstScreen = false;
+                    this.secondScreen = false;
+                    this.thirdScreen = true;
+
+                    this.fetchTradingData();
+                    this.termsReviewRecords();
+                } else {
+                    this.firstScreenStdBid = false;
+                    this.firstScreenStdBidBroker = false;
+                    this.firstScreen = true;
+                    this.fetchTradingDataRecap();
+                }
+            }
         }
         this.clauseTermsCheckBox = true;
         this.cpFormData();
+        
+    }
+
+    ChartereRecords(): void
+    {
+        var filter = {};
+            filter['companyId'] = JSON.parse(localStorage.getItem('companyId'));
+            filter['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
+            {
+                this.chartererDataResponse = res;
+                if (this.chartererDataResponse.success === true)
+                {
+                    this.chartererDataResponseArray = this.chartererDataResponse.data;
+
+                    var checkedCheckBoxArray = this.chartererDataResponseArray;
+                    this.chartererDataResponseArray = [];
+                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
+                    {
+                        if(this.chartererId != checkedCheckBoxArray[index].id)
+                        {
+                            this.chartererDataResponseArray.push(checkedCheckBoxArray[index]);
+                        }
+                    }
+                    console.log(this.chartererDataResponseArray,'Charterer Records');
+
+                }
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    updateCharterer(event)
+    {
+        this.chartererId = event.target.value;
+
+        for (let index = 0; index < this.chartererDataResponseArray.length; index++)
+        {
+            if(this.chartererId == this.chartererDataResponseArray[index].id)
+            {
+                this.chartererEmailID = this.chartererDataResponseArray[index].email;
+            }
+        }
+
+        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.drawId = filter.drawId;
+        this.tradingId = filter.tradingId;
+        this.isTrading = filter.isTrading;
+        this.isStdBid = filter.isStdBid;
+
+        if(this.isTrading == '2')
+        {
+            
+            var updateData = {};
+                updateData['drawId'] = this.drawId;
+                updateData['chartererId'] = this.chartererId;
+            try
+            {
+                this._userService.drawDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
+                {
+
+                }, err => { console.log(err); });
+            } catch (err)
+            { console.log(err); }
+
+            var updateData = {};
+                updateData['fromUserId'] = localStorage.getItem('userId');
+                updateData['toUserId'] = this.chartererId;
+                updateData['emailID'] = this.chartererEmailID;
+                updateData['notification'] = 'Yout are invited for draw cp';
+                updateData['createdBy'] = localStorage.getItem('userId');
+                updateData['updatedBy'] = localStorage.getItem('userId');
+            try
+            {
+                this._userService.sendNotificationToCharterer(updateData).pipe(first()).subscribe((res) =>
+                {
+                    this.alertService.success('Invitation Has Been Sent To Charterer', 'Success');
+                    this.ChartereRecords();
+                    this.isChartererAccepted = 'P';
+
+                }, err => { console.log(err); });
+            } catch (err)
+            { console.log(err); }
+            
+        } else {
+
+            var updateData = {};
+                updateData['tradingId'] = this.tradingId;
+                updateData['chartererId'] = this.chartererId;
+            try
+            {
+                this._userService.drawDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
+                {
+
+                }, err => { console.log(err); });
+            } catch (err)
+            { console.log(err); }
+
+            var updateData = {};
+                updateData['fromUserId'] = localStorage.getItem('userId');
+                updateData['toUserId'] = this.chartererId;
+                updateData['emailID'] = this.chartererEmailID;
+                updateData['notification'] = 'Yout are invited for draw cp';
+                updateData['createdBy'] = localStorage.getItem('userId');
+                updateData['updatedBy'] = localStorage.getItem('userId');
+            try
+            {
+                this._userService.sendNotificationToCharterer(updateData).pipe(first()).subscribe((res) =>
+                {
+                    this.alertService.success('Invitation Has Been Sent To Charterer', 'Success');
+                    this.ChartereRecords();
+                    this.isChartererAccepted = 'P';
+
+                }, err => { console.log(err); });
+            } catch (err)
+            { console.log(err); }
+
+        }
     }
     
 
@@ -544,6 +725,17 @@ export class DrawCpClausesComponent implements OnInit
                 if(this.drawResponseInformation.success == true)
                 {
                     this.drawResponseInformationData = this.drawResponseInformation.data[0];
+
+                    this.isChartererAccepted = this.drawResponseInformation.data[0].isChartererAccepted;
+
+                    this.chartererId = this.drawResponseInformation.data[0].chartererId;
+
+                    if(this.isChartererAccepted == 'N')
+                    {
+                        this.ChartereRecords();
+                    }
+
+                    console.log(this.isChartererAccepted);
 
                     this.drawResponseInformationData['cpCity'] = (this.drawResponseInformationData['cpCity'] == null && this.drawResponseInformationData['cpCity'] == '') ? '' : this.drawResponseInformationData['cpCity'];
 
@@ -1743,12 +1935,29 @@ export class DrawCpClausesComponent implements OnInit
 
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
-                    this.pageTitle = 'Charterer '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
+                    this.counterNumberInfo = this.NumInWords(this.counterResponse.data.counterNumber);
+
+                    if( this.counterNumberInfo == 'First' )
+                    {
+                        this.pageTitle = 'Charterer Bid';
+                    } else {
+                        this.pageTitle = 'Charterer '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
+                    }    
+                    
                 }
         
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
-                    this.pageTitle = 'Owner '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
+                    this.counterNumberInfo = this.NumInWords(this.counterResponse.data.counterNumber);
+
+                    if( this.counterNumberInfo == 'First' )
+                    {
+                        this.pageTitle = 'Owner Offer';
+                    } else {
+                        this.pageTitle = 'Owner '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
+                    }    
+                    
+                    // this.pageTitle = 'Owner '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
                 }
             });
         } catch (err) { }

@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { TranslateModule } from '@ngx-translate/core';
 import { SignaturePadModule } from 'angular2-signaturepad';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 // import { AngularSignaturePadModule } from 's';
 // import { NgxPaginationModule } from 'ngx-pagination';
 // import { MatTableDataSource } from '@angular/material/table';
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
         BrowserAnimationsModule,
         HttpClientModule,
         SignaturePadModule,
+        NgxMaterialTimepickerModule,
         RouterModule.forRoot(appRoutes , { useHash: true }),
         ToastrModule.forRoot(), // ToastrModule added
 

@@ -42,6 +42,8 @@ export interface UserData
     isAccepted : string;
     newAction : string;
     std_bid_name : string;
+    isOwnerAccepted : string;
+    ownerActionButton : string;
 }
 
 export interface PeriodicElement
@@ -77,6 +79,14 @@ export interface PeriodicElement
     newAction : string;
     
     std_bid_name : string;
+
+    isOwnerAccepted : string;
+
+    ownerActionButton : string;
+
+    chartererNameInfo : string;
+
+    ownerNameInfo : string;
 }
 
 @Component(
@@ -89,7 +99,8 @@ export interface PeriodicElement
 export class TradingPlatformManagementComponent implements OnInit
 {
 
-    displayedColumns: string[] = ['identifier','cpDateInfo', 'chartererName', 'ownerName', 'vesselName', 'progress','statusInfo','isAccepted','newAction'];
+    displayedColumns: string[] = ['identifier','cpDateInfo','chartererName','ownerName', 'vesselName',
+     'progress','statusInfo','isChartererAccepted','isOwnerAccepted','newAction','ownerActionButton'];
 
     dataSource = new MatTableDataSource<PeriodicElement>();
     dataSourceFilter = new MatTableDataSource<PeriodicElement>();
@@ -283,7 +294,21 @@ export class TradingPlatformManagementComponent implements OnInit
 
     tradingStatusInfoResponse: any;
     tradingStatusInfoResponseData = [];
+
+    acceptRejectTitle : any;
+    afteracceptRejectTitle : any;
     
+    isOwnerView : any;
+
+    ownerDivShow : any;
+
+    chartererUpdateID : any;
+    ownerUpdateId : any;
+
+    isBrokerLogin = false;
+
+    isChartererLogin : any;
+
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -358,8 +383,12 @@ export class TradingPlatformManagementComponent implements OnInit
             ownerIdStdBid: ['', Validators.required],
         });
 
+        this.isBrokerLogin = false;
+        this.isChartererLogin = 'N';
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
+            this.isBrokerLogin = true;
             this.isEditView = true;    
             this.isRecapView = true;
             this.isPdfView = true;
@@ -367,6 +396,9 @@ export class TradingPlatformManagementComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
+            this.isChartererLogin = 'Y';
+            this.acceptRejectTitle = 'Participate / Boycott';
+            this.afteracceptRejectTitle = 'BID';
             this.isEditView = true;    
             this.isRecapView = true;
             this.isPdfView = false;
@@ -374,6 +406,8 @@ export class TradingPlatformManagementComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
+            this.acceptRejectTitle = 'Offer Accept / Reject';
+            this.afteracceptRejectTitle = 'OFFER';
             this.isEditView = true;    
             this.isRecapView = true;
             this.isPdfView = false;
@@ -381,7 +415,9 @@ export class TradingPlatformManagementComponent implements OnInit
 
         this.CPTypeId = '1';
 
+        this.ownerDivShow = 'N'; 
         this.chartererDivShow = 'N';
+
         if(JSON.parse(localStorage.getItem('userRoleId')) == 4)
         {
             this.chartererDivShow = 'Y';
@@ -399,6 +435,12 @@ export class TradingPlatformManagementComponent implements OnInit
             this.dataSourceFilter.sort = this.sort;
             this.TradingFormRecords();
         }
+        
+        if(JSON.parse(localStorage.getItem('userRoleId')) == 6)
+        {
+            this.ownerDivShow = 'Y';
+        }
+        
 
         this.cpFormsRecords();
         this.vesselRecords();
@@ -416,6 +458,64 @@ export class TradingPlatformManagementComponent implements OnInit
         }
 
         this.buttonInfo = 'View / Update Clause';
+    }
+
+    // Update Charterer If He/She Reject Broker Request
+    updateChartererAndSendRequest(event,tradingId): void
+    {
+        this.chartererUpdateID = event.value;
+
+        var updateData = {};
+            updateData['chartererId'] = this.chartererUpdateID;
+            updateData['tradingId'] = tradingId;
+            updateData['createdBy'] = localStorage.getItem('userId');
+            updateData['updatedBy'] = localStorage.getItem('userId');
+            updateData['email'] = '';
+
+        for(let index = 0; index < this.ChartereInfoData.length; index++)
+        {
+            if(this.chartererUpdateID == this.ChartereInfoData[index].id)
+            {
+                updateData['email'] = this.ChartereInfoData[index].email;
+            }
+        }
+        try
+        {
+            this._userService.updateChartererToTrade(updateData).pipe(first()).subscribe((res) =>
+            {
+                this.TradingFormRecords();
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
+    }
+
+    // Update Owner If He/She Reject Broker Request
+    updateOwnerAndSendRequest(event,tradingId): void
+    {
+        this.ownerUpdateId = event.value;
+
+        var updateData = {};
+            updateData['ownerId'] = this.ownerUpdateId;
+            updateData['tradingId'] = tradingId;
+            updateData['createdBy'] = localStorage.getItem('userId');
+            updateData['updatedBy'] = localStorage.getItem('userId');
+            updateData['email'] = '';
+
+        for(let index = 0; index < this.ownerRecordData.length; index++)
+        {
+            if(this.ownerUpdateId == this.ownerRecordData[index].id)
+            {
+                updateData['email'] = this.ownerRecordData[index].email;
+            }
+        }
+        try
+        {
+            this._userService.updateOwnerToTrade(updateData).pipe(first()).subscribe((res) =>
+            {
+                this.TradingFormRecords();
+            }, err => { console.log(err); });
+        } catch (err)
+        { console.log(err); }
     }
 
      // Fetch Company Data
@@ -513,94 +613,21 @@ export class TradingPlatformManagementComponent implements OnInit
         console.log(reqData);
 
         localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-        if(isStdBid == 'N')
+
+        this.router.navigate(['/apps/drawCp-Clauses-management']);
+
+        if(localStorage.getItem('userRoleId') == '4')
         {
             this.router.navigate(['/apps/drawCp-Clauses-management']);
-        } else {
-
-            this.existingDrawCP = false;
-            this.brokerDivShow = false;
-            this.existingDrawCPButton = false;
-            this.drawRecordsFilterShow = false;
-            this.drawRecordsTableShow = false;
-            this.drawRecordsTableShowButton = false;
-            this.drawFormDivShow = false;
-
-            var filter = {};
-                filter['tradingId'] = tradingId;
-                filter['ownerId'] = this.ownerId;
-                filter['chartererId'] = this.chartererId;
-            try
-            {
-                this._userService.fetchTradingStdBidReady(filter).pipe(first()).subscribe((res) =>
-                {
-                    this.tradingStatusInfoResponse = res;
-                    if (this.tradingStatusInfoResponse.success === true)
-                    {
-                        this.tradingStatusInfoResponseData = this.tradingStatusInfoResponse.data;
-
-                        this.ownerStatusInfo =  this.tradingStatusInfoResponseData['isOwnerAccepted'];
-                        this.chartererStatusInfo =  this.tradingStatusInfoResponseData['isChartererAccepted'];
-                        
-                        if(this.ownerStatusInfo == 'Y' && this.chartererStatusInfo == 'Y')
-                        {
-                            this.router.navigate(['/apps/drawCp-Clauses-management']);
-                        } else {
-                            this.ownerStatus = (this.ownerStatusInfo == 'Y') ? 'Accepted' : this.ownerStatus;
-                            this.ownerStatus = (this.ownerStatusInfo == 'N') ? 'Rejected' : this.ownerStatus;
-
-                            this.chartererStatus = (this.chartererStatusInfo == 'Y') ? 'Accepted' : this.chartererStatus;
-                            this.chartererStatus = (this.chartererStatusInfo == 'N') ? 'Rejected' : this.chartererStatus;
-
-                            this.stdDivManagementForm = this._formBuilder.group(
-                            {
-                                formIdStdBid        :   [formId, Validators.required],
-                                std_bid_name        :   [std_bid_name, Validators.required],
-                                chartererIdStdBid   :   [chartererId, Validators.required],
-                                ownerIdStdBid       :   [ownerId, Validators.required],
-                            });
-                
-                            for(let index = 0; index < this.ownerRecordData.length; index++)
-                            {
-                                if(this.ownerId == this.ownerRecordData[index].id)
-                                {
-                                    this.ownerName = this.ownerRecordData[index].username;
-                                    this.ownerEmailID = this.ownerRecordData[index].email;
-                                    this.ownerMobileNumber = this.ownerRecordData[index].mobileNo;
-                                }
-                            }
-                
-                            for(let index = 0; index < this.ChartereInfoData.length; index++)
-                            {
-                                if(this.chartererId == this.ChartereInfoData[index].id)
-                                {
-                                    this.chartererName = this.ChartereInfoData[index].username;
-                                    this.chartererEmailID = this.ChartereInfoData[index].email;
-                                    this.chartererMobileNumber = this.ChartereInfoData[index].mobileNo;
-                                }
-                            }
-                            
-                            this.mainDrawCPDiv = true;
-                            this.stdDivShow = true;
-                
-                            this.CharterPartyTypeArray = [];
-                
-                            for(let index = 0; index < this.CharterPartyTypeData.length; index++)
-                            {
-                                this.CharterPartyTypeData[index]['isChecked'] = 'N';
-                                if(this.CharterPartyTypeData[index].id == '3')
-                                {
-                                    this.CharterPartyTypeData[index]['isChecked'] = 'Y';
-                                }
-                                this.CharterPartyTypeArray.push(this.CharterPartyTypeData[index]);
-                            }
-                            this.stdTableView = true;
-                        }
-                    }
-                }, err => { console.log(err); });
-            } catch (err)
-            { console.log(err); }
         }
+
+        if(localStorage.getItem('userRoleId') == '6')
+        {
+            this.router.navigate(['/apps/drawCp-Clauses-management']);
+        }
+
+
+     
     }
 
     setDrawID(tradingId,formId,chartererId) : void
@@ -1552,7 +1579,7 @@ export class TradingPlatformManagementComponent implements OnInit
         var arrfilterInfo = {};
         arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
         arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
+        // arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
         try
         {
             this._userService.TradingPlatformRecordsServerSideCharterer(arrfilterInfo)
@@ -1586,6 +1613,62 @@ export class TradingPlatformManagementComponent implements OnInit
             isAccepted: this.statusAction,
             updatedBy: localStorage.getItem('userId'),
         };
+
+        var updateData = {};
+            updateData['tradingId'] = this.tradingId;
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                updateData['ownerId'] = localStorage.getItem('userId');
+            }
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+            {
+                updateData['chartererId'] = localStorage.getItem('userId');
+            }
+            updateData['isAccepted'] = this.statusAction;
+            updateData['updatedBy'] = localStorage.getItem('userId');
+
+        this._userService.TradingPlatformRequestStatusUpdateCommon(updateData)
+        .pipe(first())
+        .subscribe(
+        data =>
+        {
+            this.updateDataReqeust = data;
+            if (this.updateDataReqeust.success === true)
+            {
+                this.alertService.success(this.updateDataReqeust.message, 'Success');
+                if(req.isAccepted == 'Y')
+                {
+                    this.activeModalStatus = !this.activeModalStatus;
+                } else {
+                    this.inActiveModalStatus = !this.inActiveModalStatus;
+                }
+
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    this.TradingFormRecords();
+                } else {
+                    this.TradingPlatformRecordsServerSideCharterer();
+                }
+                
+            } else {
+                this.alertService.error(this.updateDataReqeust.message, 'Error');
+            }
+        },
+        error =>
+        {
+            this.alertService.error(error.message, 'Error');
+        });
+        
+    }
+
+    updateDataStatusOwner(): void
+    {
+        const req =
+        {
+            id: this.dataID,
+            isAccepted: this.statusAction,
+            updatedBy: localStorage.getItem('userId'),
+        };
         this._userService.TradingPlatformRequestStatusUpdate(req)
             .pipe(first())
             .subscribe(
@@ -1612,9 +1695,11 @@ export class TradingPlatformManagementComponent implements OnInit
             });
     }
 
-    showActiveModal(status,id): void
+    showActiveModal(status,tradingId,ownerId,chartererId): void
     {
-        this.dataID = id;
+        this.tradingId = tradingId;
+        this.ownerId = ownerId;
+        this.chartererId = chartererId;
         this.statusAction = status;
         this.activeModalStatus = !this.activeModalStatus;
     }
@@ -1624,9 +1709,11 @@ export class TradingPlatformManagementComponent implements OnInit
         this.activeModalStatus = !this.activeModalStatus;
     }
 
-    showInActiveModal(status,id): void
+    showInActiveModal(status,tradingId,ownerId,chartererId): void
     {
-        this.dataID = id;
+        this.tradingId = tradingId;
+        this.ownerId = ownerId;
+        this.chartererId = chartererId;
         this.statusAction = status;
         this.inActiveModalStatus = !this.inActiveModalStatus;
     }
