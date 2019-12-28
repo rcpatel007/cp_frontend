@@ -15,7 +15,13 @@ export class UserService {
             this.router.navigate(['/pages/auth/login']);
         }
     }
+    vesselRecordsServerSide(req)
+    {
+        return this.http.post(`${config.baseUrl}/vesselRecordsServerSide`,req)
+    }
+
     
+
     clausesCategoryRecords(){
        // console.log('here in clauses Categoory services');
         return this.http.get(`${config.baseUrl}/clusesCategorylist`)
@@ -793,5 +799,36 @@ export class UserService {
         tclist()
         {
             return this.http.get(`${config.baseUrl}/tclist`)
+        }
+
+        
+        tradingMessageInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingMessageInsert`,req)
+        }
+
+        tradingProgressInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingProgressInsert`,req)
+        }
+
+        tradingDataUpdateCommon(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`,req)
+        }
+
+        tradingNotificationInsert(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingNotificationInsert`,req)
+        }
+
+        copyTradingData(req)
+        {
+            return this.http.post(`${config.baseUrl}/copyTradingData`,req)
+        }
+
+        chartererInviteOwnerForTrade(req)
+        {
+            return this.http.post(`${config.baseUrl}/chartererInviteOwnerForTrade`,req)
         }
 }
