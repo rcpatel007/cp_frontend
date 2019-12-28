@@ -610,7 +610,10 @@ export class DrawComponent implements OnInit
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.brokerId"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.is_submitted"] = '1';
+            
+            // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         }
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
@@ -900,7 +903,7 @@ export class DrawComponent implements OnInit
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.brokerId"] = localStorage.getItem('userId');
         }
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
@@ -972,7 +975,7 @@ export class DrawComponent implements OnInit
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+            arrfilterInfo["dcm.brokerId"] = localStorage.getItem('userId');
         }
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
@@ -1020,6 +1023,7 @@ export class DrawComponent implements OnInit
         {
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
+            
                 this.drawManagementResFilter = res;
                 this.drawFormDivShow = false;
                 this.drawFormDivShowForDocumentUser = false;
@@ -1047,8 +1051,93 @@ export class DrawComponent implements OnInit
 
 
     createNew(data){
-    console.log(data,"data");
+    
+    
+
+        const req ={
+            drawStatusInfoCharterer: data.drawStatusInfoCharterer,
+            drawStatusInfoOwner:data.drawStatusInfoOwner,
+            isChartererAccepted: data.isChartererAccepted,
+            CPTypeId:data.CPTypeId,
+            progress: 10,
+            status: 0,
+            formId:data.formId,
+            vesselId: data.vesselId,
+            ownerId: data.ownerId,
+                brokerId:localStorage.getItem('userId') ,
+            chartererId: data.chartererId,
+            chartererBrokerId: data.chartererBrokerId,
+            ownerBrokerId: data.ownerBrokerId,
+            cpDate: data.cpDate,
+            cpTime: data.cpTime,
+            cpCity:data.cpCity,
+            cpSubject: data.cpSubject,
+            cpLiftDate: data.cpLiftDate,
+            cpLiftTime: data.cpLiftTime,
+            cpLiftCity: data.cpLiftCity,
+            companyId: data.companyId,
+            cpDateInfo: data.cpDateInfo,
+            isAccepted: data.isAccepted,
+            createdBy: localStorage.getItem('userId'),
+            updatedBy: localStorage.getItem('userId'),
+
+            broker_clauses:data.broker_clauses,
+            owner_clauses: data.owner_clauses,
+            charterer_clauses: data.charterer_clauses,
+            common_clauses:data.common_clauses,
+            custom_common_clause: data.custom_common_clause,
+            custom_term_clause:data.custom_term_clause,
+            checked_clauses:data.checked_clauses
+        }
+        console.log(data,"data");
+        try
+        {
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions =
+            {
+                headers: header
+            }
+            this.http.post(`${config.baseUrl}/DrawFormCopyCreate`, req, headerOptions).subscribe(
+                res =>
+                {
+                    this.createtypeRes = res;
+                    if (this.createtypeRes.success === true)
+                    {
+                     this.drawManagementRecords();
+                      
+                       this.mainDrawCPDiv =false;
+                     
+                       this.drawRecordsTableShow =false;
+                     this.brokerDivShow =true;
+                     this.drawRecordsFilterShow =false
+                     this.existingDrawCP =true;
+                        this.alertService.success(this.createtypeRes.message, 'Success');
+                        this.DrawManagementForm.reset();
+                       
+                        
+                        
+                       
+                        this.router.navigate(['/apps/draw-management']);
+
+                        // this.drawRecordsServerSide();
+                    } else {
+                        this.alertService.error(this.createtypeRes.message, 'Error');
+                    }
+                },
+                err =>
+                {
+                    this.alertService.error(err, 'Error');
+                }
+            );
+        } catch (err)
+        {
+        } 
+
+
     }
+
+
     updateFilterPaginator()
     {
         this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
@@ -1137,7 +1226,7 @@ export class DrawComponent implements OnInit
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
             if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
             {
-                arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+                arrfilterInfo["dcm.brokerId"] = localStorage.getItem('userId');
             }
             if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
             {

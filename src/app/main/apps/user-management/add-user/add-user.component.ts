@@ -126,15 +126,15 @@ export class AddUserComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
 
         this.userManagementForm = this._formBuilder.group({
-            username: ['', Validators.required],
+            username: ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
             password: ['', Validators.required],
             repassword: ['', [Validators.required, confirmPasswordValidator]],
-            companyName: ['', Validators.required],
-            enterlocation: ['', Validators.required],
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            mobileNo: ['', Validators.required],
-            email: new FormControl('', [ Validators.required, Validators.pattern("^[a-zA-Z]{1}[a-zA-Z0-9.\-_]*@[a-zA-Z]{1}[a-zA-Z.-]*[a-zA-Z]{1}[.][a-zA-Z]{2,}$")] ), 
+            companyName:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
+            enterlocation:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
+            firstName:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
+            lastName:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
+            mobileNo: ['',[Validators.required, Validators.pattern("[0-9]+") ] ],
+            email: ['', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9]+.[a-z]{2,4}$")]], 
         });
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/user-management';
         this.userManagementForm.get('password').valueChanges
@@ -179,7 +179,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
         } else {
             console.log('add');
             const req = {
-                companyId: '1',
+                companyId: localStorage.getItem('companyId'),
                 userRoleId: this.userRoleId,
                 firstName: this.f.firstName.value,
                 lastName: this.f.lastName.value,

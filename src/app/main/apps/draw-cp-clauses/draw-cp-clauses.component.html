@@ -153,7 +153,7 @@
 
                         <mat-label><i class="material-icons">location_city</i> City</mat-label>
                         <mat-select formControlName="cityIdStdBid"  matSelect>
-                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            <mat-option *ngFor="let cityManagementData of cityRecordsServerSideResponseData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
                             [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
                         </mat-select>
 
@@ -323,23 +323,52 @@
                 </table>
             </div>
 
-
-            <br>
-            <br>
-            <br>
-            <br>
-
             <div class="content-card" *ngIf="firstScreen" style="margin-left: -10px !important; margin-top: 20px !important">
                 <table style="float: right; width: 500px !important;">
-                    <tr class="tableTr">
+                    <tr class="tableTr"  >
                         <td style="width: 200px;color: #1e88e5;">Owner</td>
                         <td style="width: 100px;">:</td>
-                        <td style="width: 200px;">{{ this.ownerName }}</td>
+                        <td style="width: 200px;">
+                            <form *ngIf="ownerDropdownView" [formGroup]="ownerDropDownForm"  style="margin-left: -30px !important; padding: 0px !important;">
+                                <mat-form-field class="customFormfullWidth" appearance="outline" style="margin-bottom: -30px !important;">
+                                    <mat-label>Owner</mat-label>
+                                    <mat-select matSelect formControlName="ownerId" (selectionChange)="onChangeOwner($event)">
+                                        <mat-option *ngFor="let ownerData of ownerRecordsServerSideResponseData" [ngClass]="{'d-none': ownerData.isActive === 'N'}" 
+                                        [value]="ownerData.id"> {{ownerData.username}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </form>
+                            <h4 *ngIf="ownerNameView"
+                                style="font-size: 25px !important;
+                                        font-weight: bold !important;
+                                        text-align: left;    margin-top: 0px;
+                                margin-bottom: 0px;">{{ ownerName }}</h4>
+                        </td>
+                    </tr>
+                    <tr class="tableTr"  >
+                        <td style="width: 200px;color: #1e88e5;">Vessel</td>
+                        <td style="width: 100px;">:</td>
+                        <td style="width: 200px;">
+                            <form *ngIf="vesselDropdownView" [formGroup]="vesselDropDownForm"  style="margin-left: -30px !important; padding: 0px !important;">
+                                <mat-form-field class="customFormfullWidth" appearance="outline">
+                                    <mat-label>Vessel</mat-label>
+                                    <mat-select formControlName="vesselId"  matSelect (selectionChange)="onChangeVessel($event)">
+                                        <mat-option *ngFor="let vesselData of vesselRecordsServerSideResponseData" [ngClass]="{'d-none': vesselData.isActive === 'N'}" 
+                                        [value]="vesselData.id" > {{vesselData.vessel_name}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </form>
+                            <h4 *ngIf="vesselNameView"
+                                style="font-size: 25px !important;
+                                        font-weight: bold !important;
+                                        text-align: left;    margin-top: 0px;
+                                margin-bottom: 0px;">{{ vesselName }}</h4>
+                        </td>
                     </tr>
                     <tr class="tableTr" >
                         <td style="width: 200px;color: #1e88e5;">Charterer</td>
                         <td style="width: 100px;">:</td>
-                        <td style="width: 200px;">{{ this.chartererName }}</td>
+                        <td style="width: 200px;">{{ chartererName }}</td>
                     </tr>
                     <!-- <tr class="tableTr" [ngClass]="{'d-none': isChartererAccepted != 'N'}">
                         <td style="width: 200px;color: #1e88e5;">Charterer</td>
@@ -500,7 +529,7 @@
             </div>
 
             <div class="content-card" *ngIf="thirdScreen" style="margin-left: -10px !important; margin-top: -29px !important">
-                <form [formGroup]="OwnersFirstCounterForm" >
+                <form [formGroup]="clauseForm" >
                     <br>
                     <br>
                     <br>
@@ -510,25 +539,25 @@
                         <input [format]=24 matInput formControlName="cpTime"  class="timePickerCustomCSS " [ngxTimepicker]="cpTime" >
                         <ngx-material-timepicker #cpTime ></ngx-material-timepicker>
                         
-                        <mat-error *ngIf="OwnersFirstCounterForm.get('cpTime').hasError('required')">
+                        <mat-error *ngIf="clauseForm.get('cpTime').hasError('required')">
                             CP Time is required
                         </mat-error>
                     </mat-form-field>
                     <select class="customFormfullWidth dropdownCustomClass" formControlName="cityId"  (change)="changeCity($event)">
                         <option [value]="0" selected>--- Select City ---</option>
-                        <option *ngFor="let cityManagementData of cityManagementData"  [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" [value]="cityManagementData.id">{{cityManagementData.cityName}}</option>
+                        <option *ngFor="let cityManagementData of cityRecordsServerSideResponseData"  [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" [value]="cityManagementData.id">{{cityManagementData.cityName}}</option>
                     </select>
                     <mat-form-field  class="customFormfullWidth" appearance="outline">
                         <mat-label>C/P Date* </mat-label>
                         <input formControlName="cpDate" matInput [matDatepicker]="datePicker" placeholder="C/P Date" [(ngModel)]="cpDate">
                         <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                         <mat-datepicker #datePicker></mat-datepicker>
-                        <mat-error *ngIf="OwnersFirstCounterForm.get('cpDate').hasError('required')">
+                        <mat-error *ngIf="clauseForm.get('cpDate').hasError('required')">
                             Date is required
                         </mat-error>
                     </mat-form-field>
                     <div class="customFormfullWidthForClause" *ngFor="let clauseCategoryDataMain of termsReviewRecordsData; let i= index">
-                        <mat-accordion>
+                        <mat-accordion *ngIf="clauseCategoryDataMain.clauseCategoryTerms != 0 || clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0">
                             <mat-expansion-panel>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
@@ -541,12 +570,14 @@
                                 </mat-expansion-panel-header>
                                 <br>
                                 <mat-checkbox 
+                                    *ngIf="clauseCategoryDataMain.clauseCategoryTerms !=0"
+                                    
                                     (change)="checkUncheckAllForClauseTerms($event,i)"  [checked]="clauseCategoryDataMain.isallChecked === 'Y'"
                                     class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" >
                                     Check All
                                 </mat-checkbox>
-                                <hr>
-                                <table>
+                                <hr  *ngIf="clauseCategoryDataMain.clauseCategoryTerms !=0">
+                                <table *ngIf="clauseCategoryDataMain.clauseCategoryTerms !=0">
                                     <tr *ngFor="let ct of clauseCategoryDataMain.clauseCategoryTerms;let si=index">
                                         <td>
                                             <i class="material-icons" (click)="viewClauseCategoryTermsOfMainClause('viewMainClausePanel',ct.id,clauseCategoryDataMain.id)">remove_red_eye</i>
@@ -632,7 +663,7 @@
                                     class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause">
                                     Check All
                                 </mat-checkbox>
-                                <hr>
+                                <hr  *ngIf="clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0">
                                 <table *ngIf="clauseCategoryDataMain.clauseCategoryTermsUpdateCustom !=0">
                                     <tr *ngFor="let ct of clauseCategoryDataMain.clauseCategoryTermsUpdateCustom;let ti=index">
                                         <td>
@@ -1112,3 +1143,35 @@
         </div>
     </div>
 </fuse-sidebar>
+
+ <!-- Owner Change Modal Start -->
+<div class="cst-modal" [ngClass]="{'cst-modal--active' : ownerModal } ">
+    <div class="cst-modal__overlay"></div>
+    <div class="cst-modal__content">
+        <div class="cst-modal__header">
+            <h4 class="cst-modal__title" style="margin: 0 auto;"> Are You Sure You Want To Select This Owner?</h4>
+            <button class="cst-modal__close" (click)="hideOwnerChangeModal()">&times;</button>
+        </div>
+        <div class="cst-modal__footer">
+            <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="changeOwner()">Yes</button>
+            <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideOwnerChangeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+<!-- Owner Change Modal End -->
+
+<!-- Vessel Change Modal Start -->
+<div class="cst-modal" [ngClass]="{'cst-modal--active' : vesselModal } ">
+    <div class="cst-modal__overlay"></div>
+    <div class="cst-modal__content">
+        <div class="cst-modal__header">
+            <h4 class="cst-modal__title" style="margin: 0 auto;"> Are You Sure You Want To Select This Vessel?</h4>
+            <button class="cst-modal__close" (click)="hideVesselChangeModal()">&times;</button>
+        </div>
+        <div class="cst-modal__footer">
+            <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="changeVessel()">Yes</button>
+            <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideVesselChangeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+<!-- Vessel Change Modal End -->

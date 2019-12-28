@@ -11,8 +11,7 @@ var childrenArrayInfo = {};
     childrenArrayInfo["icon"] = 'network_check';
     childrenArrayInfo["url"] = '/apps/dashboards/analytics';
 
-    childrenArray.push(childrenArrayInfo);
-
+   
 console.log(JSON.parse(localStorage.getItem('userRoleId')));
 
 if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
@@ -82,7 +81,6 @@ var childrenArrayInfo = {};
     childrenArray.push(childrenArrayInfo);
 
 
-
 // var childrenArrayInfo = {};
 //     childrenArrayInfo["id"] = 'STD  Biding ';
 //     childrenArrayInfo["title"] = 'Draw C/P';
@@ -129,12 +127,21 @@ var childrenArrayInfo = {};
     childrenArrayInfo["url"] = '/apps/faq-management';
     childrenArray.push(childrenArrayInfo);
 
+    var childrenArrayInfo = {};
+
 var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'Term';
     childrenArrayInfo["title"] = 'Term';
     childrenArrayInfo["type"] = 'item';
     childrenArrayInfo["icon"] = 'speaker_notes';
     childrenArrayInfo["url"] = '/apps/term-management';
+    childrenArray.push(childrenArrayInfo);
+
+    childrenArrayInfo["id"] = 'contact';
+    childrenArrayInfo["title"] = 'User Directory';
+    childrenArrayInfo["type"] = 'item';
+    childrenArrayInfo["icon"] = 'notes';
+    childrenArrayInfo["url"] = '/apps/contact';
     childrenArray.push(childrenArrayInfo);
 
 var childrenArrayInfo = {};
@@ -148,17 +155,17 @@ var childrenArrayInfo = {};
 
     console.log(childrenArray);
 }
-if (JSON.parse(localStorage.getItem('userRoleId')) == '7'){
-var childrenArrayInfo = {};
-    childrenArrayInfo["id"] = 'Draw C/P';
-    childrenArrayInfo["title"] = 'Draw C/P';
-    childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
-    childrenArrayInfo["type"] = 'item';
-    childrenArrayInfo["icon"] = 'brush';
-    childrenArrayInfo["url"] = '/apps/draw-management';
+// if (JSON.parse(localStorage.getItem('userRoleId')) == '7'){
+// var childrenArrayInfo = {};
+//     childrenArrayInfo["id"] = 'Draw C/P';
+//     childrenArrayInfo["title"] = 'Draw C/P';
+//     childrenArrayInfo["translate"] = 'NAV.CHARTERERMANAGEMENT';
+//     childrenArrayInfo["type"] = 'item';
+//     childrenArrayInfo["icon"] = 'brush';
+//     childrenArrayInfo["url"] = '/apps/draw-management';
 
-    childrenArray.push(childrenArrayInfo);
-}
+//     childrenArray.push(childrenArrayInfo);
+// }
 export const navigation: FuseNavigation[] =
 [
     

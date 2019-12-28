@@ -15,7 +15,7 @@
         <!-- Chat Records Server Side Start -->
         <div class="mat-elevation-z8" *ngIf="chatTableDiv">
             <div class="content-card" style="margin: 35px; width: 95%; margin-top: 10px;">
-                <table>
+                <!-- <table>
                     <tr>
                         <th style="width:80%; text-align: left;">
                             <label style="font-size: 25px;">Chat Management </label>
@@ -26,32 +26,47 @@
                             (click)="showHideModules(2)">Create Chat</button>
                         </th>
                     </tr>
-                </table>
+                </table> -->
+                <div class="header-row">
+                    <div class="row-col-3">
+                        <button class="add-item add-item--main-button" (click)="showHideModules(2)">Create Chat</button>
+                    </div>
+                    <div class="row-col-6"></div>
+                    
+                    <!-- <div class="row-col-3">
+                        <mat-form-field floatLabel="never" class="custom-search-field">
+                            <mat-icon class="search">search</mat-icon> <input matInput
+                                (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                        </mat-form-field>
+                    </div> -->
+                </div>
+
                 <hr>
                 <table>
-                    <tr>
-                        <th style="width: 50px; text-align: left;">
-                            <label style="font-size: 25px;">#</label>
+                    <tr style="background: #e2e2e2;">
+                        <th style="width: 50px; text-align: center;">
+                            <label style="font-size: 16px;">#</label>
                         </th>
-                        <th style="width: 300px; text-align: left;">
-                            <label style="font-size: 25px;">User</label>
+                        <th style="width: 300px; text-align: center;">
+                            <label style="font-size: 16px;">User</label>
                         </th>
-                        <td style="text-align: left;">
+                        <td style="text-align: center;">
                             <h4 style="font-size: 22px; font-weight: 700;">Message</h4>
                         </td>
                     </tr>
                     <tr *ngFor="let cmra of chatManagementResponseArray; let i= index" >
-                        <th style="width: 50px; text-align: left;">
-                            <label style="font-size: 25px;">{{ i + 1 }}</label>
+                        <th style="width: 50px; text-align: center;">
+                            <label style="font-size: 16px;">{{ i + 1 }}</label>
                         </th>
-                        <th style="width: 300px; text-align: left;">
-                            <label (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" style="font-size: 25px; cursor: pointer;">{{ cmra.toUserName }}</label>
+                        <th style="width: 300px; text-align: center;">
+                            <label (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" style="font-size: 16px; cursor: pointer;">{{ cmra.toUserName }}</label>
                         </th>
-                        <td style="text-align: left;">
-                            <h4 (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" [ngClass]="{'d-none': cmra.isFetched == 'Y'}" style="font-size: 22px; font-weight: 700; cursor: pointer;">{{ cmra.message }}</h4>
-                            <h4 (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" [ngClass]="{'d-none': cmra.isFetched == 'N'}" style="font-size: 22px; cursor: pointer;">{{ cmra.message }}</h4>
+                        <td style="text-align: center;">
+                            <h4 style="color:#1e88e5" (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" [ngClass]="{'d-none': cmra.isFetched == 'Y'}" style="font-size: 16px; font-weight: 700; cursor: pointer;">{{ cmra.message }}</h4>
+                            <h4  style="color: #1e88e5;"  (click)="fetchChatDetails(cmra.user2,cmra.toUserName)" [ngClass]="{'d-none': cmra.isFetched == 'N'}" style="font-size: 16px; cursor: pointer;">{{ cmra.message }}</h4>
                         </td>
                     </tr>
+                    <hr />
                 </table>
             </div>
         </div>
@@ -59,16 +74,29 @@
         <!-- Chat Form Start -->
         <div class="mat-elevation-z8" *ngIf="chatFormDiv" style="margin-top: 50px;">
             <div class="content-card" style="margin: 35px; width: 95%; margin-top: 10px;">
-                <table>
+
+                <!-- <table>
                     <tr>
                         <th style="width:80%; text-align: left;">
                             <label style="font-size: 25px; margin-left: 18px;">Create Chat</label>
                         </th>
                         <th>
-                            <button class="add-item add-item--main-button" style="width: 200px !important; margin-top: 0px;" (click)="showHideModules(1)">Back</button>
+                            <button class="add-item add-item--main-button" style="width: 200px !important;
+                             margin-top: 0px;" (click)="showHideModules(1)">Back</button>
                         </th>
                     </tr>
-                </table>
+                </table> -->
+
+                <div class="header-row">
+                    <div class="row-col-9">
+                        <h2 style="padding-bottom: 0;"> Create Chat </h2>
+                    </div>
+                    <div class="row-col-6"></div>
+                    <div class="row-col-3">
+                        <button class="add-item add-item--main-button" style="float:right" (click)="showHideModules(1)">Back</button>
+                    </div>
+                <hr>
+            </div>
                 <hr>
                 <form [formGroup]="chatManagementForm" (ngSubmit)="chatManagementFormSubmit()">
                     <mat-form-field class="customFormfullWidth" appearance="outline">
@@ -107,7 +135,7 @@
         <!-- Chat Details Start -->
         <div class="mat-elevation-z8" *ngIf="chatDetailsDiv">
             <div class="content-card" style="margin: 35px; width: 95%; margin-top: 10px;">
-                <table>
+                <!-- <table>
                     <tr>
                         <th style="width:80%; text-align: left;">
                             <label style="font-size: 25px;"> {{ toUserName }}  </label>
@@ -117,26 +145,39 @@
                             (click)="showHideModules(1)">Back</button>
                         </th>
                     </tr>
-                </table>
+                </table> -->
+                <div class="header-row">
+                    <div class="row-col-9">
+                        <h2 style="padding-bottom: 0;"> {{ toUserName }}  </h2>
+                    </div>
+                    <div class="row-col-6"></div>
+                    <div class="row-col-3">
+                        <button class="add-item add-item--main-button" style="float:right" (click)="showHideModules(1)">Back</button>
+                    </div>
                 <hr>
             </div>
-            <div class="content-card" style="margin: 35px; width: 95%; margin-top: 10px; height: 200px !important; max-height: 500px !important; overflow: scroll;">
+
+
+
+            <div class="content-card" id="msgContainer" #msgContainer style="margin: 35px; width: 95%;
+             margin-top: 10px; height: 200px !important; max-height: 500px !important; background: #f9f9f9; overflow-y: scroll;">
                 <table >
                     <tr *ngFor="let chatDetails of chatManagementDetailsResponseArray; let i= index" >
                         <br>
-                        <th style="width: 100%; text-align: left;" [ngClass]="{'d-none': chatDetails.senderId == currentUserId}" >
-                            <label style="font-size: 25px;">{{ chatDetails.message }}</label>
+                        <th style="width: 100%; text-align: left;"
+                         [ngClass]="{'d-none': chatDetails.senderId == currentUserId}" >
+                            <label style="font-size: 16px; background: #1e88e5;  padding:1% 10%; border-radius: 25px; color:#fff ">{{ chatDetails.message }}</label>
                         </th>
                         <br>
                         <th style="width: 100%; text-align: right" [ngClass]="{'d-none': chatDetails.senderId != currentUserId}" >
-                            <label style="font-size: 25px;">{{ chatDetails.message }}</label>
+                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff ">{{ chatDetails.message }}</label>
                         </th>
                          <th style="width: 100%; text-align: left;" [ngClass]="{'d-none': chatDetails.senderId == currentUserId}" >
-                            <label style="font-size: 25px;">{{ msg }}</label>
+                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff">{{ msg }}</label>
                         </th>
                         <br>
                         <th style="width: 100%; text-align: right" [ngClass]="{'d-none': chatDetails.senderId != currentUserId}" >
-                            <label style="font-size: 25px;">{{ msg }}</label>
+                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff">{{ msg }}</label>
                         </th>
                         <br>
                         <br>
@@ -145,19 +186,23 @@
                     </tr>
                 </table >
             </div>
+            <hr />
             <div class="content-card" style="margin: 35px; width: 95%; margin-top: 10px;">
                 <table>
                     <tr>
                         <th style="width:90%; text-align: left;">
-                            <input matInput [(ngModel)]="chatMessage" (keyup.enter)="sendMessage()" style="border: 1px #0000004a solid;
+                            <input matInput [(ngModel)]="chatMessage" placeholder="Type your message here..." (keyup.enter)="sendMessage()" style="border: 1px #0000004a solid;
                             border-radius: 10px;
-                            height: 50px;
-                            font-size: 25px;
-                            font-weight: bold;">
+                            height: 45px;
+                            font-size: 16px;
+                            padding:2%;
+                            ">
                         </th>
                         <th>
-                            <button class="add-item add-item--main-button" style="width: 200px !important;" 
-                            (click)="sendMessage()">Send</button>
+
+                            <button class="add-item add-item--main-button" style="width: 90px !important;" 
+                            (click)="sendMessage()"> <mat-icon aria-hidden="false" 
+                            aria-label="Example send icon">send</mat-icon></button>
                         </th>
                     </tr>
                 </table>

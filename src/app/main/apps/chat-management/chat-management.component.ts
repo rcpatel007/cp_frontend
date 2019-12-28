@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnDestroy,AfterViewChecked, OnInit,ElementRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
@@ -93,7 +93,10 @@ export interface NotificationRecords
 
 export class ChatManagementComponent implements OnInit
 {
-    socket;
+    // @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+
+    socket:any;
+
     // Table Codes Start
     displayedColumns: string[] = ['id','tradingId','createdDateInfo','createdTimeInfo','createdByName','message','action'];
     displayedColumnsNotificaiton: string[] = ['id','notification','createdAt'];
@@ -111,7 +114,7 @@ export class ChatManagementComponent implements OnInit
     showUpdateModalStatus = false;
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
-    
+   
     // Table Codes End
     
     // Main Data Variables Start
@@ -177,7 +180,7 @@ export class ChatManagementComponent implements OnInit
 
     tradingRecordsResponse: any;
     tradingRecordsResponseArray = [];
-    msg:String;
+    msg= [];
 
     notificationRecordsResponse: any;
     notificationRecordsResponseArray = [];
@@ -206,8 +209,8 @@ export class ChatManagementComponent implements OnInit
         
     )
     {
-        this.socket = io('http://18.219.59.88:3001');
-  
+        this.socket = io('http://localhost:3001');
+      
         this.messageCenterRecords = new MatTableDataSource(this.chatManagementResponseArray);
         this.notificationRecords = new MatTableDataSource(this.notificationRecordsResponseArray);
     }
@@ -239,19 +242,35 @@ export class ChatManagementComponent implements OnInit
         // this.ownerRecords();
 
         this.chatManagementRecordsServerSide();
-        this.socket.on('new-message', (result) => {
-            // this.display = true;
-            this.msg = result.data.message;
-          console.log(this.msg,"hello ");
-          
+
+        this.socket.on('message', (result) => {     
+            this.msg.push(result.data.message);
+   
+            console.log(result,"data");
+            
+            var container = document.getElementById("msgContainer");    
+            container.scrollTop = container.scrollHeight; 
+
+                    //   console.log(this.msg,"hello ");
+
           });
-        setInterval(() =>
-        {
+        // this.socket.on('new-message', (result) => {
+        //     // this.display = true;
+            
+        //   console.log(this.msg,"hello ");
+          
+        //   });
+        // setInterval(() =>
+        // {
             this.realTimeChatFetch();
             this.fetchRealTimeChatData();
-        }, 5000);
+        // }, 5000);
     }
-
+    // scrollToBottom(): void {
+    //     try {
+    //         this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    //     } catch(err) { }                 
+    // }
     // Fetch Brokers
     brokerRecords(): void
     {
@@ -431,12 +450,15 @@ export class ChatManagementComponent implements OnInit
                 this.chatManagementResponse = res;
                 if (this.chatManagementResponse.success === true)
                 {
+                    // this.scrollToBottom();
                     this.chatManagementResponseArray = this.chatManagementResponse.data;
                     this.newMessageTitle = '';
                     if(this.chatManagementResponse.newMessages > 0)
                     {
+                        
                         if(this.chatManagementResponse.newMessages == 1)
                         {
+                            
                             this.newMessageTitle = '1 New Message';
                         }
                         if(this.chatManagementResponse.newMessages > 1)
@@ -483,6 +505,7 @@ export class ChatManagementComponent implements OnInit
                 this.http.post(`${config.baseUrl}/chatCreate`, req, headerOptions).subscribe(
                 res =>
                 {
+                    
                        this.socket.emit('message', { data: req });
                     this.alertService.success('Message Created And Send Successfully', 'Success');
                     this.showHideModules(1);
@@ -524,6 +547,8 @@ export class ChatManagementComponent implements OnInit
             {
                 headers: header
             }
+            this.socket.emit('message', { data: req });
+
             this.http.post(`${config.baseUrl}/chatCreate`, req, headerOptions).subscribe(
             res =>
             {
@@ -551,9 +576,12 @@ export class ChatManagementComponent implements OnInit
             this._userService.fetchRealTimeChatData(filter).pipe(first())
             .subscribe(res =>
             {
-                this.chatManagementDetailsResponse = res;
-                if (this.chatManagementDetailsResponse.success === true)
+                    this.chatManagementDetailsResponse = res;
+                    if (this.chatManagementDetailsResponse.success === true)
                 {
+                     var container = document.getElementById("msgContainer");    
+            container.scrollTop = container.scrollHeight; 
+
                     this.chatManagementDetailsResponseArray = this.chatManagementDetailsResponse.data;
                     
                 }

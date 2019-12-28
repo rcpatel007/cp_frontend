@@ -90,14 +90,13 @@ export class EditUserComponent implements OnInit, OnDestroy {
         this.userRole = this.userData.userRoleId;
         this.companyName = this.userData.companyId;
         this.userManagementeditForm = this._formBuilder.group({
-            username: [this.userData.username, Validators.required],
-            mobileNo: [this.userData.mobileNo, Validators.required],
-            firstName: [this.userData.firstName, Validators.required],
-            lastName: [this.userData.lastName, Validators.required],
-            companyName: [this.companyName, Validators.required],
-            userRoleId: [this.userData.userRoleId, Validators.required],
-            email: [this.userData.email, Validators.required],
-            address: [this.userData.address, Validators.required],
+            username: [this.userData.username, [ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")]],
+            mobileNo: [this.userData.mobileNo, [ Validators.required, Validators.pattern("[0-9]+")]],
+            firstName: [this.userData.firstName, [ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")]],
+            lastName: [this.userData.lastName,[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")]],
+            userRoleId: [this.userData.userRoleId,[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")]],
+            email: [this.userData.email,[Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9]+.[a-z]{2,4}$")]],
+            address: [this.userData.address, [ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")]],
         });
         console.log(this.userManagementeditForm);
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/user-management';

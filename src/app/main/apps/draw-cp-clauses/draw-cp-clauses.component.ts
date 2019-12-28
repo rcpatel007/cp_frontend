@@ -24,7 +24,6 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import * as moment from 'moment';
 import { exists } from 'fs';
 
-
 export interface PeriodicElement {
     userName: string;
     termsName: string;
@@ -46,6 +45,8 @@ export interface UserData {
     selector: 'app-draw-cp-clauses',
     templateUrl: './draw-cp-clauses.component.html',
     styleUrls: ['./draw-cp-clauses.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    animations: fuseAnimations
 })
 
 export class DrawCpClausesComponent implements OnInit
@@ -73,7 +74,7 @@ export class DrawCpClausesComponent implements OnInit
     }
     id: String;
     counterId: String;
-    companyId: String;
+    
     parentId: string;
     clauseId: string;
     nos: string;
@@ -101,9 +102,7 @@ export class DrawCpClausesComponent implements OnInit
 
     reviewData = [];
 
-    tradingId: String;
     customClause: String;
-    isTrading: String;
     termsUpdateRes: any;
 
     editclauses = [];
@@ -120,9 +119,6 @@ export class DrawCpClausesComponent implements OnInit
 
     showReviewModal = false;
 
-
-    cityManagementRes: any;
-    cityManagementData = [];
 
     clauseCategoryResponse: any;
     clauseCategoryData = [];
@@ -143,13 +139,11 @@ export class DrawCpClausesComponent implements OnInit
 
     totalTermsReviewRecords : any;
 
-    cpTime: string;
+    
     cpTimeInfo: string;
-    cityId: string;
-    cpDate: string;
-    formId: string;
-    pageTitle: String;
-    OwnersFirstCounterForm: FormGroup;
+    
+    
+    
     stdBidForm: FormGroup;
     drawcluases = [];
     drawManagementRes: any;
@@ -167,8 +161,7 @@ export class DrawCpClausesComponent implements OnInit
     drawResponseInformation : any;
     drawResponseInformationData = [];
 
-    tradingResponseInformation : any;
-    tradingResponseInformationData = [];
+    
 
     clauseTermNumber : any;
 
@@ -244,40 +237,17 @@ export class DrawCpClausesComponent implements OnInit
     
     mainScreen = true;
 
-    firstScreen = true;
-    firstScreenStdBid = true;
-    firstScreenStdBidBroker = true;
-    secondScreen = false;
-    thirdScreen = false;
-
     thirdScreenButton = false;
 
-    drawId: String;
-
-
-    ownerName : string;
-    chartererName : string;
-    brokerName : string;
-
-    cpFormResponse : any;
-    cpFormDataResponseData = [];
     
+
     vesselDataResponse : any;
     vesselDataResponseArray = [];
 
     chartererDataResponse : any;
     chartererDataResponseArray = [];
 
-    cpFormName :  any;
-    cityName : string;
-    
-    vesselId : string;
-
-    vesselName : string;
-    imoNumber : string;
-    vesselFlag : string;
-    vesselYear : string;
-    vesselDescription : string;
+   
 
     dateMonthYearString : string;
 
@@ -353,6 +323,109 @@ export class DrawCpClausesComponent implements OnInit
 
     counterNumberInfo : any;
 
+    // New Code Start
+
+    // Assign Variables Start
+    drawId: String;
+    brokerId: String;
+    ownerId : string;
+    tempOwnerId : string;
+    tempVesselId : string;
+    tradingId: String;
+    isTrading: String;
+    formId: String;
+    companyId: String;
+    pageTitle: String;
+    cityId: string;
+    cpTime: string;
+    cpDate: string;
+    ownerName : string;
+    vesselName : string;
+    chartererName : string;
+    ownerEmail : string;
+    chartererEmail : string;
+    brokerName : string;
+    cpFormName :  string;
+    cityName : string;
+    vesselId : string;
+    imoNumber : string;
+    vesselFlag : string;
+    vesselYear : string;
+    vesselDescription : string;
+
+    ownerCounterNumber : string;
+    chartererCounterNumber : string;
+
+    ownerModal:any;
+    vesselModal:any;
+
+    ownerCheckedClauses = [];
+    ownerCheckedCustomClauses = [];
+    ownerCheckedCustomTermsClauses = [];
+
+    chartererCheckedClauses = [];
+    chartererCheckedCustomClauses = [];
+    chartererCheckedCustomTermsClauses = [];
+
+
+    brokerCheckedClauses = [];
+
+    clauseChecked = [];
+    clauseCustomChecked = [];
+    clauseCustomTermsChecked = [];
+
+    mainTermCheckedClauses = [];
+    mainTermCheckedClausesCustom = [];
+    mainTermCheckedClausesCustomTerms = [];
+    // Assign Values End
+
+    // Set View Variables Start
+    firstScreen = true;
+    firstScreenStdBid = false;
+    firstScreenStdBidBroker = false;
+    secondScreen = false;
+    thirdScreen = false;
+
+    ownerDropdownView = false;
+    ownerNameView = false;
+
+    vesselDropdownView = false;
+    vesselNameView = false;
+    
+    // Set View Variables End
+
+    // Assign API Variable Start
+    cpFormRecordsServerSideResponse : any;
+    cpFormRecordsServerSideResponseData = [];
+    cityRecordsServerSideResponse: any;
+    cityRecordsServerSideResponseData = [];
+    tradingRecordsServerSideResponse : any;
+    tradingRecordsServerSideResponseData = [];
+    ownerRecordsServerSideResponse : any;
+    ownerRecordsServerSideResponseData = [];
+    vesselRecordsServerSideResponse : any;
+    vesselRecordsServerSideResponseData = [];
+    // Assign API Variable End
+
+    // Form Settings End
+    ownerDropDownForm: FormGroup;
+    ownerDropDownFormSubmitResponse : any;
+    ownerDropDownFormSubmitResponseData = [];
+    get ownerDropDownFormValue() { return this.ownerDropDownForm.controls; }
+
+    vesselDropDownForm: FormGroup;
+    vesselDropDownFormSubmitResponse : any;
+    vesselDropDownFormSubmitResponseData = [];
+    get vesselDropDownFormValue() { return this.vesselDropDownForm.controls; }
+    // Form Settings End
+
+    // Assign Form Values Start
+    clauseForm: FormGroup;
+    get clauseFormValues() { return this.clauseForm.controls; }
+    // Assign Form Values End
+
+    // New Code End
+
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -389,40 +462,74 @@ export class DrawCpClausesComponent implements OnInit
 
     ngOnInit()
     {
-        // console.log(moment(new Date()).format("YYYY-MM-DD"));
-        // console.log(moment(new Date('13:11')).format("HH:mm"));
-        // return false;
+        // New Code Start
 
-
-        this.isCheckboxDisabled = 'Y';
-
-        this.mainDynamicStringArray = [];
-        this.dynamicInputNumber = 0;
-       
+        // Assign Values Start
+        var clauseFilterData = JSON.parse(localStorage.getItem('clauseFilterData'));
+        this.drawId = clauseFilterData.drawId;
+        this.tradingId = clauseFilterData.tradingId;
+        this.isTrading = clauseFilterData.isTrading;
+        this.formId = clauseFilterData.formId;
+        this.companyId = localStorage.getItem('companyId');
+        this.pageTitle = (this.isTrading == '2') ? 'Draw C/P Clauses' : 'Trading Clauses';
         this.ownerName = '';
         this.chartererName = '';
         this.brokerName = '';
+        this.ownerEmail = '';
+        this.chartererEmail = '';
+        // Assign Values End
 
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        console.log(filter);
-        this.drawId = filter.drawId;
-        this.formId = filter.formId;
-        this.tradingId = filter.tradingId;
-        this.isTrading = filter.isTrading;
-        this.isStdBid = filter.isStdBid;
+        // Set Default Values Start
+        this.firstScreen = true;
+        this.firstScreenStdBid = false;
+        this.firstScreenStdBidBroker = false;
+        this.secondScreen = false;
+        this.thirdScreen = false;
+        this.ownerNameView = false;
+        this.ownerDropdownView = false;
+        // Set Default Values End
 
-        this.isDisabled = 'Y';
+        if(this.formId != '' && this.formId != null && this.formId != undefined)
+        {
+            // Fetch CP Form Data Start
+            this.cpFormRecordsServerSide();
+            // Fetch CP Form Data End
+        }
 
-        console.log(JSON.parse(localStorage.getItem('userRoleId')));
+        // Fetch City Records Start
+        this.cityRecordsServerSide();
+        // Fetch City Records End
 
-        console.log(this.isStdBid);
+        // Set Form And Its Validation Start
+        this.ownerDropDownForm = this._formBuilder.group(
+        {
+            ownerId: ['', Validators.required]
+        });
+        this.vesselDropDownForm = this._formBuilder.group(
+        {
+            vesselId: ['', Validators.required]
+        });
+        // Set Form And Its Validation End
 
+        if(this.isTrading == '2')
+        {
+            this.fetchDrawDataRecap();
+            this.termsReviewRecords();
+        } else {
+            this.fetchTradingData();
+        }
+
+        // New Code End
         
-
-
+        this.isDisabled = 'Y';
+        this.clauseTermNumber = 1;
+        this.isCheckboxDisabled = 'Y';
+        this.mainDynamicStringArray = [];
+        this.dynamicInputNumber = 0;
+        
         var current_date = moment(new Date()).format("YYYY-MM-DD");
         var current_time = moment().format("HH:mm A");
-        this.OwnersFirstCounterForm = this._formBuilder.group
+        this.clauseForm = this._formBuilder.group
         (
             {
                 cpTime: [current_time, Validators.required],
@@ -430,7 +537,6 @@ export class DrawCpClausesComponent implements OnInit
                 cpDate: [current_date, Validators.required],
             }
         );
-
         this.stdBidForm = this._formBuilder.group
         (
             {
@@ -462,115 +568,397 @@ export class DrawCpClausesComponent implements OnInit
                 lifted_vessel_swl : ['', ''],
             }
         );
-
-        this.formId = localStorage.getItem('formId');
-        this.companyId = localStorage.getItem('companyId');
-
-        this.cityRecords();
-        
-        if (JSON.parse(localStorage.getItem('userRoleId')) == '3')
-        {
-            this.isCheckboxDisabled = 'N';
-            if(filter.isTrading == '2')
-            {
-                this.pageTitle = 'Draw C/P Clauses';
-            } else {
-                this.pageTitle = 'Trading Clauses';
-            }
-        }
-
-        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            this.isCheckboxDisabled = 'N';
-            this.pageTitle = 'Charterer First Counter';
-            this.getCounterNumber();
-        }
-
-        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            this.isCheckboxDisabled = 'N';
-            this.pageTitle = 'Owner First Counter';
-            this.getCounterNumber();
-        }
-        
-        this.clauseTermNumber = 1;
-
-        if(filter.isTrading == '2')
-        {
-            this.firstScreenStdBidBroker = false;
-            this.firstScreenStdBid = false;
-            this.fetchDrawDataRecap();
-        } else {
-            if(this.isStdBid == 'Y')
-            {
-                if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
-                {
-                    this.firstScreenStdBidBroker = true;
-                    this.firstScreenStdBid = false;
-                } else {
-                    this.firstScreenStdBid = true;
-                    this.firstScreenStdBidBroker = false;
-                }
-                this.firstScreen = false;
-
-                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-                {
-                    this.firstScreenStdBid = false;
-                    this.firstScreenStdBidBroker = false;
-                    this.firstScreen = false;
-                    this.secondScreen = false;
-                    this.thirdScreen = true;
-
-                    this.fetchTradingData();
-                    this.termsReviewRecords();
-                }
-
-                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                {
-                    this.firstScreenStdBid = false;
-                    this.firstScreenStdBidBroker = false;
-                    this.firstScreen = false;
-                    this.secondScreen = false;
-                    this.thirdScreen = true;
-
-                    this.fetchTradingData();
-                    this.termsReviewRecords();
-                }
-
-            } else {
-
-                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-                {
-                    this.firstScreenStdBid = false;
-                    this.firstScreenStdBidBroker = false;
-                    this.firstScreen = false;
-                    this.secondScreen = false;
-                    this.thirdScreen = true;
-
-                    this.fetchTradingData();
-                    this.termsReviewRecords();
-                } else if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                {
-                    this.firstScreenStdBid = false;
-                    this.firstScreenStdBidBroker = false;
-                    this.firstScreen = false;
-                    this.secondScreen = false;
-                    this.thirdScreen = true;
-
-                    this.fetchTradingData();
-                    this.termsReviewRecords();
-                } else {
-                    this.firstScreenStdBid = false;
-                    this.firstScreenStdBidBroker = false;
-                    this.firstScreen = true;
-                    this.fetchTradingDataRecap();
-                }
-            }
-        }
-        this.clauseTermsCheckBox = true;
-        this.cpFormData();
-        
+        this.isCheckboxDisabled = 'N';
     }
+
+    // Fetch CP Form Data Records Server Side Start
+    cpFormRecordsServerSide()
+    {
+        var filterCondition = {};
+            filterCondition['id'] = this.formId;
+        try
+        {
+            this._userService.cpFormData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.cpFormRecordsServerSideResponse = res;
+                if(this.cpFormRecordsServerSideResponse.success == true)
+                {
+                    this.cpFormRecordsServerSideResponseData = this.cpFormRecordsServerSideResponse.data;
+                    this.cpFormName = this.cpFormRecordsServerSideResponseData[0].cpformName;
+                }
+            });
+        }catch (err){}
+    }
+    // Fetch CP Form Data Records Server Side End
+
+    // Fetch City Records Start
+    cityRecordsServerSide(): void
+    {
+        try {
+            this._userService.CityRecords()
+                .pipe(first())
+                .subscribe((res) =>
+                {
+                    this.cityRecordsServerSideResponse = res;
+                    if (this.cityRecordsServerSideResponse.success === true)
+                    {
+                        this.cityRecordsServerSideResponseData = this.cityRecordsServerSideResponse.data;
+                    }
+                },
+                err => {
+                    this.alertService.error(err, 'Error');
+                });
+        } catch (err) {}
+    }
+    // Fetch City Records End
+
+    // On Change City Start
+    changeCity(event): void
+    {
+        this.cityId = event.target.value;
+    }
+    // On Change City End
+
+    // Owners Records Server Side Start
+    ownerRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '6';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.ownerRecordsServerSideResponse = res;
+                if (this.ownerRecordsServerSideResponse.success === true)
+                {
+                    this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                }
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Owners Records Server Side End
+
+    // On Owner Change Start
+    onChangeOwner(event)
+    {
+        this.tempOwnerId =  event.value;
+        this.ownerModal = !this.ownerModal;
+    }
+    // On Owner Change End
+
+    // Fetch Trading Data Start
+    fetchTradingData ()
+    {
+        var ConditionData = {};
+            ConditionData["dcm.id"] = this.tradingId;
+        try
+        {
+            this._userService.fetchTradingData(ConditionData).pipe(first()).subscribe((res) =>
+            {
+                this.tradingRecordsServerSideResponse = res;
+                if(this.tradingRecordsServerSideResponse.success == true)
+                {
+                    this.tradingRecordsServerSideResponseData = this.tradingRecordsServerSideResponse.data[0];
+
+                    // Set Page Title Start
+                    var ownerCounter = this.tradingRecordsServerSideResponseData['owner_counter'];
+                    var chartererCounter = this.tradingRecordsServerSideResponseData['charterer_counter'];
+
+                    this.ownerCounterNumber = ownerCounter;
+                    this.chartererCounterNumber = chartererCounter;
+
+                    if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                    {
+                        if (ownerCounter > 1)
+                        {
+                            this.chartererCounterNumber = chartererCounter + 1;
+                            this.pageTitle = 'Charterer '+this.NumInWords(chartererCounter)+' Counter';
+                        }
+                    }
+                    if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                    {
+                        this.ownerCounterNumber = ownerCounter + 1;
+                        this.pageTitle = 'Owner '+this.NumInWords(ownerCounter)+' Counter';
+                    }
+                    // Set Page Title End
+
+                    // Assign Values Start
+                    this.ownerName = this.tradingRecordsServerSideResponseData['ownerName'];
+                    this.chartererName = this.tradingRecordsServerSideResponseData['chartererName'];
+                    this.brokerName = this.tradingRecordsServerSideResponseData['brokerName'];
+                    this.cityName = this.tradingRecordsServerSideResponseData['cityName'];
+                    this.formId = this.tradingRecordsServerSideResponseData['formId'];
+                    this.vesselId = this.tradingRecordsServerSideResponseData['vesselId'];
+                    this.ownerId = this.tradingRecordsServerSideResponseData['ownerId'];
+                    this.chartererId = this.tradingRecordsServerSideResponseData['chartererId'];
+                    this.brokerId = this.tradingRecordsServerSideResponseData['brokerId'];
+                    this.metricTonValue = this.tradingRecordsServerSideResponseData['metricTonValue'];
+                    this.customInput1 = this.tradingRecordsServerSideResponseData['customInput1'];
+                    this.customInput2 = this.tradingRecordsServerSideResponseData['customInput2'];
+                    this.cpTime = this.tradingRecordsServerSideResponseData['cpTime'];
+                    this.cpDate = this.tradingRecordsServerSideResponseData['cpDate'];
+                    this.cityId = this.tradingRecordsServerSideResponseData['cpCity'];
+                    this.cpTime = (this.cpTime != '' && this.cpTime != null && this.cpTime != undefined) ? this.cpTime : null;
+                    this.cpDate = (this.cpDate != '' && this.cpDate != null && this.cpDate != undefined) ? this.cpDate : null;
+                    this.cityId = (this.cityId != '' && this.cityId != null && this.cityId != undefined) ? this.cityId : null;
+                    this.cpDate = (this.cpDate != null) ? moment(this.cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
+                    // Assign Values End
+                    // Assign Form Values Start
+                    this.clauseForm = this._formBuilder.group
+                    (
+                        {
+                            cpTime: [this.cpTime, Validators.required],
+                            cityId: [this.cityId, Validators.required],
+                            cpDate: [this.cpDate, Validators.required],
+                        }
+                    );
+                    // Assign Form Values End
+                    // Set Array For Checked Clauses Start
+                    this.checkedClauseCategory = [];
+                    var checkedClausesArray = this.tradingRecordsServerSideResponseData['checked_clauses'];
+                    if(checkedClausesArray != '' && checkedClausesArray != null && checkedClausesArray != undefined)
+                    {
+                       this.checkedClauseCategory = checkedClausesArray.split(',');
+                    } else {
+                       this.checkedClauseCategory = [];
+                    }
+                    var checkedCheckBoxArray = this.checkedClauseCategory;
+                    this.checkedClauseCategory = [];
+                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
+                    {
+                        this.checkedClauseCategory.push(Number(checkedCheckBoxArray[index]));
+                    }
+                    localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
+                    // Set Array For Checked Clauses End
+                    // Fetch Vessel Data Start
+                    if(this.vesselId != '' && this.vesselId != null && this.vesselId != undefined)
+                    {
+                        this.fetchVesselData();
+                        this.vesselNameView = true;
+                        this.vesselDropdownView = false;
+                    }
+                    if(this.vesselId == '' || this.vesselId == null || this.vesselId == undefined)
+                    {
+                        if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                        {
+                            this.vesselRecordsServerSide();
+                            this.vesselDropdownView = true;
+                        }
+                    }
+                    // Fetch Vessel Data End
+                    if(this.formId != '' && this.formId != null && this.formId != undefined)
+                    {
+                        // Fetch CP Form Data Start
+                        this.cpFormRecordsServerSide();
+                        // Fetch CP Form Data End
+                        // Clause Category Records Server Side Start
+                        this.clauseCategoryRecordsServerSide();
+                        // Clause Category Records Server Side End
+                    }
+                    if(this.ownerId == '' || this.ownerId == null || this.ownerId == undefined)
+                    {
+                        // Owner Records Server Side Start
+                        this.ownerRecordsServerSide();
+                        // Owner Records Server Side End
+                        this.ownerDropdownView = true;
+                    }
+                    if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                    {
+                        this.ownerNameView = true;
+                    }
+                }
+            });
+        }catch (err){}
+    }
+    // Fetch Trading Data End
+
+    // Vessel Records Sever Side Start
+    vesselRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData["vm.id_owner"] = this.ownerId;
+        try
+        {
+            this._userService.vesselRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.vesselRecordsServerSideResponse = res;
+                if(this.vesselRecordsServerSideResponse.success == true)
+                {
+                    this.vesselRecordsServerSideResponseData = this.vesselRecordsServerSideResponse.data;
+                }
+            });
+        }catch (err){}
+    }
+    // Vessel Records Sever Side End
+
+    // On Vessel Change Start
+    onChangeVessel(event)
+    {
+        this.tempVesselId =  event.value;
+        this.vesselModal = !this.vesselModal;
+    }
+    // On Vessel Change End
+
+    // Fetch Vessel Data Start
+    fetchVesselData()
+    {
+        var filterCondition = {};
+            filterCondition["id"] = this.vesselId;
+        try
+        {
+            this._userService.fetchVesselData(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.vesselDataResponse = res;
+                if(this.vesselDataResponse.success == true)
+                {
+                    this.vesselName = '';
+                    this.imoNumber = '';
+                    this.vesselFlag = '';
+                    this.vesselYear = '';
+                    this.vesselDescription = '';
+                    this.vesselDataResponseArray = this.vesselDataResponse.data[0];
+                    if(this.vesselDataResponse.data[0] != '' && this.vesselDataResponse.data[0] != null && this.vesselDataResponse.data[0] != undefined)
+                    {
+                        this.vesselName = this.vesselDataResponse.data[0].vessel_name;
+                        this.imoNumber = this.vesselDataResponse.data[0].imo;
+                        this.vesselFlag = this.vesselDataResponse.data[0].flageName;
+                        this.vesselYear = this.vesselDataResponse.data[0].built_year;
+                        this.vesselDescription = this.vesselDataResponse.data[0].vessel_info;
+                    }
+                }
+            });
+        }catch (err){}
+    }
+    // Fetch Vessel Data End
+
+    // Clause Category Records Server Side Start
+    clauseCategoryRecordsServerSide()
+    {
+        var ConditionData = {};
+            ConditionData['cpFormId'] = this.formId;
+            ConditionData['checkedClauseCategory'] = this.checkedClauseCategory;
+        try
+        {
+            this._userService.clauseCategoryRecordsServerSide(ConditionData).pipe(first()).subscribe((res) =>
+            {
+                this.clauseCategoryRecordResponse = res;
+                if(this.clauseCategoryRecordResponse.success == true)
+                {
+                    this.clauseCategoryRecordResponseData = this.clauseCategoryRecordResponse.data;
+                    this.termsReviewRecords();
+                }
+            });
+        }catch (err){}
+    }
+    // Clause Category Records Server Side End
+    
+    // Show Owner Change Modal Start
+    showOwnerChangeModal(): void
+    {
+        this.ownerModal = !this.ownerModal;
+    }
+    // Show Owner Change Modal End
+ 
+    // Hide Owner Change Modal Start
+    hideOwnerChangeModal(): void
+    {
+        this.ownerModal = !this.ownerModal;
+        this.ownerDropDownForm = this._formBuilder.group(
+        {
+            ownerId: ['', Validators.required]
+        });
+    }
+    // Hide Owner Change Modal End
+
+    // Change Owner Start
+    changeOwner()
+    {
+        this.ownerModal = !this.ownerModal;
+        this.ownerId = this.tempOwnerId;
+        for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+        {
+            if(this.ownerId == this.ownerRecordsServerSideResponseData[index].id)
+            {
+                this.ownerName = this.ownerRecordsServerSideResponseData[index].username;
+                this.ownerEmail = this.ownerRecordsServerSideResponseData[index].email;
+            }
+        }
+        var updateData = {};
+            updateData['chartererId'] = JSON.parse(localStorage.getItem('userId'));
+            updateData['ownerId'] = this.ownerId;
+            updateData['brokerId'] = this.brokerId;
+            updateData['tradingId'] = this.tradingId;
+            updateData['ownerEmail'] = this.ownerEmail;
+            updateData['ownerName'] = this.ownerName;
+            updateData['notification'] = 'You are invited for trade';
+            updateData['createdBy'] = JSON.parse(localStorage.getItem('userId'));
+            updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
+        try
+        {
+            this._userService.chartererInviteOwnerForTrade(updateData).pipe(first()).subscribe((res) =>
+            {
+                this.ownerDropdownView = false;
+                this.ownerNameView = true;
+                this.vesselRecordsServerSide();
+                this.vesselDropdownView = true;
+                this.alertService.success('Owner Updated Successfully', 'Success');
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Change Owner End
+
+    // Show Vessel Change Modal Start
+    showVesselChangeModal(): void
+    {
+        this.vesselModal = !this.vesselModal;
+    }
+    // Show Vessel Change Modal End
+ 
+    // Hide Vessel Change Modal Start
+    hideVesselChangeModal(): void
+    {
+        this.vesselModal = !this.vesselModal;
+        this.vesselDropDownForm = this._formBuilder.group(
+        {
+            vesselId: ['', Validators.required]
+        });
+    }
+    // Hide Vessel Change Modal End
+
+    // Change Vessel Start
+    changeVessel()
+    {
+        this.vesselModal = !this.vesselModal;
+        this.vesselId = this.tempVesselId;
+        for(let index = 0; index < this.vesselRecordsServerSideResponseData.length; index++)
+        {
+            if(this.vesselId == this.vesselRecordsServerSideResponseData[index].id)
+            {
+                this.vesselName = this.vesselRecordsServerSideResponseData[index].username;
+            }
+        }
+        var updateData = {};
+            updateData['vesselId'] = this.vesselId;
+            updateData['id'] = this.tradingId;
+            updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
+        try
+        {
+            this._userService.tradingDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
+            {
+                this.vesselDropdownView = false;
+                this.vesselNameView = true;
+                this.fetchVesselData();
+                this.alertService.success('Vessel Updated Successfully', 'Success');
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Change Vessel End
+
+    // OLD CODES START
 
     ChartereRecords(): void
     {
@@ -595,12 +983,11 @@ export class DrawCpClausesComponent implements OnInit
                             this.chartererDataResponseArray.push(checkedCheckBoxArray[index]);
                         }
                     }
-                    console.log(this.chartererDataResponseArray,'Charterer Records');
 
                 }
-            }, err => { console.log(err); });
+            }, err => {  });
         } catch (err)
-        { console.log(err); }
+        {  }
     }
 
     updateCharterer(event)
@@ -615,12 +1002,6 @@ export class DrawCpClausesComponent implements OnInit
             }
         }
 
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        this.drawId = filter.drawId;
-        this.tradingId = filter.tradingId;
-        this.isTrading = filter.isTrading;
-        this.isStdBid = filter.isStdBid;
-
         if(this.isTrading == '2')
         {
             
@@ -632,9 +1013,9 @@ export class DrawCpClausesComponent implements OnInit
                 this._userService.drawDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
                 {
 
-                }, err => { console.log(err); });
+                }, err => {  });
             } catch (err)
-            { console.log(err); }
+            { }
 
             var updateData = {};
                 updateData['fromUserId'] = localStorage.getItem('userId');
@@ -651,9 +1032,9 @@ export class DrawCpClausesComponent implements OnInit
                     this.ChartereRecords();
                     this.isChartererAccepted = 'P';
 
-                }, err => { console.log(err); });
+                }, err => {  });
             } catch (err)
-            { console.log(err); }
+            {  }
             
         } else {
 
@@ -665,9 +1046,9 @@ export class DrawCpClausesComponent implements OnInit
                 this._userService.drawDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
                 {
 
-                }, err => { console.log(err); });
+                }, err => {  });
             } catch (err)
-            { console.log(err); }
+            {  }
 
             var updateData = {};
                 updateData['fromUserId'] = localStorage.getItem('userId');
@@ -684,9 +1065,9 @@ export class DrawCpClausesComponent implements OnInit
                     this.ChartereRecords();
                     this.isChartererAccepted = 'P';
 
-                }, err => { console.log(err); });
+                }, err => {  });
             } catch (err)
-            { console.log(err); }
+            {  }
 
         }
     }
@@ -694,22 +1075,22 @@ export class DrawCpClausesComponent implements OnInit
 
     timePickerTimeTest(event)
     {
-        console.log(event);
-        console.log(this.timePickerValue);
+        
+        
         var slides = document.getElementsByClassName('testimepicker');
-        console.log(slides);
+        
         var updatedStringValuesArray = [];
         if(slides.length > 0)
         {
             for(var i = 0; i < slides.length; i++)
             {  
                 var valueOfUpdatedSting = slides[i];
-                console.log(slides[i]);
-                console.log(valueOfUpdatedSting['value']);
+                
+                
                 updatedStringValuesArray.push(valueOfUpdatedSting['value']);
             }
         }
-        console.log(updatedStringValuesArray);
+        
     }
   
     // Preamble Screen Data
@@ -735,7 +1116,14 @@ export class DrawCpClausesComponent implements OnInit
                         this.ChartereRecords();
                     }
 
-                    console.log(this.isChartererAccepted);
+                    this.ownerDropdownView = false;
+                    this.ownerNameView = true;
+
+                    this.vesselDropdownView = false;
+                    this.vesselNameView = true;
+
+                    this.ownerName = this.drawResponseInformation.data[0].ownerName;
+                    // this.vesselName = this.drawResponseInformation.data[0].vesselName;
 
                     this.drawResponseInformationData['cpCity'] = (this.drawResponseInformationData['cpCity'] == null && this.drawResponseInformationData['cpCity'] == '') ? '' : this.drawResponseInformationData['cpCity'];
 
@@ -748,9 +1136,9 @@ export class DrawCpClausesComponent implements OnInit
                     var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
                     var cityID = (cpCity != '') ? cpCity : '0';
 
-                    console.log(current_date);
+                    
 
-                    this.OwnersFirstCounterForm = this._formBuilder.group
+                    this.clauseForm = this._formBuilder.group
                     (
                         {
                             cpTime: [current_time, Validators.required],
@@ -851,62 +1239,33 @@ export class DrawCpClausesComponent implements OnInit
 
                     this.fetchVesselData();
 
+                    // this.clauseCategoryRecordsServerSide();
                     // this.clauseCategoryRecordsServerSideRecap();
                 }
             });
         }catch (err){}
     }
 
-    // Fetch Vessel Data
-    fetchVesselData()
-    {
-        var filterCondition = {};
-            filterCondition["id"] = this.vesselId;
-        try
-        {
-            this._userService.fetchVesselData(filterCondition).pipe(first()).subscribe((res) =>
-            {
-                this.vesselDataResponse = res;
-                if(this.vesselDataResponse.success == true)
-                {
-                    this.vesselDataResponseArray = this.vesselDataResponse.data[0];
-                    if(this.vesselDataResponse.data[0] != '' && this.vesselDataResponse.data[0] != null && this.vesselDataResponse.data[0] != undefined)
-                    {
-                    this.vesselName = this.vesselDataResponse.data[0].vessel_name;
-                    this.imoNumber = this.vesselDataResponse.data[0].imo;
-                    this.vesselFlag = this.vesselDataResponse.data[0].flageName;
-                    this.vesselYear = this.vesselDataResponse.data[0].built_year;
-                    this.vesselDescription = this.vesselDataResponse.data[0].vessel_info;
-                    } else {
-                    this.vesselName = '';
-                    this.imoNumber = '';
-                    this.vesselFlag = '';
-                    this.vesselYear = '';
-                    this.vesselDescription = '';
-                    }
-                }
-            });
-        }catch (err){}
-    }
+    
 
     clickMeFunction()
     {
-        console.log('HERE In CLICK ME Function');
+        
     }
 
     dateMonthYearFormatFunction(date)
     {
         var dateInfo = moment(date).format("Do");
-        console.log(dateInfo," Date Info ");
+        
 
         var monthInfo = moment(date).format("MMM");
-        console.log(monthInfo," Month Info ");
+        
 
         var yearInfo = moment(date).format("YYYY");
-        console.log(yearInfo," Year Info ");
+        
 
         var string = 'this '+dateInfo+' of '+ monthInfo+','+yearInfo;
-        console.log(string);
+        
 
         return string;
     }
@@ -921,7 +1280,7 @@ export class DrawCpClausesComponent implements OnInit
             customInput1: this.customInput1,
             customInput2: this.customInput2
         };
-        console.log(req);
+        
         const header = new HttpHeaders();
         header.append('Content-Type', 'application/json');
         const headerOptions = { headers: header }
@@ -941,7 +1300,7 @@ export class DrawCpClausesComponent implements OnInit
             customInput1: this.customInput1,
             customInput2: this.customInput2
         };
-        console.log(req);
+        
         const header = new HttpHeaders();
         header.append('Content-Type', 'application/json');
         const headerOptions = { headers: header }
@@ -951,29 +1310,7 @@ export class DrawCpClausesComponent implements OnInit
         });
     }
 
-     // CP Form Datga
-     cpFormData()
-     {
-         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-         this.formId = filter.formId;
- 
-         var filterCondition = {};
-             filterCondition['id'] = this.formId;
-         try
-         {
-             this._userService.cpFormData(filterCondition).pipe(first()).subscribe((res) =>
-             {
-                 this.cpFormResponse = res;
-                 if(this.cpFormResponse.success == true)
-                 {
-                     this.cpFormDataResponseData = this.cpFormResponse.data;
-                     console.log(this.cpFormDataResponseData);
-                     this.cpFormName = this.cpFormDataResponseData[0].cpformName;
-                     console.log(this.cpFormName);
-                 }
-             });
-         }catch (err){}
-    }
+     
 
     // Fetch Draw Data
     fetchDrawData()
@@ -1000,9 +1337,9 @@ export class DrawCpClausesComponent implements OnInit
                     var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
                     var cityID = (cpCity != '') ? cpCity : '0';
 
-                    console.log(current_date);
+                    
 
-                    this.OwnersFirstCounterForm = this._formBuilder.group
+                    this.clauseForm = this._formBuilder.group
                     (
                         {
                             cpTime: [current_time, Validators.required],
@@ -1017,7 +1354,7 @@ export class DrawCpClausesComponent implements OnInit
 
                     var checked_clauses = this.drawResponseInformation.data[0].checked_clauses;
 
-                    console.log(checked_clauses);
+                    
 
                     if(checked_clauses != '' && checked_clauses != null)
                     {
@@ -1033,7 +1370,7 @@ export class DrawCpClausesComponent implements OnInit
                         this.checkedClauseCategory.push(Number(checkedCheckBoxArray[index]));
                     }
 
-                    console.log(this.checkedClauseCategory," Main Checked CLause Categogry CHeckBox  ");
+                    
 
                     localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
 
@@ -1079,25 +1416,25 @@ export class DrawCpClausesComponent implements OnInit
         {
             this._userService.fetchTradingData(filterCondition).pipe(first()).subscribe((res) =>
             {
-                this.tradingResponseInformation = res;
-                if(this.tradingResponseInformation.success == true)
+                this.tradingRecordsServerSideResponse = res;
+                if(this.tradingRecordsServerSideResponse.success == true)
                 {
-                    this.tradingResponseInformationData = this.tradingResponseInformation.data[0];
+                    this.tradingRecordsServerSideResponseData = this.tradingRecordsServerSideResponse.data[0];
 
-                    this.tradingResponseInformationData['cpCity'] = (this.tradingResponseInformationData['cpCity'] == null && this.tradingResponseInformationData['cpCity'] == '') ? '' : this.tradingResponseInformationData['cpCity'];
+                    this.tradingRecordsServerSideResponseData['cpCity'] = (this.tradingRecordsServerSideResponseData['cpCity'] == null && this.tradingRecordsServerSideResponseData['cpCity'] == '') ? '' : this.tradingRecordsServerSideResponseData['cpCity'];
 
-                    var cpTime = this.tradingResponseInformationData['cpTime'];
-                    var cpDate = this.tradingResponseInformationData['cpDate'];
-                    var cpCity = this.tradingResponseInformationData['cpCity'];
-                    var cityName = this.tradingResponseInformationData['cityName'];
+                    var cpTime = this.tradingRecordsServerSideResponseData['cpTime'];
+                    var cpDate = this.tradingRecordsServerSideResponseData['cpDate'];
+                    var cpCity = this.tradingRecordsServerSideResponseData['cpCity'];
+                    var cityName = this.tradingRecordsServerSideResponseData['cityName'];
 
                     var current_date = (cpDate != '') ? cpDate : moment(new Date()).format("YYYY-MM-DD")
                     var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
                     var cityID = (cpCity != '') ? cpCity : '0';
 
-                    console.log(current_date);
+                    
 
-                    this.OwnersFirstCounterForm = this._formBuilder.group
+                    this.clauseForm = this._formBuilder.group
                     (
                         {
                             cpTime: [current_time, Validators.required],
@@ -1110,7 +1447,7 @@ export class DrawCpClausesComponent implements OnInit
 
                     this.checkedClauseCategoryRecap = [];
 
-                    var checked_clauses = this.tradingResponseInformation.data[0].checked_clauses;
+                    var checked_clauses = this.tradingRecordsServerSideResponse.data[0].checked_clauses;
                     if(checked_clauses != '' && checked_clauses != null)
                     {
                         this.checkedClauseCategoryRecap = checked_clauses.split(',');
@@ -1147,13 +1484,13 @@ export class DrawCpClausesComponent implements OnInit
 
                     localStorage.setItem('checkedClauseCategoryRecap', JSON.stringify(this.checkedClauseCategoryRecap));
 
-                    this.ownerName = this.tradingResponseInformation.data[0].ownerName;
-                    this.chartererName = this.tradingResponseInformation.data[0].chartererName;
-                    this.brokerName = this.tradingResponseInformation.data[0].brokerName;
+                    this.ownerName = this.tradingRecordsServerSideResponse.data[0].ownerName;
+                    this.chartererName = this.tradingRecordsServerSideResponse.data[0].chartererName;
+                    this.brokerName = this.tradingRecordsServerSideResponse.data[0].brokerName;
 
-                    var cpTime = this.tradingResponseInformationData['cpTime'];
-                    var cpDate = this.tradingResponseInformationData['cpDate'];
-                    var cityName = this.tradingResponseInformationData['cityName'];
+                    var cpTime = this.tradingRecordsServerSideResponseData['cpTime'];
+                    var cpDate = this.tradingRecordsServerSideResponseData['cpDate'];
+                    var cityName = this.tradingRecordsServerSideResponseData['cityName'];
 
                     current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
                     var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
@@ -1165,20 +1502,20 @@ export class DrawCpClausesComponent implements OnInit
                     this.cpDate = current_date;
                     this.cpTime = cpTime;
 
-                    this.ownerName = this.tradingResponseInformation.data[0].ownerName;
-                    this.chartererName = this.tradingResponseInformation.data[0].chartererName;
-                    this.brokerName = this.tradingResponseInformation.data[0].brokerName;
+                    this.ownerName = this.tradingRecordsServerSideResponse.data[0].ownerName;
+                    this.chartererName = this.tradingRecordsServerSideResponse.data[0].chartererName;
+                    this.brokerName = this.tradingRecordsServerSideResponse.data[0].brokerName;
 
-                    this.vesselId = this.tradingResponseInformation.data[0].vesselId;
+                    this.vesselId = this.tradingRecordsServerSideResponse.data[0].vesselId;
 
                     this.dateMonthYearString = this.dateMonthYearFormatFunction(this.cpDate);
 
-                    this.metricTonValue = this.tradingResponseInformation.data[0].metricTonValue;
-                    this.customInput1 = this.tradingResponseInformation.data[0].customInput1;
-                    this.customInput2 = this.tradingResponseInformation.data[0].customInput2;
+                    this.metricTonValue = this.tradingRecordsServerSideResponse.data[0].metricTonValue;
+                    this.customInput1 = this.tradingRecordsServerSideResponse.data[0].customInput1;
+                    this.customInput2 = this.tradingRecordsServerSideResponse.data[0].customInput2;
 
-                    this.currentSignature1 = this.tradingResponseInformation.data[0].signature1;
-                    this.currentSignature2 = this.tradingResponseInformation.data[0].signature2;
+                    this.currentSignature1 = this.tradingRecordsServerSideResponse.data[0].signature1;
+                    this.currentSignature2 = this.tradingRecordsServerSideResponse.data[0].signature2;
 
                     var signature1 = this.currentSignature1;
                     if(signature1 != '' && signature1 != null)
@@ -1196,65 +1533,65 @@ export class DrawCpClausesComponent implements OnInit
                         this.signature2DemoView = true;
                     }
 
-                    console.log(this.tradingResponseInformation.data[0].cpCity);
-                    console.log(this.tradingResponseInformation.data[0].lifted_charter_party_place);
-                    console.log(this.tradingResponseInformation.data[0].lifted_owner_type);
+                    
+                    
+                    
 
                     this.stdBidForm = this._formBuilder.group
                     (
                         {
                             cpTimeStdBid: [this.cpTime, Validators.required],
-                            cityIdStdBid: [this.tradingResponseInformation.data[0].cpCity, Validators.required],
+                            cityIdStdBid: [this.tradingRecordsServerSideResponse.data[0].cpCity, Validators.required],
                             cpDateStdBid: [this.cpDate, Validators.required],
-                            fixture_subject: [this.tradingResponseInformation.data[0].fixture_subject, ''],
-                            lifted_by: [this.tradingResponseInformation.data[0].lifted_by, ''],
-                            lifted_time: [this.tradingResponseInformation.data[0].lifted_time, ''],
-                            lifted_date: [this.tradingResponseInformation.data[0].lifted_date, ''],
-                            lifted_city: [this.tradingResponseInformation.data[0].lifted_city, ''],
-                            lifted_charter_party_place: [this.tradingResponseInformation.data[0].lifted_charter_party_place, ''],
-                            lifted_charter_fully_style: [this.tradingResponseInformation.data[0].lifted_charter_fully_style, ''],
-                            lifted_charter_domicile: [this.tradingResponseInformation.data[0].lifted_charter_domicile, ''],
-                            lifted_owner_fully_style: [this.tradingResponseInformation.data[0].lifted_owner_fully_style, ''],
-                            lifted_owner_domicile: [this.tradingResponseInformation.data[0].lifted_owner_domicile, ''],
-                            lifted_owner_type: [this.tradingResponseInformation.data[0].lifted_owner_type, ''],
-                            lifted_vessel_name: [this.tradingResponseInformation.data[0].lifted_vessel_name, ''],
-                            lifted_vessel_imo: [this.tradingResponseInformation.data[0].lifted_vessel_imo, ''],
-                            lifted_vessel_flag: [this.tradingResponseInformation.data[0].lifted_vessel_flag, ''],
-                            lifted_vessel_year_built: [this.tradingResponseInformation.data[0].lifted_vessel_year_built, ''],
-                            lifted_vessel_dwat_metric_tons : [this.tradingResponseInformation.data[0].lifted_vessel_dwat_metric_tons, ''],
-                            lifted_vessel_draft_on_marks : [this.tradingResponseInformation.data[0].lifted_vessel_draft_on_marks, ''],
-                            lifted_vessel_loa : [this.tradingResponseInformation.data[0].lifted_vessel_loa, ''],
-                            lifted_vessel_beam : [this.tradingResponseInformation.data[0].lifted_vessel_beam, ''],
-                            lifted_vessel_holds : [this.tradingResponseInformation.data[0].lifted_vessel_holds, ''],
-                            lifted_vessel_hatches : [this.tradingResponseInformation.data[0].lifted_vessel_hatches, ''],
-                            lifted_vessel_gear : [this.tradingResponseInformation.data[0].lifted_vessel_gear, ''],
-                            lifted_vessel_swl : [this.tradingResponseInformation.data[0].lifted_vessel_swl, ''],
+                            fixture_subject: [this.tradingRecordsServerSideResponse.data[0].fixture_subject, ''],
+                            lifted_by: [this.tradingRecordsServerSideResponse.data[0].lifted_by, ''],
+                            lifted_time: [this.tradingRecordsServerSideResponse.data[0].lifted_time, ''],
+                            lifted_date: [this.tradingRecordsServerSideResponse.data[0].lifted_date, ''],
+                            lifted_city: [this.tradingRecordsServerSideResponse.data[0].lifted_city, ''],
+                            lifted_charter_party_place: [this.tradingRecordsServerSideResponse.data[0].lifted_charter_party_place, ''],
+                            lifted_charter_fully_style: [this.tradingRecordsServerSideResponse.data[0].lifted_charter_fully_style, ''],
+                            lifted_charter_domicile: [this.tradingRecordsServerSideResponse.data[0].lifted_charter_domicile, ''],
+                            lifted_owner_fully_style: [this.tradingRecordsServerSideResponse.data[0].lifted_owner_fully_style, ''],
+                            lifted_owner_domicile: [this.tradingRecordsServerSideResponse.data[0].lifted_owner_domicile, ''],
+                            lifted_owner_type: [this.tradingRecordsServerSideResponse.data[0].lifted_owner_type, ''],
+                            lifted_vessel_name: [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_name, ''],
+                            lifted_vessel_imo: [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_imo, ''],
+                            lifted_vessel_flag: [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_flag, ''],
+                            lifted_vessel_year_built: [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_year_built, ''],
+                            lifted_vessel_dwat_metric_tons : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_dwat_metric_tons, ''],
+                            lifted_vessel_draft_on_marks : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_draft_on_marks, ''],
+                            lifted_vessel_loa : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_loa, ''],
+                            lifted_vessel_beam : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_beam, ''],
+                            lifted_vessel_holds : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_holds, ''],
+                            lifted_vessel_hatches : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_hatches, ''],
+                            lifted_vessel_gear : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_gear, ''],
+                            lifted_vessel_swl : [this.tradingRecordsServerSideResponse.data[0].lifted_vessel_swl, ''],
                         }
                     );
 
-                    this.fixture_subject= this.tradingResponseInformation.data[0].fixture_subject;
-                    this.lifted_by= this.tradingResponseInformation.data[0].lifted_by;
-                    this.lifted_time= this.tradingResponseInformation.data[0].lifted_time;
-                    this.lifted_date= this.tradingResponseInformation.data[0].lifted_date;
-                    this.lifted_city= this.tradingResponseInformation.data[0].lifted_city;
-                    this.lifted_charter_party_place= this.tradingResponseInformation.data[0].lifted_charter_party_place;
-                    this.lifted_charter_fully_style= this.tradingResponseInformation.data[0].lifted_charter_fully_style;
-                    this.lifted_charter_domicile= this.tradingResponseInformation.data[0].lifted_charter_domicile;
-                    this.lifted_owner_fully_style= this.tradingResponseInformation.data[0].lifted_owner_fully_style;
-                    this.lifted_owner_domicile= this.tradingResponseInformation.data[0].lifted_owner_domicile;
-                    this.lifted_owner_type= this.tradingResponseInformation.data[0].lifted_owner_type;
-                    this.lifted_vessel_name= this.tradingResponseInformation.data[0].lifted_vessel_name;
-                    this.lifted_vessel_imo= this.tradingResponseInformation.data[0].lifted_vessel_imo;
-                    this.lifted_vessel_flag= this.tradingResponseInformation.data[0].lifted_vessel_flag;
-                    this.lifted_vessel_year_built= this.tradingResponseInformation.data[0].lifted_vessel_year_built;
-                    this.lifted_vessel_dwat_metric_tons = this.tradingResponseInformation.data[0].lifted_vessel_dwat_metric_tons;
-                    this.lifted_vessel_draft_on_marks = this.tradingResponseInformation.data[0].lifted_vessel_draft_on_marks;
-                    this.lifted_vessel_loa = this.tradingResponseInformation.data[0].lifted_vessel_loa;
-                    this.lifted_vessel_beam = this.tradingResponseInformation.data[0].lifted_vessel_beam;
-                    this.lifted_vessel_holds = this.tradingResponseInformation.data[0].lifted_vessel_holds;
-                    this.lifted_vessel_hatches = this.tradingResponseInformation.data[0].lifted_vessel_hatches;
-                    this.lifted_vessel_gear = this.tradingResponseInformation.data[0].lifted_vessel_gear;
-                    this.lifted_vessel_swl = this.tradingResponseInformation.data[0].lifted_vessel_swl;
+                    this.fixture_subject= this.tradingRecordsServerSideResponse.data[0].fixture_subject;
+                    this.lifted_by= this.tradingRecordsServerSideResponse.data[0].lifted_by;
+                    this.lifted_time= this.tradingRecordsServerSideResponse.data[0].lifted_time;
+                    this.lifted_date= this.tradingRecordsServerSideResponse.data[0].lifted_date;
+                    this.lifted_city= this.tradingRecordsServerSideResponse.data[0].lifted_city;
+                    this.lifted_charter_party_place= this.tradingRecordsServerSideResponse.data[0].lifted_charter_party_place;
+                    this.lifted_charter_fully_style= this.tradingRecordsServerSideResponse.data[0].lifted_charter_fully_style;
+                    this.lifted_charter_domicile= this.tradingRecordsServerSideResponse.data[0].lifted_charter_domicile;
+                    this.lifted_owner_fully_style= this.tradingRecordsServerSideResponse.data[0].lifted_owner_fully_style;
+                    this.lifted_owner_domicile= this.tradingRecordsServerSideResponse.data[0].lifted_owner_domicile;
+                    this.lifted_owner_type= this.tradingRecordsServerSideResponse.data[0].lifted_owner_type;
+                    this.lifted_vessel_name= this.tradingRecordsServerSideResponse.data[0].lifted_vessel_name;
+                    this.lifted_vessel_imo= this.tradingRecordsServerSideResponse.data[0].lifted_vessel_imo;
+                    this.lifted_vessel_flag= this.tradingRecordsServerSideResponse.data[0].lifted_vessel_flag;
+                    this.lifted_vessel_year_built= this.tradingRecordsServerSideResponse.data[0].lifted_vessel_year_built;
+                    this.lifted_vessel_dwat_metric_tons = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_dwat_metric_tons;
+                    this.lifted_vessel_draft_on_marks = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_draft_on_marks;
+                    this.lifted_vessel_loa = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_loa;
+                    this.lifted_vessel_beam = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_beam;
+                    this.lifted_vessel_holds = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_holds;
+                    this.lifted_vessel_hatches = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_hatches;
+                    this.lifted_vessel_gear = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_gear;
+                    this.lifted_vessel_swl = this.tradingRecordsServerSideResponse.data[0].lifted_vessel_swl;
 
                     this.lifted_date = moment(this.lifted_date).format("YYYY-MM-DD");
 
@@ -1275,7 +1612,7 @@ export class DrawCpClausesComponent implements OnInit
             filterCondition['cpFormId'] = filter.formId;
             filterCondition['checkedClauseCategory'] = this.checkedClauseCategoryRecap;
         
-            console.log(filterCondition,"Clause Category Server Side Record");
+            
         try
         {
             this._userService.clauseCategoryRecordsServerSide(filterCondition).pipe(first()).subscribe((res) =>
@@ -1289,36 +1626,14 @@ export class DrawCpClausesComponent implements OnInit
                     {
                         this.checkedClauseCategoryRecap.push(Number(this.clauseCategoryRecordResponseData[index].id));
                     }
-                    console.log(this.checkedClauseCategoryRecap);
+                    
                     this.termsReviewRecordsRecap();
                 }
             });
         }catch (err){}
     }
 
-    // Clause Category Records Server Side
-    clauseCategoryRecordsServerSide()
-    {
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-
-        var filterCondition = {};
-            filterCondition['cpFormId'] = filter.formId;
-            filterCondition['checkedClauseCategory'] = this.checkedClauseCategory;
-        
-        try
-        {
-            this._userService.clauseCategoryRecordsServerSide(filterCondition).pipe(first()).subscribe((res) =>
-            {
-                this.clauseCategoryRecordResponse = res;
-                if(this.clauseCategoryRecordResponse.success == true)
-                {
-                    this.clauseCategoryRecordResponseData = this.clauseCategoryRecordResponse.data;
-                    
-                    this.termsReviewRecords();
-                }
-            });
-        }catch (err){}
-    }
+   
 
     // First Screen View
     firstScreenView()
@@ -1494,13 +1809,7 @@ export class DrawCpClausesComponent implements OnInit
     // Third Screen View
     thirdScreenView()
     {
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        console.log(filter);
-        this.drawId = filter.drawId;
-        this.formId = filter.formId;
-        this.tradingId = filter.tradingId;
-        this.isTrading = filter.isTrading;
-        if(filter.isTrading == '2')
+        if(this.isTrading == '2')
         {
             var checkedClauseCategory = this.checkedClauseCategory.join();
             const req =
@@ -1527,7 +1836,7 @@ export class DrawCpClausesComponent implements OnInit
             this.firstScreenStdBidBroker = false;
             this.secondScreen = false;
             this.thirdScreen = true;
-            // console.log('Here In Condition');
+            // 
             // this.thirdScreenView();
             // this.fetchDrawData();
             // this.fetchTradingData();
@@ -1619,7 +1928,7 @@ export class DrawCpClausesComponent implements OnInit
         }
     }
 
-    get f() { return this.OwnersFirstCounterForm.controls; }
+    
 
     // Check / Uncheck All Of Clause Terms Of Clause Category
     checkUncheckAllForClauseTerms(ev,clauseCategoryID)
@@ -1693,7 +2002,7 @@ export class DrawCpClausesComponent implements OnInit
             }
         }
 
-        console.log(this.checkedClauseCategory);
+        
 
         if(ev.checked == true)
         {
@@ -1716,7 +2025,7 @@ export class DrawCpClausesComponent implements OnInit
             this.thirdScreenButton = true;
         }
 
-        console.log(this.checkedClauseCategory);
+        
 
         var checkedCheckBoxArray = this.checkedClauseCategory;
         var startLength = 0;
@@ -1989,37 +2298,13 @@ export class DrawCpClausesComponent implements OnInit
         return this.convertedWord;
     }
 
-    // Fetch City Records Start
-    cityRecords(): void
-    {
-        try {
-            this._userService.CityRecords()
-                .pipe(first())
-                .subscribe((res) =>
-                {
-                    this.cityManagementRes = res;
-                    if (this.cityManagementRes.success === true)
-                    {
-                        this.cityManagementData = this.cityManagementRes.data;
-                    }
-                },
-                err => {
-                    this.alertService.error(err, 'Error');
-                });
-        } catch (err) {}
-    }
-
-    changeCity(event): void
-    {
-        this.cityId = event.target.value;
-    }
-    // Fetch City Records End
+    
 
     // Main Array
     termsReviewRecordsRecap(): void
     {
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        console.log(filter);
+        
         var drawId = filter.drawId;
         var tradingId = filter.tradingId;
         var formID = filter.formId;
@@ -2047,7 +2332,7 @@ export class DrawCpClausesComponent implements OnInit
             clauseCategoryFilterCondition["commonClauses"] = [];
             clauseCategoryFilterCondition["commonClausesCustomArray"] = [];
             clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategoryRecap;
-            console.log(clauseCategoryFilterCondition,"Review Record mainClauseScreenDataRecords");
+            
             try {
                 this._userService.mainClauseScreenDataRecords(clauseCategoryFilterCondition).pipe(first()).subscribe((res) => {
                     this.termsReviewRecordsResponseRecap = res;
@@ -2068,7 +2353,7 @@ export class DrawCpClausesComponent implements OnInit
                         
                         this.customClauseDataRecords();
 
-						console.log(this.termsReviewRecordsDataRecap);
+						
                     }
                 },
                     err => {
@@ -2078,9 +2363,9 @@ export class DrawCpClausesComponent implements OnInit
             this.drawProgressUpadte();
         } else {
             var clauseCategoryFilterCondition = {};
-            clauseCategoryFilterCondition["cpFormId"] = formID;
-            clauseCategoryFilterCondition["tradingId"] = tradingId;
-            clauseCategoryFilterCondition["companyId"] = companyId;
+            clauseCategoryFilterCondition["cpFormId"] = this.formId;
+            clauseCategoryFilterCondition["tradingId"] = this.tradingId;
+            clauseCategoryFilterCondition["companyId"] = this.companyId;
             clauseCategoryFilterCondition["commonClauses"] = [];
             clauseCategoryFilterCondition["commonClausesCustomArray"] = [];
             clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategoryRecap;
@@ -2108,10 +2393,7 @@ export class DrawCpClausesComponent implements OnInit
                         this.alertService.error(err, 'Error');
                     });
             } catch (err) { }
-
-            this.tradingProgressUpdate();
         }
-        
     }
 
     dynamicDatePickerChange()
@@ -2123,30 +2405,12 @@ export class DrawCpClausesComponent implements OnInit
             var valueInfo = slides[i];
             this.dynamicStringUpdateArray.push(valueInfo['value']);
         }
-        console.log(this.dynamicStringUpdateArray);
+        
     }
 
       // Main Data Record Fetch Start
       termsReviewRecords(): void
       {
-          var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-          
-          var drawId = filter.drawId;
-          var tradingId = filter.tradingId;
-          var formID = filter.formId;
-          var chartererId = filter.chartererId;
-          var companyId = filter.companyId;
-          var isTrading = filter.isTrading;
-  
-          this.tradingId = tradingId;
-          this.drawId = drawId;
-          this.formId = formID;
-          this.chartererId = chartererId;
-  
-          localStorage.setItem('tradingId', tradingId);
-          localStorage.setItem('drawId', drawId);
-          localStorage.setItem('cpFormId', formID);
-  
           this.commonClausesArray = [];
           localStorage.setItem('commonClausesArray', JSON.stringify(this.commonClausesArray));
   
@@ -2156,10 +2420,10 @@ export class DrawCpClausesComponent implements OnInit
           this.commonClausesCustomClauseTermArray = [];
           localStorage.setItem('commonClausesCustomClauseTermArray', JSON.stringify(this.commonClausesCustomClauseTermArray));
   
-          if (isTrading == '2')
+          if (this.isTrading == '2')
           {
               var drawCondition = {};
-                  drawCondition["dcm.id"] = drawId;
+                  drawCondition["dcm.id"] = this.drawId;
   
               try
               {
@@ -2173,19 +2437,11 @@ export class DrawCpClausesComponent implements OnInit
                           var cpTime = this.drawResponse.data[0].cpTime;
                           var cpCity = this.drawResponse.data[0].cpCity;
   
-                          console.log(cpDate);
-                          console.log(cpTime);
-                          console.log(cpCity);
-  
                           var current_date = (cpDate != '' && cpDate != null) ? cpDate : moment(new Date()).format("YYYY-MM-DD")
                           var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
                           var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
   
-                          console.log(current_date);
-                          console.log(current_time);
-                          console.log(cityID);
-  
-                          this.OwnersFirstCounterForm = this._formBuilder.group
+                          this.clauseForm = this._formBuilder.group
                           (
                               {
                                   cpTime: [current_time, Validators.required],
@@ -2272,7 +2528,7 @@ export class DrawCpClausesComponent implements OnInit
                               this.checkedClauseCategory.push(Number(customArray3[subIndex]));
                           }
   
-                          console.log(this.checkedClauseCategory);
+                          
                           
                           var customArray4 = this.checkedClauseCategory;
                           var startLength = 0;
@@ -2295,9 +2551,9 @@ export class DrawCpClausesComponent implements OnInit
                           this.termsReviewRecordsData = [];
   
                           var clauseCategoryFilterCondition = {};
-                              clauseCategoryFilterCondition["cpFormId"] = formID;
-                              clauseCategoryFilterCondition["drawId"] = drawId;
-                              clauseCategoryFilterCondition["companyId"] = companyId;
+                              clauseCategoryFilterCondition["cpFormId"] = this.formId;
+                              clauseCategoryFilterCondition["drawId"] = this.drawId;
+                              clauseCategoryFilterCondition["companyId"] = this.companyId;
                               clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
                               clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
                               clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
@@ -2315,8 +2571,11 @@ export class DrawCpClausesComponent implements OnInit
                                       this.termsReviewRecordsData = this.termsReviewRecordsResponse.data;
   
                                       var totalCount = 0;
+
+                                      
                                       for (let index = 0; index < this.termsReviewRecordsData.length; index++)
                                       {
+                                        
                                           totalCount = totalCount + 1;
                                           for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
                                           {
@@ -2328,7 +2587,7 @@ export class DrawCpClausesComponent implements OnInit
                                               if(mainString != '' && mainString != null && mainString != undefined)
                                               {
                                                   mainString = mainString.replace(/<[^>]*>/g, '');
-                                                  console.log(mainString,"Main String Print");
+                                                  
                                                   this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = 
                                                   this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
                                               } else {
@@ -2364,7 +2623,7 @@ export class DrawCpClausesComponent implements OnInit
                                           }
                                       }
   
-                                      console.log(this.termsReviewRecordsData);
+                                      
   
                                       this.totalTermsReviewRecords = totalCount;
                                       this.customClauseDataRecords();
@@ -2382,7 +2641,7 @@ export class DrawCpClausesComponent implements OnInit
           } else {
               
               var drawCondition = {};    
-                  drawCondition["id"] = tradingId;
+                  drawCondition["id"] = this.tradingId;
               try
               {
                   this._userService.TradingData(drawCondition).pipe(first()).subscribe((res) =>
@@ -2398,7 +2657,7 @@ export class DrawCpClausesComponent implements OnInit
                           var current_time = (cpTime != '' && cpTime != null) ? cpTime : moment(new Date()).format("HH:mm A");
                           var cityID = (cpCity != '' && cpCity != null) ? cpCity : '0';
                           
-                          this.OwnersFirstCounterForm = this._formBuilder.group
+                          this.clauseForm = this._formBuilder.group
                           (
                               {
                                   cpTime: [current_time, Validators.required],
@@ -2465,32 +2724,125 @@ export class DrawCpClausesComponent implements OnInit
                               this.checkedCheckBoxCustomClauseTerms.push(Number(checkboxCustomArrayTerm[subIndex]));
                           }
   
-                          // var checkedCheckBoxArray = this.checkedClauseCategory;
-                          // var startLength = 0;
-                          // var endLength = 0;
-                          // for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
-                          // {
-                          //     startLength = startLength + 1;
-                          //     if(checkedCheckBoxArray.indexOf(this.clauseCategoryRecordResponseData[index].id) >= 0)
-                          //     {
-                          //         endLength = endLength + 1;
-                          //     }
-                          // }
-                          // this.clauseCategoryRecordResponseDataAllChecked =  'N';
-                          // if (startLength == endLength )
-                          // {
-                          //     this.clauseCategoryRecordResponseDataAllChecked =  'Y';
-                          // }
+                            clauseCustomChecked = [];
+                            clauseCustomTermsChecked = [];
+
+                            var clauseChecked = this.tradingResponse.data[0].common_clauses;
+                            if(clauseChecked != '' && clauseChecked != null)
+                            {
+                                this.clauseChecked = clauseChecked.split(',');
+                            } else {
+                                this.clauseChecked = [];
+                            }
+
+                            var clauseCustomChecked = this.tradingResponse.data[0].custom_term_clause;
+                            if(clauseCustomChecked != '' && clauseCustomChecked != null)
+                            {
+                                this.clauseCustomChecked = clauseCustomChecked.split(',');
+                            } else {
+                                this.clauseCustomChecked = [];
+                            }
+                            
+                            var clauseCustomTermsChecked = this.tradingResponse.data[0].custom_common_clause;
+                            if(clauseCustomTermsChecked != '' && clauseCustomTermsChecked != null)
+                            {
+                                this.clauseCustomTermsChecked = clauseCustomTermsChecked.split(',');
+                            } else {
+                                this.clauseCustomTermsChecked = [];
+                            }
+
+                            // Assing Charterer Checked Clauses Start
+
+                            var chartererCheckedClauses = this.tradingResponse.data[0].charterer_clauses;
+                            if(chartererCheckedClauses != '' && chartererCheckedClauses != null)
+                            {
+                                this.chartererCheckedClauses = chartererCheckedClauses.split(',');
+                            } else {
+                                this.chartererCheckedClauses = [];
+                            }
+
+                            var chartererCheckedCustomClauses = this.tradingResponse.data[0].charterer_custom_clauses;
+                            if(chartererCheckedCustomClauses != '' && chartererCheckedCustomClauses != null)
+                            {
+                                this.chartererCheckedCustomClauses = chartererCheckedCustomClauses.split(',');
+                            } else {
+                                this.chartererCheckedCustomClauses = [];
+                            }
+
+                            var chartererCheckedCustomTermsClauses = this.tradingResponse.data[0].charterer_custom_terms_clauses;
+                            if(chartererCheckedCustomTermsClauses != '' && chartererCheckedCustomTermsClauses != null)
+                            {
+                                this.chartererCheckedCustomTermsClauses = chartererCheckedCustomTermsClauses.split(',');
+                            } else {
+                                this.chartererCheckedCustomTermsClauses = [];
+                            }
+
+                            // Assing Charterer Checked Clauses End
+
+                            // Assing Owner Checked Clauses Start
+
+                            var ownerCheckedClauses = this.tradingResponse.data[0].owner_clauses;
+                            if(ownerCheckedClauses != '' && ownerCheckedClauses != null)
+                            {
+                                this.ownerCheckedClauses = ownerCheckedClauses.split(',');
+                            } else {
+                                this.ownerCheckedClauses = [];
+                            }
+
+                            var ownerCheckedCustomClauses = this.tradingResponse.data[0].owner_custom_clauses;
+                            if(ownerCheckedCustomClauses != '' && ownerCheckedCustomClauses != null)
+                            {
+                                this.ownerCheckedCustomClauses = ownerCheckedCustomClauses.split(',');
+                            } else {
+                                this.ownerCheckedCustomClauses = [];
+                            }
+
+                            var ownerCheckedCustomTermsClauses = this.tradingResponse.data[0].owner_custom_terms_clauses;
+                            if(ownerCheckedCustomTermsClauses != '' && ownerCheckedCustomTermsClauses != null)
+                            {
+                                this.ownerCheckedCustomTermsClauses = ownerCheckedCustomTermsClauses.split(',');
+                            } else {
+                                this.ownerCheckedCustomTermsClauses = [];
+                            }
+
+                            // Assing Owner Checked Clauses End
+
+                            var mainTermCheckedClauses = this.tradingResponse.data[0].main_term_clauses;
+                            if(mainTermCheckedClauses != '' && mainTermCheckedClauses != null)
+                            {
+                                this.mainTermCheckedClauses = mainTermCheckedClauses.split(',');
+                            } else {
+                                this.mainTermCheckedClauses = [];
+                            }
+
+                            var mainTermCheckedClausesCustom = this.tradingResponse.data[0].main_term_checked_clauses_custom;
+                            if(mainTermCheckedClausesCustom != '' && mainTermCheckedClausesCustom != null)
+                            {
+                                this.mainTermCheckedClausesCustom = mainTermCheckedClausesCustom.split(',');
+                            } else {
+                                this.mainTermCheckedClausesCustom = [];
+                            }
+
+                            var mainTermCheckedClausesCustomTerms = this.tradingResponse.data[0].main_term_checked_clauses_custom_term;
+                            if(mainTermCheckedClausesCustomTerms != '' && mainTermCheckedClausesCustomTerms != null)
+                            {
+                                this.mainTermCheckedClausesCustomTerms = mainTermCheckedClausesCustomTerms.split(',');
+                            } else {
+                                this.mainTermCheckedClausesCustomTerms = [];
+                            }
   
                           this.termsReviewRecordsData = [];
               
                           var clauseCategoryFilterCondition = {};
-                              clauseCategoryFilterCondition["cpFormId"] = formID;
-                              clauseCategoryFilterCondition["tradingId"] = tradingId;
-                              clauseCategoryFilterCondition["companyId"] = companyId;
+                              clauseCategoryFilterCondition["cpFormId"] = this.formId;
+                              clauseCategoryFilterCondition["tradingId"] = this.tradingId;
+                              clauseCategoryFilterCondition["companyId"] = this.companyId;
                               clauseCategoryFilterCondition["commonClauses"] = commonClausesArray;
                               clauseCategoryFilterCondition["commonClausesCustomArray"] = commonClausesCustomArray;
                               clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
+                              clauseCategoryFilterCondition["mainTermCheckedClauses"] = this.mainTermCheckedClauses;
+                              clauseCategoryFilterCondition["mainTermCheckedClausesCustom"] = this.mainTermCheckedClausesCustom;
+                              clauseCategoryFilterCondition["mainTermCheckedClausesCustomTerms"] = this.mainTermCheckedClausesCustomTerms;
   
                           try
                           {
@@ -2514,7 +2866,7 @@ export class DrawCpClausesComponent implements OnInit
                                                 if(mainString != '' && mainString != null && mainString != undefined)
                                                 {
                                                     mainString = mainString.replace(/<[^>]*>/g, '');
-                                                    console.log(mainString,"Main String Print");
+                                                    
                                                     this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordArray'] = 
                                                     this.createStringWithDynamicDateTimeNumberPicker(mainString,timeStamp);
                                                 } else {
@@ -2616,7 +2968,7 @@ export class DrawCpClausesComponent implements OnInit
                         }
                     }
                     
-                    console.log(this.customClauseDataResponseData,"Clause Category Records Server Side");
+                    
 
                     this.checkAllFunctionChecked();
 
@@ -2630,9 +2982,9 @@ export class DrawCpClausesComponent implements OnInit
     updateDynamicString(className,type)
     {
        
-        console.log(this.cpTimeInfo);
-        console.log('HERE In TIME PICKER ON CHANGE');
-        console.log(className);
+        
+        
+        
 
         var mainDataArrayOfString = this.mainDynamicStringArray;
 
@@ -2706,7 +3058,7 @@ export class DrawCpClausesComponent implements OnInit
                 finalString += ' '+stringToAttach;
             }
         }
-        console.log(finalString);
+        
         
         if(type == 'CustomClauseTerms')
         {
@@ -2842,137 +3194,6 @@ export class DrawCpClausesComponent implements OnInit
                 }
             }
         }
-
-        
-    }
-
-    createNewString()
-    {
-        console.log('HERE');
-        var finalStringArray = [];
-        var mainDataArrayOfString = this.mainDynamicStringArray;
-        console.log(mainDataArrayOfString);
-        
-        for(var i = 0; i < mainDataArrayOfString.length; i++)
-        {  
-        //     var valueInfo = mainDataArrayOfString[i];
-        //     var timeStamp = valueInfo.timeStamp;
-        //     var updatedStringValuesArray = [];
-        //     var slides = document.getElementsByClassName(timeStamp);
-        //     var finalString = valueInfo.mainString;
-        //     if(slides.length > 0)
-        //     {
-        //         var mainString = finalString;
-        //         finalString = '';
-        //         for(var i = 0; i < slides.length; i++)
-        //         {  
-        //             var valueOfUpdatedSting = slides[i];
-        //             updatedStringValuesArray.push(valueOfUpdatedSting['value']);
-        //         }
-                
-        //         var dynamicStringArray = mainString.split(' ');
-        //         var stringNumber = 0;
-        //         for (let index = 0; index < dynamicStringArray.length; index++)
-        //         {
-        //             var stringToAttach = dynamicStringArray[index];
-
-        //             var currentData = dynamicStringArray[index];
-        //                 currentData = currentData.split('@');
-
-        //             var currentTimer = dynamicStringArray[index];
-        //                 currentTimer = currentTimer.split('||');
-
-        //             var currentNumber = dynamicStringArray[index];
-        //                 currentNumber = currentNumber.split('$');
-
-        //             if(currentData[1] != '' && currentData[1] != null && currentData[1] != undefined)
-        //             {   
-        //                 var date = moment(updatedStringValuesArray[stringNumber]).format("YYYY-MM-DD");
-        //                 stringToAttach = '#date@'+date;
-        //                 stringNumber = stringNumber + 1;
-        //             }
-
-        //             if(currentTimer[1] != '' && currentTimer[1] != null && currentTimer[1] != undefined)
-        //             {
-        //                 var time = updatedStringValuesArray[stringNumber];
-        //                 stringToAttach = '#time||'+time;
-        //                 stringNumber = stringNumber + 1;
-        //             }
-
-        //             if(currentNumber[1] != '' && currentNumber[1] != null && currentNumber[1] != undefined)
-        //             {
-        //                 var number = updatedStringValuesArray[stringNumber];
-        //                 stringToAttach = '#number$'+number;
-        //                 stringNumber = stringNumber + 1;
-        //             }
-        //             finalString += ' '+stringToAttach;
-        //         }
-        //     }
-            
-            // var newUpdateData = {};
-            //     newUpdateData['timeStamp'] = timeStamp;
-            //     newUpdateData['mainString'] = finalString;
-
-            // finalStringArray.push(newUpdateData);
-        }
-
-        console.log(finalStringArray);
-        return false;
-
-        var updateClauseTermsArray = [];
-
-        for (let index = 0; index < this.termsReviewRecordsData.length; index++)
-        {
-            for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTerms.length; sindex++)
-            {
-                var mainTimeStamp = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['timeStamp'];
-                var mainTermString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainString'];
-                
-                for (let mainIndex = 0; mainIndex < finalStringArray.length; mainIndex++)
-                {
-                    if(mainTimeStamp == finalStringArray[mainIndex]['timeStamp'] && mainTermString != finalStringArray[mainIndex]['mainString'])
-                    {
-                        this.editClauseTermOfMainClauseCategoryID = this.termsReviewRecordsData[index].id;
-                        this.editClauseTermOfMainClauseID = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].id;
-                        this.tmpeditclausetext = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex].termsName;
-                        this.termsName = finalStringArray[mainIndex]['mainString'];
-
-                        const req =
-                        {   
-                            mainUserId: localStorage.getItem('userId'),
-                            companyId: localStorage.getItem('companyId'),
-                            drawId: this.drawId,
-                            tradingId: this.tradingId,
-                            formId: this.formId,
-                            clauseCategoryId: this.editClauseTermOfMainClauseCategoryID,
-                            clauseTermsId: this.editClauseTermOfMainClauseID,
-                            nos: '1',
-                            termsNameOrginal: this.tmpeditclausetext,
-                            termsName: finalStringArray[mainIndex]['mainString'],
-                            createdBy: localStorage.getItem('userId'),
-                            updatedBy: localStorage.getItem('userId'),
-                            isCustom: 'Y'
-                        };
-
-                        updateClauseTermsArray.push(req);
-
-                        console.log(req);
-                        
-                        // try
-                        // {
-                        //     const header = new HttpHeaders(); header.append('Content-Type', 'application/json');
-                        //     const headerOptions = { headers: header }
-                        //     this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(res =>
-                        //     {   this.termsUpdateRes = res; this.editclausetext = '';    });
-                        // } catch (err) {}
-                    }
-                }
-            }
-        }
-
-        // this.submit();
-        console.log(finalStringArray);
-        console.log(updateClauseTermsArray);
     }
 
     updateDynamicTerms()
@@ -3095,10 +3316,10 @@ export class DrawCpClausesComponent implements OnInit
             {   
                 var time = currentTimer[1];
                     time = time.replace('&#160;','');
-                console.log(mainString);
-                console.log(this.dynamicStringArray[index]);
-                console.log(time);
-                console.log(currentTimer[1],"Timer");
+                
+                
+                
+                
                 mainData['hasTimeValue'] = time;
                 mainData['inputTimeIdentifier'] = 'dynamicTimePicker'+number;
             }
@@ -3132,14 +3353,14 @@ export class DrawCpClausesComponent implements OnInit
         arrayData['mainString'] = mainString;
 
         this.mainDynamicStringArray.push(arrayData);
-        console.log(this.mainDynamicStringArray);
+        
 
         return this.dynamicStringArray;
     }
 
     setTime()
     {
-        console.log(this.cpTime);
+        
     }
     
 
@@ -3182,7 +3403,7 @@ export class DrawCpClausesComponent implements OnInit
                         }
                     }
                     
-                    console.log(this.customClauseDataResponseData,"Clause Category Records Server Side");
+                    
 
                     this.checkAllFunctionChecked();
 
@@ -3711,19 +3932,259 @@ export class DrawCpClausesComponent implements OnInit
     // Clause Submit
     submit()
     {
+        // Convert All Array Values To Number Format Start
+        var convertToNumberArray = this.ownerCheckedClauses;
+        this.ownerCheckedClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.ownerCheckedClauses.push(Number(convertToNumberArray[index]));
+        }
+        
+        var convertToNumberArray = this.ownerCheckedCustomClauses;
+        this.ownerCheckedCustomClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.ownerCheckedCustomClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.ownerCheckedCustomTermsClauses;
+        this.ownerCheckedCustomTermsClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.ownerCheckedCustomTermsClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.chartererCheckedClauses;
+        this.chartererCheckedClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.chartererCheckedClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.chartererCheckedCustomClauses;
+        this.chartererCheckedCustomClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.chartererCheckedCustomClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.chartererCheckedCustomTermsClauses;
+        this.chartererCheckedCustomTermsClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.chartererCheckedCustomTermsClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.checkedCheckBox;
+        this.checkedCheckBox = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.checkedCheckBox.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.checkedCheckBoxCustom;
+        this.checkedCheckBoxCustom = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.checkedCheckBoxCustom.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.checkedCheckBoxCustomClauseTerms;
+        this.checkedCheckBoxCustomClauseTerms = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.checkedCheckBoxCustomClauseTerms.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.mainTermCheckedClauses;
+        this.mainTermCheckedClauses = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.mainTermCheckedClauses.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.mainTermCheckedClausesCustom;
+        this.mainTermCheckedClausesCustom = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.mainTermCheckedClausesCustom.push(Number(convertToNumberArray[index]));
+        }
+
+        var convertToNumberArray = this.mainTermCheckedClausesCustomTerms;
+        this.mainTermCheckedClausesCustomTerms = [];
+        for (let index = 0; index < convertToNumberArray.length; index++)
+        {
+            this.mainTermCheckedClausesCustomTerms.push(Number(convertToNumberArray[index]));
+        }
+
+        // Convert All Array Values To Number Format End
+
+        if(this.tradingId != '' && this.tradingId != null && this.tradingId != undefined)
+        {
+            if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+            {
+                var mainClausesChecked = this.ownerCheckedClauses;
+                var mainClausesCustomChecked = this.ownerCheckedCustomClauses;
+                var mainClausesCustomTermsChecked = this.ownerCheckedCustomTermsClauses;
+                console.log(mainClausesChecked,'Owner Currently Selected Clauases');
+            }
+
+            if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                var mainClausesChecked = this.chartererCheckedClauses;
+                var mainClausesCustomChecked = this.chartererCheckedCustomClauses;
+                var mainClausesCustomTermsChecked = this.chartererCheckedCustomTermsClauses;
+                console.log(mainClausesChecked,'Charterer Currently Selected Clauases');
+            }
+
+            console.log(mainClausesChecked,'Compare Clauases');
+            // Main Term Clause Checked Start
+            var agreedTermsArray = [];
+            for (let index = 0; index < mainClausesChecked.length; index++)
+            {
+                if(this.checkedCheckBox.indexOf(mainClausesChecked[index]) >= 0)
+                {
+                    agreedTermsArray.push(Number(mainClausesChecked[index]));
+                }
+            }
+            console.log(agreedTermsArray,'Both Agreed Clauses');
+            var finalAgreementArray = [];
+            
+            for (let index = 0; index < agreedTermsArray.length; index++)
+            {
+                if(this.mainTermCheckedClauses.indexOf(agreedTermsArray[index]) < 0)
+                {
+                    finalAgreementArray.push(Number(agreedTermsArray[index]));
+                }
+            }
+
+            for (let index = 0; index < finalAgreementArray.length; index++)
+            {
+                this.mainTermCheckedClauses.push(Number(finalAgreementArray[index]));
+            }
+
+            console.log(this.mainTermCheckedClauses,'Both Agreed Clauses');
+
+            var finalChartererClauseArray = this.checkedCheckBox;
+            this.checkedCheckBox = [];
+            for (let index = 0; index < finalChartererClauseArray.length; index++)
+            {
+                if(finalAgreementArray.indexOf(finalChartererClauseArray[index]) < 0)
+                {
+                    this.checkedCheckBox.push(Number(finalChartererClauseArray[index]));
+                }
+            }
+
+            this.chartererCheckedClauses = [];
+            this.ownerCheckedClauses = [];
+
+            // Main Term Clause Checked End
+
+            // Main Term Clause Custom Checked Start
+            var agreedTermsArray = [];
+            for (let index = 0; index < mainClausesCustomChecked.length; index++)
+            {
+                if(this.checkedCheckBoxCustom.indexOf(mainClausesCustomChecked[index]) >= 0)
+                {
+                    agreedTermsArray.push(Number(mainClausesCustomChecked[index]));
+                }
+            }
+            var finalAgreementArray = [];
+            for (let index = 0; index < agreedTermsArray.length; index++)
+            {
+                if(this.mainTermCheckedClausesCustom.indexOf(agreedTermsArray[index]) < 0)
+                {
+                    finalAgreementArray.push(Number(agreedTermsArray[index]));
+                }
+            }
+            
+            for (let index = 0; index < finalAgreementArray.length; index++)
+            {
+                this.mainTermCheckedClausesCustom.push(Number(finalAgreementArray[index]));
+            }
+
+            var finalChartererClauseArray = this.checkedCheckBoxCustom;
+            this.checkedCheckBoxCustom = [];
+            for (let index = 0; index < finalChartererClauseArray.length; index++)
+            {
+                if(finalAgreementArray.indexOf(finalChartererClauseArray[index]) < 0)
+                {
+                    this.checkedCheckBoxCustom.push(Number(finalChartererClauseArray[index]));
+                }
+            }
+
+            this.chartererCheckedCustomClauses = [];
+            this.ownerCheckedCustomClauses = [];
+            // Main Term Clause Custom Checked End
+
+            // Main Term Clause Custom Terms Checked Start
+            var agreedTermsArray = [];
+            for (let index = 0; index < mainClausesCustomTermsChecked.length; index++)
+            {
+                if(this.checkedCheckBoxCustomClauseTerms.indexOf(mainClausesCustomTermsChecked[index]) >= 0)
+                {
+                    agreedTermsArray.push(Number(mainClausesCustomTermsChecked[index]));
+                }
+            }
+            var finalAgreementArray = [];
+            for (let index = 0; index < agreedTermsArray.length; index++)
+            {
+                if(this.mainTermCheckedClausesCustomTerms.indexOf(agreedTermsArray[index]) < 0)
+                {
+                    finalAgreementArray.push(Number(agreedTermsArray[index]));
+                }
+            }
+            for (let index = 0; index < finalAgreementArray.length; index++)
+            {
+                this.mainTermCheckedClausesCustomTerms.push(Number(finalAgreementArray[index]));
+            }
+
+            var finalChartererClauseArray = this.checkedCheckBoxCustomClauseTerms;
+            this.checkedCheckBoxCustomClauseTerms = [];
+            for (let index = 0; index < finalChartererClauseArray.length; index++)
+            {
+                if(finalAgreementArray.indexOf(finalChartererClauseArray[index]) < 0)
+                {
+                    this.checkedCheckBoxCustomClauseTerms.push(Number(finalChartererClauseArray[index]));
+                }
+            }
+            this.chartererCheckedCustomTermsClauses = [];
+            this.ownerCheckedCustomTermsClauses = [];
+            // Main Term Clause Custom Terms Checked End
+
+        }
         var fromUserId = localStorage.getItem('userId');
         var notification = 'New Draw C/p Available';
         var toUserId = this.chartererId;
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        var isTrading = filter.isTrading;
-        this.isTrading = filter.isTrading;
-
-        this.drawId = filter.drawId;
-
         var checkedCheckBox = this.checkedCheckBox.join();
         var checkedCheckBoxCustom = this.checkedCheckBoxCustom.join();
         var checkedCheckBoxCustomClauseTerms = this.checkedCheckBoxCustomClauseTerms.join();
-        
+
+        var mainTermCheckedClauses = this.mainTermCheckedClauses.join();
+        var mainTermCheckedClausesCustom = this.mainTermCheckedClausesCustom.join();
+        var mainTermCheckedClausesCustomTerms = this.mainTermCheckedClausesCustomTerms.join();
+
+        var chartererCheckedClauses = this.chartererCheckedClauses.join();
+        var chartererCheckedCustomClauses = this.chartererCheckedCustomClauses.join();
+        var chartererCheckedCustomTermsClauses = this.chartererCheckedCustomTermsClauses.join();
+
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+        {
+            var chartererCheckedClauses = this.checkedCheckBox.join();
+            var chartererCheckedCustomClauses = this.checkedCheckBoxCustom.join();
+            var chartererCheckedCustomTermsClauses = this.checkedCheckBoxCustomClauseTerms.join();
+        }
+
+        var ownerCheckedClauses = this.ownerCheckedClauses.join();
+        var ownerCheckedCustomClauses = this.ownerCheckedCustomClauses.join();
+        var ownerCheckedCustomTermsClauses = this.ownerCheckedCustomTermsClauses.join();
+
+        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            var ownerCheckedClauses = this.checkedCheckBox.join();
+            var ownerCheckedCustomClauses = this.checkedCheckBoxCustom.join();
+            var ownerCheckedCustomTermsClauses = this.checkedCheckBoxCustomClauseTerms.join();
+        }
 
         if (this.isTrading == '2')
         {
@@ -3849,272 +4310,107 @@ export class DrawCpClausesComponent implements OnInit
                     });
                 } catch (err) {}
             }
+
         } else {
-            const reqData =
-            {
-                tradingId: this.tradingId,
-                chartererId: toUserId,
-                createdBy: localStorage.getItem('userId'),
-                updatedBy: localStorage.getItem('userId'),
-            }
-            this._userService.TradingPlatformRequestToChartererCreate(reqData).pipe(first()).subscribe(
-            data => {
-                this.submitResponse = data;
-                const req =
+            var convertedDate = moment(this.clauseFormValues.cpDate.value).format("YYYY-MM-DD");
+            var updateData = {};
+                updateData['id'] = this.tradingId;
+                updateData['progress'] = '30';
+                updateData['progress_info'] = '3';
+                updateData['cpTime'] = this.clauseFormValues.cpTime.value;
+                updateData['cpCity'] = this.clauseFormValues.cityId.value;
+                updateData['cpDate'] = convertedDate;
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '3')
                 {
-                    fromUserId: localStorage.getItem('userId'),
-                    toUserId: toUserId,
-                    notification: 'New Notification For Trading Platform',
-                    createdBy: localStorage.getItem('userId'),
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
-                    {
-                        headers: header
-                    }
-                    this.http.post(`${config.baseUrl}/notificationCreate`, req, headerOptions).subscribe(
-                    res =>
-                    {});
-                } catch (err) {}
-            });
-
-            const req =
-            {
-                tradingId : this.tradingId,
-                userId: localStorage.getItem('userId'),
-                updatedBy: localStorage.getItem('userId'),
-                createdBy: localStorage.getItem('userId')
-            };
-            try {
-                const header = new HttpHeaders();
-                header.append('Content-Type', 'application/json');
-                const headerOptions =
-                {
-                    headers: header
+                    updateData['broker_clauses'] = checkedCheckBox;    
                 }
-                this.http.post(`${config.baseUrl}/TradingCounterInsert`, req, headerOptions).subscribe(res => {});
-            } catch (err) {}
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    updateData['charterer_counter'] = this.chartererCounterNumber;
+                    updateData['charterer_clauses'] = checkedCheckBox;    
+                }
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    updateData['owner_counter'] = this.ownerCounterNumber;
+                    updateData['owner_clauses'] = checkedCheckBox;    
+                }
+                updateData['common_clauses'] = checkedCheckBox;
+                updateData['custom_term_clause'] = checkedCheckBoxCustom;
+                updateData['custom_common_clause'] = checkedCheckBoxCustomClauseTerms;
+                
+                updateData['charterer_clauses'] = chartererCheckedClauses;
+                updateData['charterer_custom_clauses'] = chartererCheckedCustomClauses;
+                updateData['charterer_custom_terms_clauses'] = chartererCheckedCustomTermsClauses;
 
-            this.tradingDataUpdate();
+                updateData['owner_clauses'] = ownerCheckedClauses;
+                updateData['owner_custom_clauses'] = ownerCheckedCustomClauses;
+                updateData['owner_custom_terms_clauses'] = ownerCheckedCustomTermsClauses;
 
-            this.tradingProgressUpdate();
+                updateData['main_term_clauses'] = mainTermCheckedClauses;
+                updateData['main_term_checked_clauses_custom'] = mainTermCheckedClausesCustom;
+                updateData['main_term_checked_clauses_custom_term'] = mainTermCheckedClausesCustomTerms;
+                updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
             
-
-            if (JSON.parse(localStorage.getItem('userRoleId')) == '3')
-            {
-                const req =
+                try{ this._userService.tradingDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>{}, err => {  }); } catch (err){  }
+                
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+            var tradingMessageInsertData = {};
+                tradingMessageInsertData['tradingId'] = this.tradingId;
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
-                    id : this.tradingId,
-                    broker_clauses: checkedCheckBox,
-                    common_clauses: checkedCheckBox,
-                    custom_term_clause: checkedCheckBoxCustom,
-                    custom_common_clause: checkedCheckBoxCustomClauseTerms,
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
+                    tradingMessageInsertData['message'] = this.pageTitle;
+                }
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    tradingMessageInsertData['message'] = 'Charterer Updates';
+                    if(this.ownerCounterNumber > '1')
                     {
-                        headers: header
+                        tradingMessageInsertData['message'] = this.pageTitle;
                     }
-                    this.http.post(`${config.baseUrl}/tradingFormUpdateByBrokerCheck`, req, headerOptions).subscribe(
-                    res =>
-                    {
-                        this.router.navigate(['/apps/trading-platform-management']);
-                    });
-                } catch (err) {}
-            }
+                }
+                tradingMessageInsertData['createdBy'] = localStorage.getItem('userId');
+                tradingMessageInsertData['updatedBy'] = localStorage.getItem('userId');
+                this.http.post(`${config.baseUrl}/tradingMessageInsert`,tradingMessageInsertData, headerOptions).subscribe(res =>{},err =>{});
 
-            if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-            {
-                const req =
+            var tradingProgressInsertData = {};
+                tradingProgressInsertData['tradingId'] = this.tradingId;
+                tradingProgressInsertData['ownerId'] = this.ownerId;
+                tradingProgressInsertData['brokerId'] = this.brokerId;
+                tradingProgressInsertData['chartererId'] = this.chartererId;
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
-                    id : this.tradingId,
-                    charterer_clauses: checkedCheckBox,
-                    common_clauses: checkedCheckBox,
-                    custom_term_clause: checkedCheckBoxCustom,
-                    custom_common_clause: checkedCheckBoxCustomClauseTerms,
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
+                    tradingProgressInsertData['message'] = this.pageTitle;
+                }
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    tradingProgressInsertData['message'] = 'Charterer Updates';
+                    if(this.ownerCounterNumber > '1')
                     {
-                        headers: header
+                        tradingProgressInsertData['message'] = this.pageTitle;
                     }
-                    this.http.post(`${config.baseUrl}/tradingFormUpdateByChartererCheck`, req, headerOptions).subscribe(
-                    res =>
-                    {
-                        this.router.navigate(['/apps/trading-platform-management']);
-                    });
-                } catch (err) {}
-            }
+                }
+                tradingProgressInsertData['createdBy'] = localStorage.getItem('userId');
+                tradingProgressInsertData['updatedBy'] = localStorage.getItem('userId');
 
-            if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-            {
-                const req =
-                {
-                    id : this.tradingId,
-                    owner_clauses: checkedCheckBox,
-                    common_clauses: checkedCheckBox,
-                    custom_term_clause: checkedCheckBoxCustom,
-                    custom_common_clause: checkedCheckBoxCustomClauseTerms,
-                    updatedBy: localStorage.getItem('userId')
-                };
-                try
-                {
-                    const header = new HttpHeaders();
-                    header.append('Content-Type', 'application/json');
-                    const headerOptions =
-                    {
-                        headers: header
-                    }
-                    this.http.post(`${config.baseUrl}/tradingFormUpdateByOwnerCheck`, req, headerOptions).subscribe(
-                    res =>
-                    {
-                        this.router.navigate(['/apps/trading-platform-management']);
-                    });
-                } catch (err) {}
-            }
+            this.http.post(`${config.baseUrl}/tradingProgressInsert`,tradingProgressInsertData, headerOptions).subscribe(res =>{},err =>{});
+            this.router.navigate(['/apps/trading-platform-management']);
         }
-
-        
     }
-
-    
-
-     // Fetch Trading Data
-     fetchTradingData ()
-     {
-         var filterCondition = {};
-             filterCondition["dcm.id"] = this.tradingId;
-         try
-         {
-             this._userService.fetchTradingData(filterCondition).pipe(first()).subscribe((res) =>
-             {
-                 this.tradingResponseInformation = res;
-                 if(this.tradingResponseInformation.success == true)
-                 {
-                     this.tradingResponseInformationData = this.tradingResponseInformation.data[0];
- 
-                     this.tradingResponseInformationData['cpCity'] = (this.tradingResponseInformationData['cpCity'] == null && this.tradingResponseInformationData['cpCity'] == '') ? '' : this.tradingResponseInformationData['cpCity'];
- 
-                     var cpTime = this.tradingResponseInformationData['cpTime'];
-                     var cpDate = this.tradingResponseInformationData['cpDate'];
-                     var cpCity = this.tradingResponseInformationData['cpCity'];
-
-                     var current_date = (cpDate != '' && cpDate != null) ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
-                     var current_time = (cpTime != '' && cpTime != null) ? moment(cpTime).format("YYYY-MM-DD") : moment().format("HH:mm A");
-                     var cityID = (cpCity != '') ? cpCity : '0';
-
-                     this.OwnersFirstCounterForm = this._formBuilder.group
-                     (
-                         {
-                             cpTime: [current_time, Validators.required],
-                             cityId: [cityID, Validators.required],
-                             cpDate: [current_date, Validators.required],
-                         }
-                     );
-
-                    this.cpDate = current_date;
-
-                    this.checkedClauseCategory = [];
-                    var checked_clauses = this.tradingResponseInformation.data[0].checked_clauses;
-                    if(checked_clauses != '' && checked_clauses != null)
-                    {
-                        this.checkedClauseCategory = checked_clauses.split(',');
-                    } else {
-                        this.checkedClauseCategory = [];
-                    }
-
-                    var checkedCheckBoxArray = this.checkedClauseCategory;
-                    this.checkedClauseCategory = [];
-                    for (let index = 0; index < checkedCheckBoxArray.length; index++)
-                    {
-                        this.checkedClauseCategory.push(Number(checkedCheckBoxArray[index]));
-                    }
-
-                    localStorage.setItem('checkedClauseCategory', JSON.stringify(this.checkedClauseCategory));
-
-                    this.ownerName = this.tradingResponseInformation.data[0].ownerName;
-                    this.chartererName = this.tradingResponseInformation.data[0].chartererName;
-                    this.brokerName = this.tradingResponseInformation.data[0].brokerName;
-
-                    this.clauseCategoryRecordsServerSide();
-
-                    var cpTime = this.tradingResponseInformation['cpTime'];
-                    var cpDate = this.tradingResponseInformation['cpDate'];
-                    var cityName = this.tradingResponseInformation['cityName'];
-
-                    current_date = (cpDate != '') ? moment(cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
-                    current_time = (cpTime != '') ? cpTime : moment(new Date()).format("HH:mm A");
-                    var cityID = (cityName != '') ? cityName : '0';
-
-                    this.cpDate = current_date;
-
-                    this.cityName = cityName;
-                    this.cpDate = current_date;
-                    this.cpTime = current_time;
-
-                    this.ownerName = this.tradingResponseInformation.data[0].ownerName;
-                    this.chartererName = this.tradingResponseInformation.data[0].chartererName;
-                    this.brokerName = this.tradingResponseInformation.data[0].brokerName;
-
-                    this.vesselId = this.tradingResponseInformation.data[0].vesselId;
-
-                    this.fetchVesselData();
-
-                    //  this.termsReviewRecords();
- 
-                 }
-             });
-         }catch (err){}
-     }
-
-    // Trading Data Update
-    tradingDataUpdate()
-    {
-        var convertedDate = moment(this.f.cpDate.value).format("YYYY-MM-DD");
-        
-        const req =
-        {
-            tradingId: this.tradingId,
-            cpTime: this.f.cpTime.value,
-            cpCity: this.f.cityId.value,
-            cpDate: convertedDate,
-            updatedBy: localStorage.getItem('userId')
-        };
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/tradingDataUpdate`, req, headerOptions).subscribe( res =>
-        {
-            this.tradingProgressUpdate();
-        });
-    }
-
-    setCPDate(event)
-    {
-        
-        
-    }
-
+     
+   
     // Draw Data Update
     drawDataUpdate()
     {
-        var convertedDate = moment(this.f.cpDate.value).format("YYYY-MM-DD");
+        var convertedDate = moment(this.clauseFormValues.cpDate.value).format("YYYY-MM-DD");
         
 
         const req =
         {
             drawId: this.drawId,
-            cpTime: this.f.cpTime.value,
-            cpCity: this.f.cityId.value,
+            cpTime: this.clauseFormValues.cpTime.value,
+            cpCity: this.clauseFormValues.cityId.value,
             cpDate: convertedDate,
             updatedBy: localStorage.getItem('userId')
         };
@@ -4163,23 +4459,6 @@ export class DrawCpClausesComponent implements OnInit
         });
     }
 
-    // Trading Progress Update
-    tradingProgressUpdate()
-    {
-        const req =
-        {
-            tradingId: this.tradingId,
-            updatedBy: localStorage.getItem('userId')
-        };
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/tradingProgressUpdate`, req, headerOptions).subscribe( res =>
-        {
-            this.tradingStatusInfoUpdate();
-        });
-    }
-
     // Draw Status Information Update
     drawStatusInfoUpdate()
     {
@@ -4202,31 +4481,6 @@ export class DrawCpClausesComponent implements OnInit
         header.append('Content-Type', 'application/json');
         const headerOptions = { headers: header }
         this.http.post(`${config.baseUrl}/drawStatusInfoUpdate`, req, headerOptions).subscribe( res =>
-        {});
-    }
-
-    // Trading Status Information Update
-    tradingStatusInfoUpdate()
-    {
-        var statusInfoValue = 'Broker Updates';
-        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            statusInfoValue = 'Charterer Updates';
-        }
-        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            statusInfoValue = 'Owner Updates';
-        }
-        const req =
-        {
-            tradingId: this.tradingId,
-            statusInfo: statusInfoValue,
-            updatedBy: localStorage.getItem('userId')
-        };
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/tradingStatusInfoUpdate`, req, headerOptions).subscribe( res =>
         {});
     }
 

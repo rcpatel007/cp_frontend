@@ -19,33 +19,6 @@ import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
 
-export interface UserData
-{
-    id: string;
-    identifier : string;
-    CPTypeId: string;
-    formId: string;
-    vesselId: string;
-    ownerId: string;
-    chartererId: string;
-    chartererBrokerId: string;
-    ownerBrokerId: string;
-    cpDate: string;
-    cpDateInfo : string;
-    cpTime: string;
-    cpCity: string;
-    cpSubject: string;
-    cpLiftDate: string;
-    cpLiftTime: string;
-    cpLiftCity: string;
-    companyId: string;
-    isAccepted : string;
-    newAction : string;
-    std_bid_name : string;
-    isOwnerAccepted : string;
-    ownerActionButton : string;
-}
-
 export interface PeriodicElement
 {
     id:String;
@@ -68,13 +41,14 @@ export interface PeriodicElement
     companyId: string;
     isAccepted : string;
 
+    chartererName: string;
+
     CharterPartyFormName:String;
     charterPartyTypeName: string;
-    chartererName: string;
+    
     ownerName: string;
     vesselName: string;
-    charterBrokerName: string;
-    ownerBrokerName: string;
+    brokerName: string;
     
     newAction : string;
     
@@ -93,225 +67,115 @@ export interface PeriodicElement
 {
     selector: 'app-trading-platform-management',
     templateUrl: './trading-platform-management.component.html',
-    styleUrls: ['./trading-platform-management.component.scss']
+    styleUrls: ['./trading-platform-management.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    animations: fuseAnimations
 })
 
 export class TradingPlatformManagementComponent implements OnInit
 {
-
-    displayedColumns: string[] = ['identifier','cpDateInfo','chartererName','ownerName', 'vesselName',
-     'progress','statusInfo','isChartererAccepted','isOwnerAccepted','newAction','ownerActionButton'];
-
-    dataSource = new MatTableDataSource<PeriodicElement>();
-    dataSourceFilter = new MatTableDataSource<PeriodicElement>();
-
-    dialogRef: any;
-    hasSelectedContacts: boolean;
-    searchInput: FormControl;
-    showModalStatus = false;
-    showUpdateModalStatus = false;
-    applyFilter(filterValue: string)
-    {
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
-
-    applyFilterExecuted(filterValue: string)
-    {
-        this.dataSourceFilter.filter = filterValue.trim().toLowerCase();
-    }
-
-
-    id: string;
-    identifier : string;
-
-    tradingId : string;
-
-    drawId : string;
-    chartererId: string;
-
-    CPTypeId: string;
-    formId: string;
-    vesselId: string;
-    ownerId: string;
-    chartererBrokerId: string;
-    ownerBrokerId: string;
-    cpDate: string;
-    cpDateInfo : string;
-    cpTime: string;
-    cpCity: string;
-    cpSubject: string;
-    cpLiftDate: string;
-    cpLiftTime: string;
-    cpLiftCity: string;
-    companyId: string;
-
-    alertMessage : string;
-
-    CPTypeIdSearch: string;
-    formIdSearch: string;
-    vesselIdSearch: string;
-    ownerIdSearch: string;
-    chartererIdSearch: string;
-    cpDateSearch: string;
-    drawCPIDSearch: string;
-
-    std_bid_name : string;
-
-    createdBy: string;
-    createdAt: string;
-    updatedBy: string;
-    updatedAt: string;
-    isActive: string;
-    isDelete: string;
-    drawManagement: any;
-    drawManagementRes: any;
-    drawManagementData= [];
-
-    drawManagementResFilter: any;
-    drawManagementDataFilter = [];
-
-    cols: any[];
-    drawRecordsListRes: any;
-    drawRecordsListData: any;
-
-    DrawManagementSearchForm: FormGroup;
-
-    DrawManagementForm: FormGroup;
-    stdDivManagementForm: FormGroup;
-
-    loading = false;
-    submitted = false;
-    createtypeRes :any;
-    returnUrl: string;
-    cpFormId:String;
-    clauseTerms :any;
-    clauseTermsRes: any;
-    clauseTermsData: any;
-
-    drawCPDataList: any;
-    drawCPDataData: any;
-
-    cpFormList: any;
-    cpFormData: any;
-
-    VesselList: any;
-    VesselData: any;
-
-    CharterPartyTypeList: any;
-    CharterPartyTypeData: any;
-
-    ChartereInfoList: any;
-    ChartereInfoData=[];
-
-    termsUpdateRes : any;
-
-    termsReviewRecordsResponse : any;
-    termsReviewRecordsData = [];
-
-    clauseCategoryTermsResponse : any;
-    clauseCategoryTermsData = [];
-
-    clauseCategoryTermsReviewResponse : any;
-    clauseCategoryTermsReviewData = [];
-
-    CharterPartyTypeArray = [];
-
-    charterPartyTypeID : string;
-
-    formIdValueForDrawRecords;
-    vesselIdValueForDrawRecords;
-    cpDateValueForDrawRecords;
-    chartererIdValueForDrawRecords;
-    drawCPIDForDrawRecords;
-
-    show = false;
-
-    brokerDivShow = true;
-
-    chartererDivShow : any;
-
-    existingDrawCP = true;
-    existingDrawCPButton = false;
-
-    mainDrawCPDiv = false;
-
-    drawRecordsFilterShow = false;
-    drawRecordsTableShow = false;
-    drawRecordsTableShowButton = false;
-
-    standardOffersFormDivShow = false;
-    standardOffersFormTableShow = false;
-
-    clauseViewButtonShow = false;
-
-    drawFormDivShow = false;
-
-    stdDivShow = false;
-    stdDivButtonShow = true;
-
-    drawCharteAcceptRejectResponse : any;
-    drawCharteAcceptRejectResponseData = [];
-
-    activeModalStatus = false;
-    inActiveModalStatus = false;
-
-    dataID : string;
-    statusAction : string;
-
-    updateDataReqeust : any;
-
-    buttonInfo : any;
-
+    // Assign Div Name For Hide And Show Start
+    tradeRecordsDiv = true;
+    tradingFormDiv = false;
+    tradeBothView = false;
+    tradeChartererView = false;
+    tradeOwnerView = false;
+    tradeSubmitInformationView = false;
     isEditView = false;
     isRecapView = false;
-    isPdfView = false;
+    // Assign Div Name For Hide And Show End
 
-    ownerRecordResponse : any;
-    ownerRecordData = [];
+    // Form Setting Start
+    tradingForm: FormGroup;
+    tradingFormSubmitResponse : any;
+    tradingFormSubmitResponseData = [];
+    get tradingFormValue() { return this.tradingForm.controls; }
 
-    ownerMultiple = [];
+    performaForm: FormGroup;
+    performaFormSubmitResponse : any;
+    performaFormSubmitResponseData = [];
+    get performaFormValue() { return this.performaForm.controls; }
 
+    executedForm: FormGroup;
+    executedFormSubmitResponse : any;
+    executedFormSubmitResponseData = [];
+    get executedFormValue() { return this.executedForm.controls; }
+    // Form Setting End
+
+    // Assign Variables Start
+    tradingId : string;
+    companyId: string;
+    vesselId : string;
+    brokerId : string;
+    
+    ownerId : string;
     ownerName :  string;
     ownerEmailID : string;
     ownerMobileNumber : string;
     ownerStatus : string;
     ownerStatusInfo : string;
 
+    chartererId: string;
     chartererName : string;
     chartererEmailID : string;
     chartererMobileNumber : string;
     chartererStatus : string;
     chartererStatusInfo : string;
-
+    
     companyName : string;
-    stdTableView = false;
+    tradeType : string;
+    bidNameLabel : string;
+    std_bid_name : string;
 
-    companyResponse : any;
-    companyResponseData = [];
-
-    tradingInfoResponse: any;
-    tradingInfoResponseData = [];
-
-    tradingStatusInfoResponse: any;
-    tradingStatusInfoResponseData = [];
+    isBrokerView : any;
+    isChartererView : any;
+    isOwnerView : any;
 
     acceptRejectTitle : any;
     afteracceptRejectTitle : any;
-    
-    isOwnerView : any;
 
-    ownerDivShow : any;
+    statusAction : any;
+    activeModalStatus : any;
+    inActiveModalStatus : any;
 
-    chartererUpdateID : any;
-    ownerUpdateId : any;
+    actionTypeModal : any;
+    performaModal : any;
+    executedModal : any;
+    cpFormId : string;
+    copyTradingId : string;
+    // Assign Variables End
 
-    isBrokerLogin = false;
+    // Assign API Variable Start
+    tradingRecordsServerSideResponse : any;
+    tradingRecordsServerSideResponseData = [];
+    chartererRecordsServerSideResponse: any;
+    chartererRecordsServerSideResponseData = [];
+    ownerRecordsServerSideResponse : any;
+    ownerRecordsServerSideResponseData = [];
+    vesselRecordsServerSideResponse : any;
+    vesselRecordsServerSideResponseData = [];
+    companyRecordsServerSideResponse : any;
+    companyRecordsServerSideResponseData = [];
+    tradingDataUpdateResponse : any;
+    tradingDataUpdateResponseData = [];
+    cpFormRecordsServerSideResponse : any;
+    cpFormRecordsServerSideResponseData = [];
+    fixtureRecordsServerSideResponse : any;
+    fixtureRecordsServerSideResponseData = [];
+    // Assign API Variable End
 
-    isChartererLogin : any;
-
+    // Datatable Settings Start
+    tradingRecordsDisplayColumn: string[] = ['identifier','cpDateInfo','brokerName','chartererName','ownerName', 'vesselName',
+     'progress','statusInfo','isChartererAccepted','isOwnerAccepted','action'];
+    tradingRecordsData = new MatTableDataSource<PeriodicElement>();
+    applyFilter(filterValue: string)
+    {
+        this.tradingRecordsData.filter = filterValue.trim().toLowerCase();
+    }
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
-
+    // Datatable Settings End
+    
     /**
      * Constructor
      *
@@ -335,245 +199,1049 @@ export class TradingPlatformManagementComponent implements OnInit
         
     )
     {
-        this.dataSource = new MatTableDataSource(this.drawManagementData);
-        this.dataSourceFilter = new MatTableDataSource(this.drawManagementData);
+        this.tradingRecordsData = new MatTableDataSource(this.tradingRecordsServerSideResponseData );
     }
 
     ngOnInit()
     {
-        this.ownerStatusInfo = 'P';
-        this.chartererStatusInfo = 'P';
-
-        this.ownerStatus = 'Pending';
-        this.chartererStatus = 'Pending';
-
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
-        this.dataSourceFilter.paginator = this.paginator;
-        this.dataSourceFilter.sort = this.sort;
-
-        this.DrawManagementForm = this._formBuilder.group(
-        {
-            formId: ['', Validators.required],
-            vesselId: ['', Validators.required],
-            cpDate: ['', Validators.required],
-            chartererId: ['', Validators.required],
+        // Assign Default Values To Variable Start
+        this.bidNameLabel = 'Trade Name';
+        // Assign Default Values To Variable End
         
-        });
+        // Data Table On Page Load Settings Start
+        this.tradingRecordsData.paginator = this.paginator;
+        this.tradingRecordsData.sort = this.sort;
+        this.tradingRecordsServerSide();
+        // Data Table On Page Load Settings End
 
-        this.DrawManagementSearchForm = this._formBuilder.group(
+        // Set Form And Its Validation Start
+        this.tradingForm = this._formBuilder.group(
         {
-            formIdSearch: ['', ''],
-            vesselIdSearch: ['', ''],
-            cpDateSearch: ['', ''],
-            chartererIdSearch: ['', ''],
-            drawCPIDSearch: ['', ''],
-        
-        });
-
-        this.stdDivManagementForm = this._formBuilder.group(
-        {
-            formIdStdBid: ['', Validators.required],
-            // invited_owners: ['', Validators.required],
+            tradeType: ['', Validators.required],
             std_bid_name: ['', Validators.required],
-            // vesselIdStdBid: ['', Validators.required],
-            // cpDateStdBid: ['', Validators.required],
-            chartererIdStdBid: ['', Validators.required],
-            ownerIdStdBid: ['', Validators.required],
+            chartererId: ['', Validators.required],
+            ownerId: ['', Validators.required],
+            vesselId: ['', Validators.required],
         });
 
-        this.isBrokerLogin = false;
-        this.isChartererLogin = 'N';
+        this.performaForm = this._formBuilder.group(
+        {
+            cpFormId: ['', Validators.required]
+        });
 
+        this.executedForm = this._formBuilder.group(
+        {
+            copyTradingId: ['', Validators.required]
+        });
+        // Set Form And Its Validation End
+
+        // Assign Default Values Start
+        this.isBrokerView = 'N';
+        this.isChartererView = 'N';
+        this.isOwnerView = 'N';
+        // Assign Default Values End
+       
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
-            this.isBrokerLogin = true;
+            this.isBrokerView = 'Y';
             this.isEditView = true;    
             this.isRecapView = true;
-            this.isPdfView = true;
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
-            this.isChartererLogin = 'Y';
             this.acceptRejectTitle = 'Participate / Boycott';
             this.afteracceptRejectTitle = 'BID';
+            this.isChartererView = 'Y';
             this.isEditView = true;    
             this.isRecapView = true;
-            this.isPdfView = false;
         }
 
         if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
         {
             this.acceptRejectTitle = 'Offer Accept / Reject';
             this.afteracceptRejectTitle = 'OFFER';
+            this.isOwnerView = 'Y';
             this.isEditView = true;    
             this.isRecapView = true;
-            this.isPdfView = false;
         }
-
-        this.CPTypeId = '1';
-
-        this.ownerDivShow = 'N'; 
-        this.chartererDivShow = 'N';
-
-        if(JSON.parse(localStorage.getItem('userRoleId')) == 4)
-        {
-            this.chartererDivShow = 'Y';
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-
-            this.dataSourceFilter.paginator = this.paginator;
-            this.dataSourceFilter.sort = this.sort;
-            this.TradingPlatformRecordsServerSideCharterer();
-        } else {
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-
-            this.dataSourceFilter.paginator = this.paginator;
-            this.dataSourceFilter.sort = this.sort;
-            this.TradingFormRecords();
-        }
-        
-        if(JSON.parse(localStorage.getItem('userRoleId')) == 6)
-        {
-            this.ownerDivShow = 'Y';
-        }
-        
-
-        this.cpFormsRecords();
-        this.vesselRecords();
-        this.CPRecords();
-        this.ChartereRecords();
-        this.tradingPlatformRecordsServerSide();
-        this.fetchOwnerData();
-        this.getCompanyName();
-
-        this.charterPartyTypeID = '2';
-
-        if(localStorage.getItem('userRoleId') != '3')
-        {
-            this.brokerDivShow = false;
-        }
-
-        this.buttonInfo = 'View / Update Clause';
     }
 
-    // Update Charterer If He/She Reject Broker Request
-    updateChartererAndSendRequest(event,tradingId): void
+    // Trading Records Server Side Start
+    tradingRecordsServerSide(): void
     {
-        this.chartererUpdateID = event.value;
-
-        var updateData = {};
-            updateData['chartererId'] = this.chartererUpdateID;
-            updateData['tradingId'] = tradingId;
-            updateData['createdBy'] = localStorage.getItem('userId');
-            updateData['updatedBy'] = localStorage.getItem('userId');
-            updateData['email'] = '';
-
-        for(let index = 0; index < this.ChartereInfoData.length; index++)
-        {
-            if(this.chartererUpdateID == this.ChartereInfoData[index].id)
-            {
-                updateData['email'] = this.ChartereInfoData[index].email;
-            }
-        }
+        this.tradingRecordsServerSideResponseData  = [];
+        var conditionData = {};
+            conditionData["dcm.companyId"] = localStorage.getItem('companyId');
+            conditionData["dcm.createdBy"] = (JSON.parse(localStorage.getItem('userRoleId')) == '3') ? localStorage.getItem('userId') : undefined;
+            conditionData["dcm.chartererId"] = (JSON.parse(localStorage.getItem('userRoleId')) == '4') ? localStorage.getItem('userId') : undefined;
+            conditionData["dcm.ownerId"] = (JSON.parse(localStorage.getItem('userRoleId')) == '6') ? localStorage.getItem('userId') : undefined;
         try
         {
-            this._userService.updateChartererToTrade(updateData).pipe(first()).subscribe((res) =>
+            this._userService.TradingFormRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
             {
-                this.TradingFormRecords();
+                this.tradingRecordsServerSideResponse = res;
+                if (this.tradingRecordsServerSideResponse.success === true)
+                {
+                    this.tradingRecordsServerSideResponseData  = this.tradingRecordsServerSideResponse.data;
+                    setTimeout(() => { this.setPaginatorOfTradingRecordsDataTable(); }, 100);
+                }
+            },err => { this.alertService.error(err, 'Error'); });
+        } catch (err){}
+    }
+    // Trading Records Server Side End
+
+    // Trading Records Paginator Set Start
+    setPaginatorOfTradingRecordsDataTable()
+    {
+        this.tradingRecordsData = new MatTableDataSource(this.tradingRecordsServerSideResponse.data);
+        this.tradingRecordsData.paginator = this.paginator;
+        this.tradingRecordsData.sort = this.sort;
+    }
+    // Trading Records Paginator Set End
+
+    // Trading Div Hide Show Start
+    divShowHide(type) : void
+    {
+        this.tradingFormDiv = false;
+        this.tradeRecordsDiv = false;
+        if(type == 1)
+        {
+            this.tradingFormDiv = false;
+            this.tradeRecordsDiv = true;
+        }
+        if(type == 2)
+        {
+            this.tradingFormDiv = true;
+            this.tradeRecordsDiv = false;
+            // Fetch Company Data Start
+            this.fetchCompanyData();
+            // Fetch Company Data End
+        }
+    }
+    // Trading Div Hide Show End
+
+    // Trading Form Inputs Hide Show Start
+    setTradeFormView(event)
+    {
+        this.tradeBothView = false;
+        this.tradeChartererView = false;
+        this.tradeOwnerView = false;
+        var tradeType = event.value;
+        
+        if(tradeType == 1)
+        {
+            // Set Form And Its Validation Start
+            this.tradingForm = this._formBuilder.group(
+            {
+                tradeType: [tradeType, Validators.required],
+                std_bid_name: ['', Validators.required],
+                chartererId: ['', Validators.required],
+                ownerId: ['', ''],
+                vesselId: ['', '']
+            });
+            // Set Form And Its Validation End
+            this.bidNameLabel = 'Bid Name';
+            this.tradeBothView = true;
+            this.tradeChartererView = true;
+            this.chartererRecordsServerSide();
+        }
+        if(tradeType == 2)
+        {
+            // Set Form And Its Validation Start
+            this.tradingForm = this._formBuilder.group(
+            {
+                tradeType: [tradeType, Validators.required],
+                std_bid_name: ['', Validators.required],
+                chartererId: ['', ''],
+                ownerId: ['', Validators.required],
+                vesselId: ['', Validators.required]
+            });
+            // Set Form And Its Validation End
+            this.bidNameLabel = 'Offer Name';
+            this.tradeBothView = true;
+            this.tradeOwnerView = true;
+            this.ownerRecordsServerSide();
+        }
+        if(tradeType == 3)
+        {
+            // Set Form And Its Validation Start
+            this.tradingForm = this._formBuilder.group(
+            {
+                tradeType: [tradeType, Validators.required],
+                std_bid_name: ['', Validators.required],
+                chartererId: ['', Validators.required],
+                ownerId: ['', Validators.required],
+                vesselId: ['', Validators.required]
+            });
+            // Set Form And Its Validation End
+            this.bidNameLabel = 'Trade Name';
+            this.tradeBothView = true;
+            this.tradeChartererView = true;
+            this.tradeOwnerView = true;
+            this.chartererRecordsServerSide();
+            this.ownerRecordsServerSide();
+        }
+    }
+    // Trading Form Inputs Hide Show End
+
+    // Charterer Records Server Side Start
+    chartererRecordsServerSide(): void
+    {
+        var conditionData = {};
+            conditionData['companyId'] = JSON.parse(localStorage.getItem('companyId'));
+            conditionData['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.chartererRecordsServerSideResponse = res;
+                if (this.chartererRecordsServerSideResponse.success === true)
+                {
+                    this.chartererRecordsServerSideResponseData   = this.chartererRecordsServerSideResponse.data;
+                }
             }, err => { console.log(err); });
         } catch (err)
         { console.log(err); }
     }
+    // Charterer Records Server Side End
 
-    // Update Owner If He/She Reject Broker Request
-    updateOwnerAndSendRequest(event,tradingId): void
+    // On Charterer Change Start
+    onChangeCharterer(event): void
     {
-        this.ownerUpdateId = event.value;
-
-        var updateData = {};
-            updateData['ownerId'] = this.ownerUpdateId;
-            updateData['tradingId'] = tradingId;
-            updateData['createdBy'] = localStorage.getItem('userId');
-            updateData['updatedBy'] = localStorage.getItem('userId');
-            updateData['email'] = '';
-
-        for(let index = 0; index < this.ownerRecordData.length; index++)
+        this.chartererId = event.value;
+        let target = event.source.selected._element.nativeElement;
+        this.chartererName = target.innerText.trim();
+        for(let index = 0; index < this.chartererRecordsServerSideResponseData . length; index++)
         {
-            if(this.ownerUpdateId == this.ownerRecordData[index].id)
+            if(this.chartererId == this.chartererRecordsServerSideResponseData [ index].id)
             {
-                updateData['email'] = this.ownerRecordData[index].email;
+                this.chartererEmailID = this.chartererRecordsServerSideResponseData [ index].email;
+                this.chartererMobileNumber = this.chartererRecordsServerSideResponseData [ index].mobileNo;
             }
         }
+    }
+    // On Charterer Change End
+
+    // Owners Records Server Side Start
+    ownerRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '6';
         try
         {
-            this._userService.updateOwnerToTrade(updateData).pipe(first()).subscribe((res) =>
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
             {
-                this.TradingFormRecords();
+                this.ownerRecordsServerSideResponse = res;
+                if (this.ownerRecordsServerSideResponse.success === true)
+                {
+                    this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                }
             }, err => { console.log(err); });
         } catch (err)
         { console.log(err); }
     }
+    // Owners Records Server Side End
 
-     // Fetch Company Data
-     getCompanyName()
-     {
+    // On Owner Change Start
+    onChangeOwner(event)
+    {
+        this.ownerId =  event.value;
+        let target = event.source.selected._element.nativeElement;
+        this.ownerName = target.innerText.trim();
+        for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+        {
+            if(this.ownerId == this.ownerRecordsServerSideResponseData[index].id)
+            {
+                this.ownerEmailID = this.ownerRecordsServerSideResponseData[index].email;
+                this.ownerMobileNumber = this.ownerRecordsServerSideResponseData[index].mobileNo;
+            }
+        }
+        this.vesselRecordsServerSide();
+    }
+    // On Owner Change End
+
+    // Vessel Records Sever Side Start
+    vesselRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData["vm.id_owner"] = this.ownerId;
+        try
+        {
+            this._userService.vesselRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.vesselRecordsServerSideResponse = res;
+                if(this.vesselRecordsServerSideResponse.success == true)
+                {
+                    this.vesselRecordsServerSideResponseData = this.vesselRecordsServerSideResponse.data;
+                }
+            });
+        }catch (err){}
+    }
+    // Vessel Records Sever Side End
+
+    // Fetch Company Data Start
+    fetchCompanyData()
+    {
         var filter = {};
             filter['id'] = localStorage.getItem('companyId');
         try
         {
             this._userService.getCompanyName(filter).pipe(first()).subscribe((res) =>
             {
-                this.companyResponse = res;
-                if (this.companyResponse.success === true)
+                this.companyRecordsServerSideResponse = res;
+                if (this.companyRecordsServerSideResponse.success === true)
                 {
-                    this.companyResponseData = this.companyResponse.data;
-                    this.companyName = this.companyResponseData[0].companyName;
-                    console.log(this.companyName);
+                    this.companyRecordsServerSideResponseData = this.companyRecordsServerSideResponse.data;
+                    this.companyName = this.companyRecordsServerSideResponseData[0].companyName;
                 }
             }, err => {  });
         } catch (err){  }
-     }
-
-    // Fetch Owner Data
-    fetchOwnerData()
-    {
-        var filter = {};
-            filter['companyId'] = this.companyId;
-            filter['userRoleId'] = '6';
-        try
-        {
-            this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
-            {
-                this.ownerRecordResponse = res;
-                if (this.ownerRecordResponse.success === true)
-                {
-                    this.ownerRecordData = this.ownerRecordResponse.data;
-                }
-            }, err => { console.log(err); });
-        } catch (err)
-        { console.log(err); }
     }
+    // Fetch Company Data End
 
-    // Owner On Change
-    onChangeOwner(event)
+    // Trading Form Submit Start 
+    tradingFormSubmit(): void
     {
-        this.ownerId =  event.value;
-        let target = event.source.selected._element.nativeElement;
-        this.ownerName = target.innerText.trim();
-        for(let index = 0; index < this.ownerRecordData.length; index++)
-        {
-            if(this.ownerId == this.ownerRecordData[index].id)
+        this.alertService.clear();
+        if (this.tradingForm.invalid)
+        { 
+            return;
+        } else {
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions =
             {
-                this.ownerEmailID = this.ownerRecordData[index].email;
-                this.ownerMobileNumber = this.ownerRecordData[index].mobileNo;
+                headers: header
             }
+            this.ownerId = this.tradingFormValue.ownerId.value;
+            this.vesselId = this.tradingFormValue.vesselId.value;
+            this.chartererId = this.tradingFormValue.chartererId.value;
+            this.ownerId = (this.ownerId != '' && this.ownerId != null && this.ownerId != undefined) ? this.ownerId : null;
+            this.chartererId = (this.chartererId != '' && this.chartererId != null && this.chartererId != undefined) ? this.chartererId : null;
+            const submitData =
+            {
+                CPTypeId: '3',
+                brokerId: localStorage.getItem('userId'),
+                ownerId : this.ownerId,
+                vesselId : (this.vesselId != '' && this.vesselId != null && this.vesselId != undefined) ? this.vesselId : null,
+                chartererId : this.chartererId,
+                std_bid_name:this.tradingFormValue.std_bid_name.value,
+                chartererBrokerId: localStorage.getItem('userId'),
+                ownerBrokerId: localStorage.getItem('userId'),
+                createdBy: localStorage.getItem('userId'),
+                updatedBy: localStorage.getItem('userId'),
+                companyId: localStorage.getItem('companyId'),
+            };
+            try
+            {
+                this.http.post(`${config.baseUrl}/TradingStandardFormCreate`, submitData, headerOptions).subscribe(
+                res =>
+                {
+                    this.tradingFormSubmitResponse = res;
+                    if (this.tradingFormSubmitResponse.success === true)
+                    {
+                        this.tradingId = this.tradingFormSubmitResponse.data[0];
+
+                        const tradingMessageData =
+                        {
+                            tradingId       :       this.tradingId,
+                            message         :       'Broker Intiated Trade',
+                            createdBy       :       localStorage.getItem('userId'),
+                            updatedBy       :       localStorage.getItem('userId')
+                        };
+                        this.http.post(`${config.baseUrl}/tradingMessageInsert`,
+                        tradingMessageData, headerOptions).subscribe(res =>{},err =>{});
+                        
+                        if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                        {
+                            const ownerNotificationData =
+                            {
+                                fromUserId      :       localStorage.getItem('userId'),
+                                toUserId        :       this.ownerId,
+                                ownerId         :       this.ownerId,
+                                chartererId     :       null,
+                                tradingId       :       this.tradingId,
+                                email           :       this.ownerEmailID,
+                                notification    :       'You are invited for trading offer',
+                                createdBy       :       localStorage.getItem('userId'),
+                                updatedBy       :       localStorage.getItem('userId')
+                            };
+                            this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`,
+                            ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
+
+                            const tradingProgressData =
+                            {
+                                tradingId       :       this.tradingId,
+                                ownerId         :       this.ownerId,
+                                brokerId        :       localStorage.getItem('userId'),
+                                chartererId     :       null,
+                                message         :       'Broker Intiated Trade',
+                                createdBy       :       localStorage.getItem('userId'),
+                                updatedBy       :       localStorage.getItem('userId')
+                            };
+                            this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+                        }
+                        
+                        if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                        {
+                            const chartererNotificatioNData =
+                            {
+                                fromUserId      :       localStorage.getItem('userId'),
+                                toUserId        :       this.chartererId,
+                                ownerId         :       null,
+                                chartererId     :       this.chartererId,
+                                tradingId       :       this.tradingId,
+                                email           :       this.chartererEmailID,
+                                notification    :       'You are invited for trading standard bid',
+                                createdBy       :       localStorage.getItem('userId'),
+                                updatedBy       :       localStorage.getItem('userId')
+                            };
+
+                            this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, chartererNotificatioNData, headerOptions).subscribe(res =>{},err =>{});
+
+                            const tradingProgressData =
+                            {
+                                tradingId       :       this.tradingId,
+                                ownerId         :       null,
+                                brokerId        :       localStorage.getItem('userId'),
+                                chartererId     :       this.chartererId,
+                                message         :       'Broker Intiated Trade',
+                                createdBy       :       localStorage.getItem('userId'),
+                                updatedBy       :       localStorage.getItem('userId')
+                            };
+                            this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+                        }
+                        this.tradeSubmitInformationView = true;
+                    }
+                },
+                err =>
+                {
+                    this.alertService.error(err, 'Error');
+                });
+            } catch (err)
+            {
+            } 
         }
     }
+    // Trading Form Submit End
 
+    // Show Active Modal Start
+    showActiveModal(status,tradingId,ownerId,chartererId,brokerId): void
+    {
+        this.tradingId = tradingId;
+        this.brokerId = brokerId;
+        this.ownerId = ownerId;
+        this.chartererId = chartererId;
+        this.statusAction = status;
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+    // Show Active Modal End
+
+    // Hide Active Modal Start
+    hideActiveModal(): void
+    {
+        this.activeModalStatus = !this.activeModalStatus;
+    }
+    // Hide Active Modal End
+
+    // Show Inavtive Modal Start
+    showInActiveModal(status,tradingId,ownerId,chartererId,brokerId): void
+    {
+        this.tradingId = tradingId;
+        this.brokerId = brokerId;
+        this.ownerId = ownerId;
+        this.chartererId = chartererId;
+        this.statusAction = status;
+        this.inActiveModalStatus = !this.inActiveModalStatus;
+    }
+    // Show Inavtive Modal End
+
+    // Hide Inactive Modal Start
+    hideInActiveModal(): void
+    {
+        this.inActiveModalStatus = !this.inActiveModalStatus;
+    }
+    // Hide Inactive Modal End
+
+    // Show Action Type Modal Start
+    showActionTypeModal(): void
+    {
+        this.activeModalStatus = !this.activeModalStatus;
+        this.actionTypeModal = !this.actionTypeModal;
+    }
+    // Show Action Type Modal End
+
+    // Hide Action Type Modal Start
+    hideActionTypeModal(): void
+    {
+        this.actionTypeModal = !this.actionTypeModal;
+    }
+    // Hide Action Type Modal End
+
+    // Show Performa Modal Start
+    showPerformaModal(): void
+    {
+        this.actionTypeModal = !this.actionTypeModal;
+        this.performaModal = !this.performaModal;
+        // Set Form And Its Validation Start
+        this.performaForm = this._formBuilder.group(
+        {
+            cpFormId: ['', Validators.required]
+        });
+        // Set Form And Its Validation End
+        this.cpFormRecordsServerSide();
+    }
+    // Show Performa Modal End
+
+    // Hide Performa Modal Start
+    hidePerformaModal(): void
+    {
+        this.performaModal = !this.performaModal;
+    }
+    // Hide Performa Modal End
+
+    // Fetch CP Form Data Records Server Side Start
+    cpFormRecordsServerSide()
+    {
+        try
+        {
+            this.http.get(`${config.baseUrl}/cpFromlist`).subscribe((res) =>
+            {
+                this.cpFormRecordsServerSideResponse = res;
+                if(this.cpFormRecordsServerSideResponse.success == true)
+                {
+                    this.cpFormRecordsServerSideResponseData = this.cpFormRecordsServerSideResponse.data;
+                }
+            });
+        }catch (err){}
+    }
+    // Fetch CP Form Data Records Server Side End
+
+    // Performa Form Submit Start 
+    performaFormSubmit(): void
+    {
+        this.alertService.clear();
+        if (this.performaForm.invalid)
+        { 
+            return;
+        } else {
+            this.performaModal = !this.performaModal;
+            this.cpFormId = this.performaFormValue.cpFormId.value;
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+            const tradingDataUpdate =
+            {
+                id: this.tradingId,
+                formId: this.cpFormId,
+                updatedBy: localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+            
+            const statusUpdateData =
+            {
+                tradingId: this.tradingId,
+                ownerId: this.ownerId,
+                chartererId: this.chartererId,
+                isAccepted: this.statusAction,
+                updatedBy: localStorage.getItem('userId'),
+            };
+            this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+            {
+                this.tradingDataUpdateResponse = data;
+                if (this.tradingDataUpdateResponse.success === true)
+                {
+                    this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
+                    this.tradingRecordsServerSide();
+                } else {
+                    this.alertService.error(this.tradingDataUpdateResponse.message, 'Error');
+                }
+            },
+            error =>
+            {
+                this.alertService.error(error.message, 'Error');
+            });
+
+            if(statusUpdateData.isAccepted == 'Y')
+            {
+                const tradingDataUpdate =
+                {
+                    id: this.tradingId,
+                    progress: '20',
+                    progress_info: '2',
+                    updatedBy: localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+            }
+
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+            }
+
+            const tradingMessageData =
+            {
+                tradingId       :       this.tradingId,
+                message         :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingMessageInsert`,
+            tradingMessageData, headerOptions).subscribe(res =>{},err =>{});
+
+            const tradingNotificationData =
+            {
+                fromUserId      :       localStorage.getItem('userId'),
+                toUserId        :       this.brokerId,
+                notification    :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+            tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+            
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.ownerId,
+                        notification    :       UpdateMessage,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.chartererId,
+                        notification    :       UpdateMessage,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+            
+            if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+            {
+                const tradingProgressData =
+                {
+                    tradingId       :       this.tradingId,
+                    ownerId         :       this.ownerId,
+                    brokerId        :       localStorage.getItem('userId'),
+                    chartererId     :       null,
+                    message         :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+            }
+            
+            if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+            {
+                const tradingProgressData =
+                {
+                    tradingId       :       this.tradingId,
+                    ownerId         :       null,
+                    brokerId        :       localStorage.getItem('userId'),
+                    chartererId     :       this.chartererId,
+                    message         :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+            }
+
+        }
+    }
+    // Trading Form Submit End
+
+    // Show Executed Modal Start
+    showExecutedModal(): void
+    {
+        this.actionTypeModal = !this.actionTypeModal;
+        this.executedModal = !this.executedModal;
+        // Set Form And Its Validation Start
+        this.executedForm = this._formBuilder.group(
+        {
+            copyTradingId: ['', Validators.required]
+        });
+        // Set Form And Its Validation End
+        this.fixtureRecordsServerSide();
+    }
+    // Show Performa Modal End
+
+    // Fetch Fixture Records Server Side Start
+    fixtureRecordsServerSide()
+    {
+        var ConditionData = {};
+            ConditionData["dcm.progress"] = '100';
+        try
+        {
+            this._userService.TradingFormRecordsServerSide(ConditionData).pipe(first()).subscribe((res) =>
+            {
+                this.fixtureRecordsServerSideResponse = res;
+                if(this.fixtureRecordsServerSideResponse.success == true)
+                {
+                    this.fixtureRecordsServerSideResponseData = this.fixtureRecordsServerSideResponse.data;
+                }
+            });
+        }catch (err){}
+    }
+    // Fetch CP Form Data Records Server Side End
+
+    // Executed Form Submit Start 
+    executedFormSubmit(): void
+    {
+        this.alertService.clear();
+        if (this.executedForm.invalid)
+        { 
+            return;
+        } else {
+            this.executedModal = !this.executedModal;
+            this.copyTradingId = this.executedFormValue.copyTradingId.value;
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+
+            const copyTradingData =
+            {
+                tradingId: this.tradingId,
+                copyID: this.copyTradingId,
+                updatedBy: localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/copyTradingData`, copyTradingData, headerOptions).subscribe( res =>{});
+            
+            const statusUpdateData =
+            {
+                tradingId: this.tradingId,
+                ownerId: this.ownerId,
+                chartererId: this.chartererId,
+                isAccepted: this.statusAction,
+                updatedBy: localStorage.getItem('userId'),
+            };
+            this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+            {
+                this.tradingDataUpdateResponse = data;
+                if (this.tradingDataUpdateResponse.success === true)
+                {
+                    this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
+                    this.tradingRecordsServerSide();
+                } else {
+                    this.alertService.error(this.tradingDataUpdateResponse.message, 'Error');
+                }
+            },
+            error =>
+            {
+                this.alertService.error(error.message, 'Error');
+            });
+
+            if(statusUpdateData.isAccepted == 'Y')
+            {
+                const tradingDataUpdate =
+                {
+                    id: this.tradingId,
+                    progress: '20',
+                    progress_info: '2',
+                    updatedBy: localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+            }
+
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+            }
+
+            const tradingMessageData =
+            {
+                tradingId       :       this.tradingId,
+                message         :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingMessageInsert`,
+            tradingMessageData, headerOptions).subscribe(res =>{},err =>{});
+
+            const tradingNotificationData =
+            {
+                fromUserId      :       localStorage.getItem('userId'),
+                toUserId        :       this.brokerId,
+                notification    :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+            tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+            
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.ownerId,
+                        notification    :       UpdateMessage,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.chartererId,
+                        notification    :       UpdateMessage,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+            
+            if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+            {
+                const tradingProgressData =
+                {
+                    tradingId       :       this.tradingId,
+                    ownerId         :       this.ownerId,
+                    brokerId        :       localStorage.getItem('userId'),
+                    chartererId     :       null,
+                    message         :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+            }
+            
+            if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+            {
+                const tradingProgressData =
+                {
+                    tradingId       :       this.tradingId,
+                    ownerId         :       null,
+                    brokerId        :       localStorage.getItem('userId'),
+                    chartererId     :       this.chartererId,
+                    message         :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+                tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+            }
+
+        }
+    }
+    // Executed Form Submit End
+
+    // Hide Performa Modal Start
+    hideExecutedModal(): void
+    {
+        this.executedModal = !this.executedModal;
+    }
+    // Hide Performa Modal End
+
+    // Accept / Reject Charterer Owner Request Start
+    acceptRejectChartererOwnerTradeRequest(): void
+    {
+        const statusUpdateData =
+        {
+            tradingId: this.tradingId,
+            ownerId: this.ownerId,
+            chartererId: this.chartererId,
+            isAccepted: this.statusAction,
+            updatedBy: localStorage.getItem('userId'),
+        };
+        this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+        {
+            this.tradingDataUpdateResponse = data;
+            if (this.tradingDataUpdateResponse.success === true)
+            {
+                this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
+                if(statusUpdateData.isAccepted == 'Y')
+                {
+                    this.activeModalStatus = !this.activeModalStatus;
+                } else {
+                    this.inActiveModalStatus = !this.inActiveModalStatus;
+                }
+                this.tradingRecordsServerSide();
+            } else {
+                this.alertService.error(this.tradingDataUpdateResponse.message, 'Error');
+            }
+        },
+        error =>
+        {
+            this.alertService.error(error.message, 'Error');
+        });
+
+        const header = new HttpHeaders();
+        header.append('Content-Type', 'application/json');
+        const headerOptions = { headers: header }
+        if(statusUpdateData.isAccepted == 'Y')
+        {
+            const tradingDataUpdate =
+            {
+                id: this.tradingId,
+                progress: '20',
+                progress_info: '2',
+                updatedBy: localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+        }
+
+        if(localStorage.getItem('userRoleId') == '4')
+        {
+            var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+        }
+
+        if(localStorage.getItem('userRoleId') == '6')
+        {
+            var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+        }
+
+        const tradingMessageData =
+        {
+            tradingId       :       this.tradingId,
+            message         :       UpdateMessage,
+            createdBy       :       localStorage.getItem('userId'),
+            updatedBy       :       localStorage.getItem('userId')
+        };
+        this.http.post(`${config.baseUrl}/tradingMessageInsert`,
+        tradingMessageData, headerOptions).subscribe(res =>{},err =>{});
+
+        const tradingNotificationData =
+        {
+            fromUserId      :       localStorage.getItem('userId'),
+            toUserId        :       this.brokerId,
+            notification    :       UpdateMessage,
+            createdBy       :       localStorage.getItem('userId'),
+            updatedBy       :       localStorage.getItem('userId')
+        };
+        this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+        tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+        
+        if(localStorage.getItem('userRoleId') == '4')
+        {
+            if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+            {
+                const tradingNotificationData =
+                {
+                    fromUserId      :       localStorage.getItem('userId'),
+                    toUserId        :       this.ownerId,
+                    notification    :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+            }
+        }
+
+        if(localStorage.getItem('userRoleId') == '6')
+        {
+            if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+            {
+                const tradingNotificationData =
+                {
+                    fromUserId      :       localStorage.getItem('userId'),
+                    toUserId        :       this.chartererId,
+                    notification    :       UpdateMessage,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+            }
+        }
+        
+        if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+        {
+            const tradingProgressData =
+            {
+                tradingId       :       this.tradingId,
+                ownerId         :       this.ownerId,
+                brokerId        :       localStorage.getItem('userId'),
+                chartererId     :       null,
+                message         :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+        }
+        
+        if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+        {
+            const tradingProgressData =
+            {
+                tradingId       :       this.tradingId,
+                ownerId         :       null,
+                brokerId        :       localStorage.getItem('userId'),
+                chartererId     :       this.chartererId,
+                message         :       UpdateMessage,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingProgressInsert`,
+            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+        }
+    }
+    // Accept / Reject Charterer Owner Request End
+
+    // Trade Edit View Start
+    editView(tradingId) : void
+    {
+        const reqData =
+        {
+            mainUserId: localStorage.getItem('userId'),
+            companyId: localStorage.getItem('companyId'),
+            tradingId: tradingId,
+            isTrading : '1'
+        };
+        localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
+        this.router.navigate(['/apps/drawCp-Clauses-management']);
+    }
+    // Trade Edit View End
+
+    // Old Codes
 
     recapView(tradingId,formId,chartererId)
     {
@@ -590,1137 +1258,4 @@ export class TradingPlatformManagementComponent implements OnInit
         localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
         this.router.navigate(['/apps/recap-management']);
     }
-
-    editView(tradingId,formId,chartererId,isStdBid,ownerId,std_bid_name) : void
-    {
-        console.log(isStdBid);
-        this.tradingId = tradingId;
-        this.chartererId = chartererId;
-        this.ownerId = ownerId;
-        console.log(std_bid_name);
-
-        const reqData =
-        {
-            mainUserId: localStorage.getItem('userId'),
-            companyId: localStorage.getItem('companyId'),
-            tradingId: tradingId,
-            formId : formId,
-            chartererId : chartererId,
-            isTrading : '1',
-            isStdBid : isStdBid,
-            std_bid_name : std_bid_name,
-        };
-        console.log(reqData);
-
-        localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-
-        this.router.navigate(['/apps/drawCp-Clauses-management']);
-
-        if(localStorage.getItem('userRoleId') == '4')
-        {
-            this.router.navigate(['/apps/drawCp-Clauses-management']);
-        }
-
-        if(localStorage.getItem('userRoleId') == '6')
-        {
-            this.router.navigate(['/apps/drawCp-Clauses-management']);
-        }
-
-
-     
-    }
-
-    setDrawID(tradingId,formId,chartererId) : void
-    {
-        this.tradingId = tradingId;
-        this.formId = formId;
-        this.chartererId = chartererId;
-        this.existingDrawCPButton = true;
-    }
-
-    setDrawIDExecuted(tradingId,formId,chartererId) : void
-    {
-        this.tradingId = tradingId;
-        this.formId = formId;
-        this.chartererId = chartererId;
-        this.drawRecordsTableShowButton = true;
-    }
-
-    getTermsReviewData() : void
-    {
-        const reqData =
-        {
-            mainUserId: localStorage.getItem('userId'),
-            companyId: localStorage.getItem('companyId'),
-            tradingId: this.tradingId,
-            formId : this.formId,
-            chartererId : this.chartererId,
-            isTrading : '1',
-        };
-        console.log(reqData);
-        localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-        this.router.navigate(['/apps/drawCp-Clauses-management']);
-    }
-    
-    claueseDetailInsertUpdate() : void
-    {   
-       // console.log("HERE IN TERMS INSERT UPDATE");
-        
-        var mainUserId = localStorage.getItem('userId');
-       // console.log(mainUserId +" Main User ID");
-
-        var companyId = localStorage.getItem('companyId');
-       // console.log(companyId + " Company ID");
-
-        var tradingId = this.tradingId;
-       // console.log(tradingId + " Draw ID");
-
-        var formId = this.formId;
-       // console.log(formId + " CP Form ID");
-
-        var clauseCategoryId = '1';
-       // console.log(clauseCategoryId + " Clause Category ID");
-
-        var clauseTermsId = '1';
-       // console.log(clauseTermsId + " Clause Terms ID");
-
-        var nos = '1';
-       // console.log(nos + " Nos");
-
-        var termsNameOrginal = 'Clause Terms 1';
-       // console.log(termsNameOrginal + " Terms Orginal Name");
-
-        var termsName = 'Clause Terms 1 2 Custom';
-       // console.log(termsName + " Terms Name");
-
-        const req =
-        {
-            mainUserId:mainUserId,
-            companyId:companyId,
-            tradingId: tradingId,
-            formId:formId,
-            clauseCategoryId: clauseCategoryId,
-            clauseTermsId: clauseTermsId,
-            nos: nos,
-            termsNameOrginal: termsNameOrginal,
-            termsName: termsName,
-            createdBy: localStorage.getItem('userId'),
-            updatedBy: localStorage.getItem('userId'),
-        };
-        
-        try
-        {
-            const header = new HttpHeaders();
-            header.append('Content-Type', 'application/json');
-            const headerOptions =
-            {
-                headers: header
-            }
-
-            // Post URL For Insert Update Without Custom = claueseDetailInsertUpdate
-            // Post URL For Insert Update With Custom = claueseDetailCustomInsertUpdate
-
-            this.http.post(`${config.baseUrl}/claueseDetailInsertUpdate`, req, headerOptions).subscribe(
-                res =>
-                {
-                    this.termsUpdateRes = res;
-                   console.log("HERE OUT RESPONSE");
-                   console.log(this.termsUpdateRes);
-                    if (this.termsUpdateRes.success === true)
-                    {
-                       // console.log("HERE IN RESPONSE");
-                       // console.log(this.termsUpdateRes);
-                    }
-                }
-            );
-        } catch (err)
-        {
-        } 
-    }
-
-
-
-    drawCPFormView() : void
-    {
-        this.brokerDivShow = false;
-        this.existingDrawCP = false;
-        this.existingDrawCPButton = false;
-        this.mainDrawCPDiv = true;
-    }
-
-    existingDrawCPView() : void
-    {
-        this.brokerDivShow = true;
-        this.existingDrawCP = true;
-        this.mainDrawCPDiv = false;
-        this.mainDrawCPDiv = false;
-        this.drawRecordsFilterShow = false;
-        this.drawRecordsTableShow = false;
-        this.drawRecordsTableShowButton = false;
-        this.standardOffersFormDivShow = false;
-        this.standardOffersFormTableShow = false;
-        this.drawFormDivShow = false;
-        this.stdDivShow = false;
-        this.TradingFormRecords();
-    }
-
-    TradingFormRecords(): void
-    {
-        this.drawManagementData = [];
-        
-        var arrfilterInfo = {};
-
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
-        {
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
-        }
-        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        
-        try
-        {
-            this._userService.TradingFormRecordsServerSide(arrfilterInfo)
-                .pipe(first())
-                .subscribe((res) =>
-                {
-                    this.drawManagementRes = res;
-                   
-                    this.drawManagementData = this.drawManagementRes.data;
-                    this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-                    this.dataSource.paginator = this.paginator;
-                    this.dataSource.sort = this.sort;
-
-                    // setTimeout(() => {
-                    //     this.updateFilterPaginatorMainTrading();
-                    // }, 1000);
-                    
-                    if (this.drawManagementRes.success === true)
-                    {
-                    }
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                });
-            } catch (err)
-            {
-            }
-    }
-
-    updateFilterPaginatorMainTrading()
-    {
-        console.log('HERE IN MAIN TRADING');
-        console.log(this.drawManagementRes.data);
-        this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-    }
-
-
-    drawIdServerSide() : void
-    {
-        this.drawManagementData = [];
-
-        var arrfilterInfo = {};
-
-        var isCondition = 0;
-
-        if(this.formIdValueForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
-        }
-        if(this.vesselIdValueForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
-        }
-        if(this.cpDateValueForDrawRecords != '')
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
-        }
-        if(this.drawCPIDForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.chartererBrokerId"] = this.chartererIdValueForDrawRecords;
-        }
-
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
-        {
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
-        }
-        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-
-        arrfilterInfo["dcm.progress"] = '100';
-        
-        try
-        {
-            this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
-            {
-                this.drawManagementResFilter = res;
-                this.drawFormDivShow = false;
-                this.stdDivShow = false;
-                this.drawRecordsTableShow = true;
-                this.drawManagementData = this.drawManagementResFilter.data;
-                this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
-                this.dataSourceFilter.paginator = this.paginator;
-                this.dataSourceFilter.sort = this.sort;
-                if (this.drawManagementResFilter.success === true)
-                {
-                   
-                    localStorage.setItem('tradingId',this.drawManagementResFilter.data[0].id);
-                }
-                this.show = true;
-            },
-            err =>
-            {
-                this.alertService.error(err, 'Error');
-            });
-        } catch (err)
-        {
-        }
-    }
-
-
-    drawRecordsServerSide() : void
-    {
-        this.drawManagementData = [];
-
-        var arrfilterInfo = {};
-
-        var isCondition = 0;
-
-        if(this.formIdValueForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
-        }
-        if(this.vesselIdValueForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
-        }
-        if(this.cpDateValueForDrawRecords != '')
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
-        }
-        if(this.chartererIdValueForDrawRecords != '')
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.chartererId"] = this.chartererIdValueForDrawRecords;
-        }
-        if(this.drawCPIDForDrawRecords > 0)
-        {
-            isCondition = 1;
-            arrfilterInfo["dcm.id"] = this.drawCPIDForDrawRecords;
-        }
-
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
-        {
-            arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
-        {
-            arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        }
-        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-        {
-            arrfilterInfo["dcm.ownerId"] = localStorage.getItem('userId');
-        }
-        // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
-        arrfilterInfo["dcm.progress"] = '100';
-        try
-        {
-            this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
-            {
-                this.drawManagementResFilter = res;
-                this.drawFormDivShow = false;
-                this.stdDivShow = false;
-                this.drawRecordsTableShow = true;
-                this.drawManagementData = this.drawManagementResFilter.data;
-                
-                setTimeout(() => {
-                    this.updateFilterPaginator();
-                }, 100);
-
-                if (this.drawManagementResFilter.success === true)
-                {
-                   
-                }
-                this.show = true;
-            },
-            err =>
-            {
-                this.alertService.error(err, 'Error');
-            });
-        } catch (err)
-        {
-        }
-    }
-
-    
-    updateFilterPaginator()
-    {
-        this.dataSourceFilter = new MatTableDataSource(this.drawManagementResFilter.data);
-        this.dataSourceFilter.paginator = this.paginator;
-        this.dataSourceFilter.sort = this.sort;
-    }
-
-    editdrawManagementData(data): void
-    {
-        localStorage.setItem('drawManagementData', JSON.stringify(data));
-        this.router.navigate(['/apps/draw-management/edit']);
-    }
-
-    showDeleteModal(id): void
-    {
-        this.id = id;
-        this.showModalStatus = !this.showModalStatus;
-    }
-
-    hideDeleteModal(): void
-    {
-        this.showModalStatus = !this.showModalStatus;
-    }
-
-    deletedrawManagementData(): void
-    {
-        const req =
-        {
-            id: this.id,
-        };
-        try
-        {
-            this.http
-                .post(`${config.baseUrl}/TradingPlatformDataRemove`, req, {})
-                .subscribe
-                (
-                    res =>
-                    {
-                        this.drawManagementRes = res;
-                        if (this.drawManagementRes.success === true)
-                        {
-                            this.showModalStatus = false;
-                            this.alertService.success('Successfully Deleted', 'Success');
-                            this.TradingFormRecords();
-                        } else {
-                            this.alertService.error(this.drawManagementRes.message, 'Error');
-                        }
-                    },
-                    err =>
-                    {
-                        this.alertService.error(err.message, 'Error');
-                    }
-                );
-        } catch (err)
-        {
-        }
-    }
-
-    selected = new FormControl('valid', [
-        Validators.required,
-        Validators.pattern('valid'),
-      ]);
-    
-      selectFormControl = new FormControl('valid', [
-        Validators.required,
-        Validators.pattern('valid'),
-      ]);
-    
-      nativeSelectFormControl = new FormControl('valid', [
-        Validators.required,
-        Validators.pattern('valid'),
-      ]);
-    
-    //   matcher = new MyErrorStateMatcher();
-
-    get f() { return this.DrawManagementForm.controls; }
-    get fStdBid() { return this.stdDivManagementForm.controls; }
-    get fSearch() { return this.DrawManagementSearchForm.controls; }
-
-    // Draw CP Form Records Fetch Start
-    
-        tradingPlatformRecordsServerSide(): void
-        {
-            var arrfilterInfo = {};
-
-            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-
-            
-            if(this.formIdValueForDrawRecords > 0)
-            {
-                
-                arrfilterInfo["dcm.formId"] = this.formIdValueForDrawRecords;
-            }
-            if(this.vesselIdValueForDrawRecords > 0)
-            {
-                
-                arrfilterInfo["dcm.vesselId"] = this.vesselIdValueForDrawRecords;
-            }
-            if(this.cpDateValueForDrawRecords != '')
-            {
-                
-                arrfilterInfo["dcm.cpDate"] = this.cpDateValueForDrawRecords;
-            }
-            if(this.chartererIdValueForDrawRecords != '')
-            {
-                
-                arrfilterInfo["dcm.chartererId"] = this.chartererIdValueForDrawRecords;
-            }
-            if(this.drawCPIDForDrawRecords > 0)
-            {
-                
-                arrfilterInfo["dcm.id"] = this.drawCPIDForDrawRecords;
-            }
-            
-            try
-            {
-                this._userService.TradingFormRecordsServerSide(arrfilterInfo)
-                    .pipe(first())
-                    .subscribe((res) =>
-                    {
-                        this.drawManagementRes = res;
-                        if (this.drawManagementRes.success === true)
-                        {
-                            this.drawCPDataData = this.drawManagementRes.data;
-                        }
-                    },
-                    err =>
-                    {
-                        this.alertService.error(err, 'Error');
-                        
-                    });
-                } catch (err)
-                {
-                }
-        }
-
-        changeDrawCP(event): void
-        {
-            this.formId = event.value;
-        }
-
-    // Draw CP Form Records Fetch End
-
-    // CP Records Fetch Start
-    
-    cpFormsRecords(): void
-    {
-        try
-        {
-            this.http.get(`${config.baseUrl}/cpFromlist`).subscribe(
-                res =>
-                {
-                    this.cpFormList = res;
-                    if (this.cpFormList.success)
-                    {
-                        this.cpFormData = this.cpFormList.data;
-                    }
-                },
-                err =>
-                {
-                }
-            );
-        } catch (err)
-        {
-        }
-    }
-
-    changeCPForm(event): void
-    {
-        this.formId = event.value;
-    }
-
-    changeCPFormSearch(event): void
-    {
-        this.formId = event.value;
-    }
-
-// CP Form Records Fetch End
-
-    // Vessel Records Fetch Start
-
-        vesselRecords(): void
-        {
-            try
-            {
-                this.http.get(`${config.baseUrl}/vessellist`).subscribe(
-                    res =>
-                    {
-                        this.VesselList = res;
-                        if (this.VesselList.success)
-                        {
-                            this.VesselData = this.VesselList.data;
-                        }
-                    },
-                    err => {
-                    }
-                );
-            } catch (err)
-            {
-            }
-        }
-
-        changeVesselEvent(event): void
-        {
-            this.vesselId = event.value;
-            for (let index = 0; index < this.VesselData.length; index++)
-            {   
-                if (this.VesselData[index].id == this.vesselId)
-                {
-                    this.ownerId = this.VesselData[index].id_owner;
-                }
-            }
-        }
-
-    // Vessel Records Fetch End
-
-    // Charter Party Type Records Fetch Start
-
-        CPRecords(): void
-        {
-            try
-            {
-                this.http.get(`${config.baseUrl}/charterpartylist`).subscribe(
-                    res =>
-                    {
-                        this.CharterPartyTypeList = res;
-                        if (this.CharterPartyTypeList.success)
-                        {
-                            this.CharterPartyTypeData = this.CharterPartyTypeList.data;
-                        }
-
-                        this.CharterPartyTypeList = res;
-                        if (this.CharterPartyTypeList.success)
-                        {
-                            this.CharterPartyTypeList.data.forEach(valueData  => 
-                            {
-                                this.CharterPartyTypeArray.push(valueData);
-                            });
-                        }
-
-                    },
-                    err =>
-                    {
-                    }
-                );
-            } catch (err)
-            {
-            }
-        }
-
-        changeCharterPartyType(event): void
-        {
-            this.chartererId = event.target.value;
-        }
-
-    // Charter Party Type Records Fetch End
-
-    // Charter Party Type Records Fetch Start
-
-        ChartereRecords(): void
-        {
-        
-            var filter = {};
-                filter['companyId'] = JSON.parse(localStorage.getItem('companyId'));
-                filter['userRoleId'] = '4';
-            try
-            {
-                this._userService.userRecordsServerSide(filter).pipe(first()).subscribe((res) =>
-                {
-                    this.ChartereInfoList = res;
-                    if (this.ChartereInfoList.success === true)
-                    {
-                        this.ChartereInfoData = this.ChartereInfoList.data;
-                    }
-                }, err => { console.log(err); });
-            } catch (err)
-            { console.log(err); }
-        }
-
-        changeChartererType(event): void
-        {
-            this.chartererId = event.value;
-            let target = event.source.selected._element.nativeElement;
-            this.chartererName = target.innerText.trim();
-            for(let index = 0; index < this.ChartereInfoData.length; index++)
-            {
-                if(this.chartererId == this.ChartereInfoData[index].id)
-                {
-                    this.chartererEmailID = this.ChartereInfoData[index].email;
-                    this.chartererMobileNumber = this.ChartereInfoData[index].mobileNo;
-                }
-            }
-        }
-
-    // Charter Party Type Records Fetch End
-
-    // Set Applicable Charter Party Type Start
-
-        setApplicabelCharterParty(Type): void
-        {
-            this.formId = '';
-            this.vesselId = '';
-            this.cpDate = '';
-            this.chartererId = '';
-            this.ownerId = '';
-
-            this.formIdSearch = '';
-            this.vesselIdSearch = '';
-            this.cpDateSearch = '';
-            this.chartererIdSearch = '';
-            this.chartererId = '';
-            this.ownerId = '';
-
-            this.DrawManagementForm = this._formBuilder.group(
-            {
-            
-                formId: ['', Validators.required],
-                vesselId: ['', Validators.required],
-                cpDate: ['', Validators.required],
-                chartererId: ['', Validators.required],
-            });
-
-            this.stdDivManagementForm = this._formBuilder.group(
-            {
-                formIdStdBid: ['', Validators.required],
-                // invited_owners: ['', Validators.required],
-                std_bid_name: ['', Validators.required],
-                // vesselIdStdBid: ['', Validators.required],
-                // cpDateStdBid: ['', Validators.required],
-                chartererIdStdBid: ['', Validators.required],
-                ownerIdStdBid: ['', Validators.required],
-            });
-    
-            this.DrawManagementSearchForm = this._formBuilder.group(
-            {
-                formIdSearch: ['', ''],
-                vesselIdSearch: ['', ''],
-                cpDateSearch: ['', ''],
-                chartererIdSearch: ['', ''],
-                drawCPIDSearch: ['', ''],
-            });
-
-            // this.DrawManagementSearchForm.reset(); 
-            // this.DrawManagementForm.reset(); 
-
-            this.drawRecordsFilterShow = false;
-            this.drawRecordsTableShow = false;
-            this.drawRecordsTableShowButton = false;
-            this.drawFormDivShow = false;
-            this.stdDivShow = false;
-            this.CPTypeId = Type;
-            if(Type == 1)
-            {
-                this.drawRecordsFilterShow = true;
-            }
-            if(Type == 2)
-            {
-                this.drawFormDivShow = true;
-            }
-            if(Type == 3)
-            {
-                this.stdDivShow = true;
-            }
-        }
-
-    // Set Applicable Charter Party Type End
- 
-    onSubmit(): void
-    {
-        this.submitted = true;
-        this.alertService.clear();
-        if (this.DrawManagementForm.invalid)
-        { 
-            return;
-        } else {
-
-            var convertedDate = moment(this.f.cpDate.value).format("YYYY-MM-DD");
-
-            this.formIdValueForDrawRecords      =       this.f.formId.value;
-            this.vesselIdValueForDrawRecords    =       this.f.vesselId.value,
-            this.cpDateValueForDrawRecords      =       convertedDate,
-            this.chartererIdValueForDrawRecords =       this.f.chartererId.value;
-
-            // localStorage.setItem('userId','1');
-
-            // this.drawRecordsServerSide();
-
-            const req =
-            {
-                CPTypeId:this.CPTypeId,
-                formId:this.formIdValueForDrawRecords,
-                vesselId: this.vesselIdValueForDrawRecords,
-                ownerId:this.ownerId,
-                cpDate: this.cpDateValueForDrawRecords,
-                chartererBrokerId: localStorage.getItem('userId'),
-                chartererId: this.chartererIdValueForDrawRecords,
-                ownerBrokerId: localStorage.getItem('userId'),
-                createdBy: localStorage.getItem('userId'),
-                updatedBy: localStorage.getItem('userId'),
-                companyId: localStorage.getItem('companyId'),
-            };
-            
-            localStorage.setItem('cpFormId',req.formId);
-            
-            this.loading = true;
-            try
-            {
-                const header = new HttpHeaders();
-                header.append('Content-Type', 'application/json');
-                const headerOptions =
-                {
-                    headers: header
-                }
-                this.http.post(`${config.baseUrl}/TradingFormCreate`, req, headerOptions).subscribe(
-                    res =>
-                    {
-                        this.createtypeRes = res;
-                        if (this.createtypeRes.success === true)
-                        {
-                            this.tradingId = this.createtypeRes.data[0];
-                            this.alertService.success(this.createtypeRes.message, 'Success');
-                            // this.DrawManagementForm.reset();
-                            // this.drawIdServerSide();
-
-                            const reqData =
-                            {
-                                mainUserId: localStorage.getItem('userId'),
-                                companyId: localStorage.getItem('companyId'),
-                                tradingId: this.tradingId,
-                                formId : req.formId,
-                                chartererId : this.chartererIdValueForDrawRecords,
-                                isTrading : '1',
-                            };
-                            console.log(reqData);
-                            localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
-                            this.router.navigate(['/apps/drawCp-Clauses-management']);
-                            // this.drawRecordsServerSide();
-                        } else {
-                            this.alertService.error(this.createtypeRes.message, 'Error');
-                        }
-                    },
-                    err =>
-                    {
-                        this.alertService.error(err, 'Error');
-                    }
-                );
-            } catch (err)
-            {
-            } 
-        }
-    }
-    
-    onSubmitStdBidOffer(): void
-    {
-        console.log('HERE IN STD BID SUBMIT');
-        this.submitted = true;
-        this.alertService.clear();
-        if (this.stdDivManagementForm.invalid)
-        { 
-            console.log(this.stdDivManagementForm);
-            return;
-        } else {
-
-            // var convertedDate = moment(this.fStdBid.cpDateStdBid.value).format("YYYY-MM-DD");
-
-            this.formIdValueForDrawRecords      =       this.fStdBid.formIdStdBid.value;
-            // this.vesselIdValueForDrawRecords    =       this.fStdBid.vesselIdStdBid.value,
-            // this.cpDateValueForDrawRecords      =       convertedDate,
-            // this.chartererIdValueForDrawRecords =       this.fStdBid.chartererIdStdBid.value;
-            this.std_bid_name = this.fStdBid.std_bid_name.value;
-
-            var owners = this.ownerMultiple.join();
-            console.log(owners);
-            
-            const req =
-            {
-                CPTypeId:this.CPTypeId,
-                formId:this.formIdValueForDrawRecords,
-                vesselId: null,
-                ownerId:this.ownerId,
-                std_bid_name:this.std_bid_name,
-                invited_owners:'',
-                cpDate: this.cpDateValueForDrawRecords,
-                chartererBrokerId: localStorage.getItem('userId'),
-                chartererId: this.chartererId,
-                ownerBrokerId: localStorage.getItem('userId'),
-                createdBy: localStorage.getItem('userId'),
-                updatedBy: localStorage.getItem('userId'),
-                companyId: localStorage.getItem('companyId'),
-            };
-
-            console.log(req);
-            
-            localStorage.setItem('cpFormId',req.formId);
-            
-            this.loading = true;
-            try
-            {
-                const header = new HttpHeaders();
-                header.append('Content-Type', 'application/json');
-                const headerOptions =
-                {
-                    headers: header
-                }
-                this.http.post(`${config.baseUrl}/TradingStandardFormCreate`, req, headerOptions).subscribe(
-                res =>
-                {
-                    this.createtypeRes = res;
-                    if (this.createtypeRes.success === true)
-                    {
-                        this.tradingId = this.createtypeRes.data[0];
-                        
-                        const ownerNotificationData =
-                        {
-                            fromUserId      :       localStorage.getItem('userId'),
-                            toUserId        :       this.ownerId,
-                            ownerId         :       this.ownerId,
-                            chartererId     :       null,
-                            tradingId       :       this.tradingId,
-                            email           :       this.ownerEmailID,
-                            notification    :       'You are invited for trading standard bid',
-                            createdBy       :       localStorage.getItem('userId'),
-                            updatedBy       :       localStorage.getItem('userId')
-                        };
-
-                        this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
-
-                        const chartererNotificatioNData =
-                        {
-                            fromUserId      :       localStorage.getItem('userId'),
-                            toUserId        :       this.chartererId,
-                            ownerId         :       null,
-                            chartererId     :       this.chartererId,
-                            tradingId       :       this.tradingId,
-                            email           :       this.chartererEmailID,
-                            notification    :       'You are invited for trading standard bid',
-                            createdBy       :       localStorage.getItem('userId'),
-                            updatedBy       :       localStorage.getItem('userId')
-                        };
-
-                        this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, chartererNotificatioNData, headerOptions).subscribe(res =>{},err =>{});
-
-                        this.stdTableView = true;
-                        this.stdDivButtonShow = false;
-
-                    }
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                });
-            } catch (err)
-            {
-            } 
-        }
-    }
-
-
-
-    fetchDrawRecords(): void
-    {
-        this.alertService.clear();
-        
-        var isValid = 1;
-
-        if(isValid == 0)
-        {
-            return;
-        }  else {
-            var convertedDate = moment(this.fSearch.cpDateSearch.value).format("YYYY-MM-DD");
-            if(this.fSearch.formIdSearch.value)
-            {
-                this.formIdValueForDrawRecords      =       this.fSearch.formIdSearch.value;
-            }
-            if(this.fSearch.vesselIdSearch.value)
-            {
-                this.vesselIdValueForDrawRecords      =       this.fSearch.vesselIdSearch.value;
-            }
-            if(this.fSearch.cpDateSearch.value)
-            {
-                this.cpDateValueForDrawRecords      =       convertedDate;
-            }
-            if(this.fSearch.chartererIdSearch.value)
-            {
-                this.chartererIdValueForDrawRecords      =       this.fSearch.chartererIdSearch.value;
-            }
-            if(this.fSearch.drawCPIDSearch.value)
-            {
-                this.drawCPIDForDrawRecords      =       this.fSearch.drawCPIDSearch.value;
-            }
-            this.drawRecordsServerSide();
-        }
-    }
-
-    TradingPlatformRecordsServerSideCharterer(): void
-    {
-        this.drawManagementData = [];
-        var arrfilterInfo = {};
-        arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
-        arrfilterInfo["dcm.chartererId"] = localStorage.getItem('userId');
-        // arrfilterInfo["ds.chartererId"] = localStorage.getItem('userId');
-        try
-        {
-            this._userService.TradingPlatformRecordsServerSideCharterer(arrfilterInfo)
-                .pipe(first())
-                .subscribe((res) =>
-                {
-                    this.drawManagementRes = res;
-                    if (this.drawManagementRes.success === true)
-                    {
-                        this.drawManagementData = this.drawManagementRes.data;
-                        this.dataSource = new MatTableDataSource(this.drawManagementData);
-                        this.dataSource.paginator = this.paginator;
-                        this.dataSource.sort = this.sort;
-                    }
-                    console.log(this.dataSource)
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                });
-            } catch (err)
-            {
-            }
-    }
-
-    updateDataStatus(): void
-    {
-        const req =
-        {
-            id: this.dataID,
-            isAccepted: this.statusAction,
-            updatedBy: localStorage.getItem('userId'),
-        };
-
-        var updateData = {};
-            updateData['tradingId'] = this.tradingId;
-            if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-            {
-                updateData['ownerId'] = localStorage.getItem('userId');
-            }
-            if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
-            {
-                updateData['chartererId'] = localStorage.getItem('userId');
-            }
-            updateData['isAccepted'] = this.statusAction;
-            updateData['updatedBy'] = localStorage.getItem('userId');
-
-        this._userService.TradingPlatformRequestStatusUpdateCommon(updateData)
-        .pipe(first())
-        .subscribe(
-        data =>
-        {
-            this.updateDataReqeust = data;
-            if (this.updateDataReqeust.success === true)
-            {
-                this.alertService.success(this.updateDataReqeust.message, 'Success');
-                if(req.isAccepted == 'Y')
-                {
-                    this.activeModalStatus = !this.activeModalStatus;
-                } else {
-                    this.inActiveModalStatus = !this.inActiveModalStatus;
-                }
-
-                if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                {
-                    this.TradingFormRecords();
-                } else {
-                    this.TradingPlatformRecordsServerSideCharterer();
-                }
-                
-            } else {
-                this.alertService.error(this.updateDataReqeust.message, 'Error');
-            }
-        },
-        error =>
-        {
-            this.alertService.error(error.message, 'Error');
-        });
-        
-    }
-
-    updateDataStatusOwner(): void
-    {
-        const req =
-        {
-            id: this.dataID,
-            isAccepted: this.statusAction,
-            updatedBy: localStorage.getItem('userId'),
-        };
-        this._userService.TradingPlatformRequestStatusUpdate(req)
-            .pipe(first())
-            .subscribe(
-            data =>
-            {
-                this.updateDataReqeust = data;
-                if (this.updateDataReqeust.success === true)
-                {
-                    this.alertService.success(this.updateDataReqeust.message, 'Success');
-                    if(req.isAccepted == 'Y')
-                    {
-                        this.activeModalStatus = !this.activeModalStatus;
-                    } else {
-                        this.inActiveModalStatus = !this.inActiveModalStatus;
-                    }
-                    this.TradingPlatformRecordsServerSideCharterer();
-                } else {
-                    this.alertService.error(this.updateDataReqeust.message, 'Error');
-                }
-            },
-            error =>
-            {
-                this.alertService.error(error.message, 'Error');
-            });
-    }
-
-    showActiveModal(status,tradingId,ownerId,chartererId): void
-    {
-        this.tradingId = tradingId;
-        this.ownerId = ownerId;
-        this.chartererId = chartererId;
-        this.statusAction = status;
-        this.activeModalStatus = !this.activeModalStatus;
-    }
-
-    hideActiveModal(): void
-    {
-        this.activeModalStatus = !this.activeModalStatus;
-    }
-
-    showInActiveModal(status,tradingId,ownerId,chartererId): void
-    {
-        this.tradingId = tradingId;
-        this.ownerId = ownerId;
-        this.chartererId = chartererId;
-        this.statusAction = status;
-        this.inActiveModalStatus = !this.inActiveModalStatus;
-    }
-
-    hideInActiveModal(): void
-    {
-        this.inActiveModalStatus = !this.inActiveModalStatus;
-    }
-
 }

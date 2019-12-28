@@ -15,6 +15,7 @@ import { ProfileModule } from 'app/main/pages/profile/profile.module';
 import { SearchClassicModule } from 'app/main/pages/search/classic/search-classic.module';
 import { SearchModernModule } from 'app/main/pages/search/modern/search-modern.module';
 import { FaqModule } from 'app/main/pages/faq/faq.module';
+// import { ContactModule } from 'app/main/pages/contact/contact.module';
 
 @NgModule({
     imports: [
@@ -25,7 +26,7 @@ import { FaqModule } from 'app/main/pages/faq/faq.module';
         ResetPasswordModule,
         LockModule,
         MailConfirmModule,
-
+        // ContactModule,
         // Coming-soon
         ComingSoonModule,
 

@@ -166,6 +166,10 @@ const routes = [
         path: 'term-management',
         loadChildren: './term-management/term-managment.module#TermManagementModule',
     },
+    {
+        path: 'contact',
+        loadChildren: './contact/contact.module#ContactModule',
+    },
 
 ];
 

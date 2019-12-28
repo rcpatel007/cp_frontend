@@ -60,7 +60,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     createUserRes: any;
     filterValue: string;
     userRoleId: any;
-    tempUserListData: any;    
+    tempUserListData =[];    
     status = 'Y';
     deleteRoleRes: any;
 
@@ -194,7 +194,12 @@ export class UserManagementComponent implements OnInit, OnDestroy {
                 .subscribe((res) => {
                     this.userListRes = res;
                     if (this.userListRes.success === true) {
-                        this.tempUserListData = this.userListRes.data;
+                        for (let index = 0; index < this.userListRes.data.length; index++) {
+                           if (this.userListRes.data[index].companyId == localStorage.getItem('companyId')) {
+                            this.userListData.push(this.userListRes.data[index]);
+                           }
+                        }
+                        // this.tempUserListData = this.userListRes.data;
                         this.userListData = this.userListRes.data;
                         this.dataSource = new MatTableDataSource(this.userListData);
                         this.dataSource.paginator = this.paginator;

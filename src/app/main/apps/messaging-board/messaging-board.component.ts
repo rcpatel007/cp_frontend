@@ -327,7 +327,11 @@ export class MessagingBoardComponent implements OnInit
             this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
                 this.tradingRecordsResponse = res;
+
                 this.tradingRecordsResponseArray = this.tradingRecordsResponse.data;
+
+                console.log(this.tradingRecordsResponse,'data');
+                
             },err => { this.alertService.error(err, 'Error'); });
         } catch (err){}
     }

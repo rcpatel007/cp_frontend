@@ -2,6 +2,109 @@
 
 #ofcm {
 
+    .cst-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999999999999;
+    
+        &--active {
+            display: block;
+        }
+    
+        &__content {
+            max-width: 576px;
+            width: 100%;
+            border-radius: 10px;
+            margin: 0 auto;
+            background: #fff;
+            margin-top: 120px;
+            padding: 0px 20px;
+        }
+        &__header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            padding-bottom: 5px;
+        }
+        &__title {
+            color: #333;
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        &__close {
+            font-size: 30px;
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &__body {
+            padding: 15px;
+            padding-top: 0;
+        }
+        &__form-group {
+            &:not(:last-child) {
+                margin-bottom: 15px;
+            }
+        }
+        &__form-label {
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 500;
+            &--inline {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+        &__form-field {
+            padding: 10px 0px;
+            border: none;
+            width: 100%;
+            border-bottom: 1px solid #00000059;
+        }
+      
+        &__footer {
+            padding: 15px;
+            text-align: right;
+        }
+        &__button {
+            border: none;
+            border-radius: 10px;
+            margin: 0px 10px;
+            width: 85px;
+            cursor: pointer;
+            letter-spacing: 0.8px;
+            box-shadow: 0px 1px 4px #00000070;
+            padding: 7px 0px;
+            &--add, &--submit,
+            &--delete, &--active, &--inactive {
+                color: #fff;
+                background: #28b7fb;
+                &:disabled {
+                    opacity: .5;
+                    cursor: unset !important;
+                }
+            }
+            &--cancel {
+                color: #00000094;
+                background: transparent;
+                border: 1px solid #0000007a;
+            }
+            
+        }
+    }
+
     .timePickerCustomButttonCSS
     {
         padding: 5px !important;
@@ -36,6 +139,109 @@
         color: #1e88e5 !important;
         margin-top: -13px !important;
         position: absolute;
+    }
+
+    .cst-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999999999999;
+    
+        &--active {
+            display: block;
+        }
+    
+        &__content {
+            max-width: 576px;
+            width: 100%;
+            border-radius: 10px;
+            margin: 0 auto;
+            background: #fff;
+            margin-top: 120px;
+            padding: 0px 20px;
+        }
+        &__header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            padding-bottom: 5px;
+        }
+        &__title {
+            color: #333;
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        &__close {
+            font-size: 30px;
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &__body {
+            padding: 15px;
+            padding-top: 0;
+        }
+        &__form-group {
+            &:not(:last-child) {
+                margin-bottom: 15px;
+            }
+        }
+        &__form-label {
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 500;
+            &--inline {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+        &__form-field {
+            padding: 10px 0px;
+            border: none;
+            width: 100%;
+            border-bottom: 1px solid #00000059;
+        }
+      
+        &__footer {
+            padding: 15px;
+            text-align: right;
+        }
+        &__button {
+            border: none;
+            border-radius: 10px;
+            margin: 0px 10px;
+            width: 85px;
+            cursor: pointer;
+            letter-spacing: 0.8px;
+            box-shadow: 0px 1px 4px #00000070;
+            padding: 7px 0px;
+            &--add, &--submit,
+            &--delete, &--active, &--inactive {
+                color: #fff;
+                background: #28b7fb;
+                &:disabled {
+                    opacity: .5;
+                    cursor: unset !important;
+                }
+            }
+            &--cancel {
+                color: #00000094;
+                background: transparent;
+                border: 1px solid #0000007a;
+            }
+            
+        }
     }
 
     .inputStringCustomDynamic
@@ -296,15 +502,7 @@
     {
         width: 100%;
     }
-
-    .matCheckboxCustom label
-    {
-        width: 100%;
-        display: block;
-        height: 50px;
-        padding: 15px;
-    }
-
+    
     .clauseLableCustom
     {
         color: #007a87 !important;
@@ -1103,9 +1301,105 @@ cursor: pointer;
 }
 
 
+.cst-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999999999999;
 
+    &--active {
+        display: block;
+    }
 
-.mat-checkbox-layout .mat-checkbox-label{
-    white-space: normal !important;
-    color: #fff;
+    &__content {
+        max-width: 576px;
+        width: 100%;
+        border-radius: 10px;
+        margin: 0 auto;
+        background: #fff;
+        margin-top: 120px;
+        padding: 0px 20px;
+    }
+    &__header {
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 2rem;
+        padding-bottom: 5px;
+    }
+    &__title {
+        color: #333;
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    &__close {
+        font-size: 30px;
+        background: transparent;
+        border: none;
+        font-weight: 600;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    &__body {
+        padding: 15px;
+        padding-top: 0;
+    }
+    &__form-group {
+        &:not(:last-child) {
+            margin-bottom: 15px;
+        }
+    }
+    &__form-label {
+        color: #333;
+        margin-bottom: 5px;
+        display: block;
+        font-weight: 500;
+        &--inline {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+    &__form-field {
+        padding: 10px 0px;
+        border: none;
+        width: 100%;
+        border-bottom: 1px solid #00000059;
+    }
+  
+    &__footer {
+        padding: 15px;
+        text-align: right;
+    }
+    &__button {
+        border: none;
+        border-radius: 10px;
+        margin: 0px 10px;
+        width: 85px;
+        cursor: pointer;
+        letter-spacing: 0.8px;
+        box-shadow: 0px 1px 4px #00000070;
+        padding: 7px 0px;
+        &--add, &--submit,
+        &--delete, &--active, &--inactive {
+            color: #fff;
+            background: #28b7fb;
+            &:disabled {
+                opacity: .5;
+                cursor: unset !important;
+            }
+        }
+        &--cancel {
+            color: #00000094;
+            background: transparent;
+            border: 1px solid #0000007a;
+        }
+        
+    }
 }
