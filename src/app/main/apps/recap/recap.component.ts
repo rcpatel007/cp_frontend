@@ -1129,7 +1129,7 @@ export class RecapComponent implements OnInit
     // Draw Status Information Update
     drawStatusInfoUpdate()
     {
-        var statusInfoValue = 'Broker Initiated';
+        var statusInfoValue = 'Broker Updates';
         if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
             statusInfoValue = 'Charterer Viewed';

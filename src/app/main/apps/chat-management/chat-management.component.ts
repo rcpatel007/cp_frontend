@@ -237,9 +237,9 @@ export class ChatManagementComponent implements OnInit
         });
         // Assign Form Values End
         
-        // this.brokerRecords();
-        // this.charterersRecords();
-        // this.ownerRecords();
+        this.brokerRecords();
+        this.charterersRecords();
+        this.ownerRecords();
 
         this.chatManagementRecordsServerSide();
 
@@ -287,6 +287,8 @@ export class ChatManagementComponent implements OnInit
                 if (this.brokerRecordsResponse.success === true)
                 {
                     this.brokerRecordsResponseArray = this.brokerRecordsResponse.data;
+                    console.log(this.brokerRecordsResponseArray);
+                    
                 }
             },err => {});
         } catch (err) {}
@@ -308,6 +310,9 @@ export class ChatManagementComponent implements OnInit
                 if (this.chartererRecordsResponse.success === true)
                 {
                     this.chartererRecordsResponseArray = this.chartererRecordsResponse.data;
+
+                    console.log(this.chartererRecordsResponseArray);
+                    
                 }
             },err => {});
         } catch (err) {}
@@ -329,6 +334,8 @@ export class ChatManagementComponent implements OnInit
                 if (this.ownerRecordsResponse.success === true)
                 {
                     this.ownerRecordsResponseArray = this.ownerRecordsResponse.data;
+                    console.log(this.ownerRecordsResponseArray);
+                    
                 }
             },err => {});
         } catch (err) {}
