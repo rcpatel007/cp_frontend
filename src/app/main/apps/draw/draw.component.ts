@@ -615,6 +615,13 @@ export class DrawComponent implements OnInit
             
             // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
         }
+         if(JSON.parse(localStorage.getItem('userRoleId')) == '5')
+        {
+            arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
+            arrfilterInfo["dcm.is_submitted"] = '1';
+            
+            // arrfilterInfo["dcm.createdBy"] = localStorage.getItem('userId');
+        }
         if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
             arrfilterInfo["dcm.companyId"] = localStorage.getItem('companyId');
@@ -630,11 +637,13 @@ export class DrawComponent implements OnInit
         }
         try
         {
+            console.log(arrfilterInfo);
             this._userService.drawRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
                 this.drawManagementRes = res;
                 if (this.drawManagementRes.success === true)
                 {
+                    this.isRecapView =true;
                     this.drawManagementData = this.drawManagementRes.data;
                     this.dataSource = new MatTableDataSource(this.drawManagementRes.data);
                     this.dataSource.paginator = this.paginator;
@@ -1055,41 +1064,73 @@ export class DrawComponent implements OnInit
     
 
         const req ={
-            drawStatusInfoCharterer: data.drawStatusInfoCharterer,
-            drawStatusInfoOwner:data.drawStatusInfoOwner,
-            isChartererAccepted: data.isChartererAccepted,
-            CPTypeId:data.CPTypeId,
-            progress: 10,
-            status: 0,
-            formId:data.formId,
-            vesselId: data.vesselId,
-            ownerId: data.ownerId,
-                brokerId:localStorage.getItem('userId') ,
-            chartererId: data.chartererId,
-            chartererBrokerId: data.chartererBrokerId,
-            ownerBrokerId: data.ownerBrokerId,
-            cpDate: data.cpDate,
-            cpTime: data.cpTime,
-            cpCity:data.cpCity,
-            cpSubject: data.cpSubject,
-            cpLiftDate: data.cpLiftDate,
-            cpLiftTime: data.cpLiftTime,
-            cpLiftCity: data.cpLiftCity,
-            companyId: data.companyId,
-            cpDateInfo: data.cpDateInfo,
-            isAccepted: data.isAccepted,
-            createdBy: localStorage.getItem('userId'),
-            updatedBy: localStorage.getItem('userId'),
+            // drawStatusInfoCharterer: data.drawStatusInfoCharterer,
+            // drawStatusInfoOwner:data.drawStatusInfoOwner,
+            // isChartererAccepted: data.isChartererAccepted,
+            // CPTypeId:data.CPTypeId,
+            // progress: 10,
+            // status: 0,
+            // formId:data.formId,
+            // vesselId: data.vesselId,
+            // ownerId: data.ownerId,
+            // brokerId:localStorage.getItem('userId') ,
+            // chartererId: data.chartererId,
+            // chartererBrokerId: data.chartererBrokerId,
+            // ownerBrokerId: data.ownerBrokerId,
+            // cpDate: data.cpDate,
+            // cpTime: data.cpTime,
+            // cpCity:data.cpCity,
+            // cpSubject: data.cpSubject,
+            // cpLiftDate: data.cpLiftDate,
+            // cpLiftTime: data.cpLiftTime,
+            // cpLiftCity: data.cpLiftCity,
+            // companyId: data.companyId,
+            // cpDateInfo: data.cpDateInfo,
+            // isAccepted: data.isAccepted,
+            // createdBy: localStorage.getItem('userId'),
+            // updatedBy: localStorage.getItem('userId'),
+            // broker_clauses:data.broker_clauses,
+            // owner_clauses: data.owner_clauses,
+            // charterer_clauses: data.charterer_clauses,
+            // common_clauses:data.common_clauses,
+            // custom_common_clause: data.custom_common_clause,
+            // custom_term_clause:data.custom_term_clause,
+            // checked_clauses:data.checked_clauses
 
-            broker_clauses:data.broker_clauses,
-            owner_clauses: data.owner_clauses,
-            charterer_clauses: data.charterer_clauses,
-            common_clauses:data.common_clauses,
-            custom_common_clause: data.custom_common_clause,
-            custom_term_clause:data.custom_term_clause,
-            checked_clauses:data.checked_clauses
+    CPTypeId:data.CPTypeId,
+    progress: 10,
+    status:data.status,
+    statusInfo: data.statusInfo,
+
+    formId:data.formId,
+    vesselId: data.vesselId,
+    ownerId: data.ownerId,
+    chartererId: data.chartererId,
+    chartererBrokerId:data.chartererBrokerId,
+    ownerBrokerId: data.ownerBrokerId,
+    cpDate:data.cpDate,
+    cpTime: data.cpTime,
+    brokerId:localStorage.getItem('userId'),
+    cpCity: data.cpCity,
+    cpSubject:data.cpSubject,
+    cpLiftDate: data.cpLiftDate,
+    cpLiftTime:data.cpLiftTime,
+    cpLiftCity:data.cpLiftCity,
+    companyId:data.companyId,
+    isAccepted:data.isAccepted,
+    createdBy:data.createdBy,
+    updatedBy: data.updatedBy,
+    broker_clauses: data.broker_clauses,
+    owner_clauses:data.owner_clauses,
+    charterer_clauses:data.charterer_clauses,
+    common_clauses:data.common_clauses,
+    custom_common_clause:data.custom_common_clause,
+    custom_term_clause:data.custom_term_clause,
+    checked_clauses:data.checked_clauses
         }
         console.log(data,"data");
+        console.log(req,"req");
+
         try
         {
             const header = new HttpHeaders();
@@ -1295,6 +1336,10 @@ export class DrawComponent implements OnInit
         this.formId = event.value;
     }
 
+    changeCompnayId(event): void
+    {
+        this.companyId = event.value;
+    }
     changeCPFormSearch(event): void
     {
         this.formId = event.value;
@@ -1491,6 +1536,7 @@ export class DrawComponent implements OnInit
  
     onSubmit(): void
     {
+        console.log(localStorage.getItem('companyId'));
         this.submitted = true;
         this.alertService.clear();
         if (this.DrawManagementForm.invalid)

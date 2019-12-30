@@ -136,7 +136,8 @@ var childrenArrayInfo = {};
     childrenArrayInfo["icon"] = 'speaker_notes';
     childrenArrayInfo["url"] = '/apps/term-management';
     childrenArray.push(childrenArrayInfo);
-
+    
+    var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'contact';
     childrenArrayInfo["title"] = 'User Directory';
     childrenArrayInfo["type"] = 'item';

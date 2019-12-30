@@ -96,8 +96,7 @@
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                         </button>
 
-                        <button 
-                           mat-button class="click-icon click-icon--done" 
+                        <button mat-button class="click-icon click-icon--done" 
                             *ngIf="isRecapView" 
                             (click)="recapView(row.id,row.formId,row.chartererId)"
                         >
@@ -166,7 +165,7 @@
                     </mat-form-field>
                     <mat-form-field class="customFormfullWidth" appearance="outline">
                         <mat-label>Vessel</mat-label>
-                        <mat-select formControlName="vesselIdSearch" matSelect (selectionChange)="changeCPForm($event)">
+                        <mat-select formControlName="vesselIdSearch" matSelect (selectionChange)="changeCom($event)">
                             <mat-option *ngFor="let VesselData of VesselData" [ngClass]="{'d-none': VesselData.isActive === 'N'}" [value]="VesselData.id"> {{VesselData.vessel_name}} </mat-option>
                         </mat-select>
                     </mat-form-field>

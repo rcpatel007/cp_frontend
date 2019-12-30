@@ -243,7 +243,7 @@ export class ChatManagementComponent implements OnInit
 
         this.chatManagementRecordsServerSide();
 
-        this.socket.on('message', (result) => {     
+        this.socket.on('new-message', (result) => {     
             this.msg.push(result.data.message);
    
             console.log(result,"data");
@@ -506,7 +506,8 @@ export class ChatManagementComponent implements OnInit
                 res =>
                 {
                     
-                       this.socket.emit('message', { data: req });
+                       this.socket.emit('new-message', { data: req });
+
                     this.alertService.success('Message Created And Send Successfully', 'Success');
                     this.showHideModules(1);
                     this.chatManagementRecordsServerSide();
@@ -547,7 +548,7 @@ export class ChatManagementComponent implements OnInit
             {
                 headers: header
             }
-            this.socket.emit('message', { data: req });
+            this.socket.emit('new-message', { data: req });
 
             this.http.post(`${config.baseUrl}/chatCreate`, req, headerOptions).subscribe(
             res =>

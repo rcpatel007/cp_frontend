@@ -15,7 +15,7 @@ import { config } from '../../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
-
+import * as io from 'socket.io-client';
 export interface UserData
 {
     id: string;
@@ -43,6 +43,7 @@ export interface UserData
 export class AddDrawComponent implements OnInit
 {
 
+    socket;
     CPTypeId: string;
     formId: string;
     vesselId: string;
@@ -78,8 +79,9 @@ export class AddDrawComponent implements OnInit
     CharterPartyTypeData: any;
 
     ChartereInfoList: any;
+    msgNotification :any;
     ChartereInfoData=[];
-
+    notification = [];
     // Private
     private _unsubscribeAll: Subject<any>;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -106,6 +108,7 @@ export class AddDrawComponent implements OnInit
         private alertService: AlertService
     )
     {
+        this.socket = io('http://localhost:3001');
         this._unsubscribeAll = new Subject();
     }
  
@@ -122,6 +125,20 @@ export class AddDrawComponent implements OnInit
         
         });
 
+        this.socket.on('message', (result) => {     
+            this.notification.push(result.data.message);
+   
+            console.log(result,"data");
+            
+            var container = document.getElementById("msgContainer");    
+            container.scrollTop = container.scrollHeight; 
+
+                    //   console.log(this.msg,"hello ");
+
+          });
+
+       console.log(this.notification,'data test');
+         
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/apps/drawCp-Clauses-management';
 
         this.cpFormRecords();

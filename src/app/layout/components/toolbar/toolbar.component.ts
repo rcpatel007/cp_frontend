@@ -174,6 +174,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     logout() {
         console.log('log');
         this.authenticationService.logout();
+        localStorage.clear();
         this.router.navigate(['/pages/auth/login']);
       }
 
