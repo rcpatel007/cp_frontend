@@ -84,7 +84,7 @@ export class AnalyticsDashboardComponent implements OnInit
 {
     widget6: any = {};
 
-    
+    fixture1:String;
 type1 :String;
 type2:String;
 status1:String;
