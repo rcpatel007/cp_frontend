@@ -85,6 +85,10 @@ export class AnalyticsDashboardComponent implements OnInit
     widget6: any = {};
 
     
+type1 :String;
+type2:String;
+status1:String;
+status2:String;
 
     widgets: any;
     widget1SelectedYear = '2016';
