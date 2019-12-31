@@ -18,6 +18,7 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
+import * as io from 'socket.io-client';
 
 export interface UserData
 {
@@ -81,6 +82,14 @@ export interface NotificationRecords
     createdAt: string;
 }
 
+export interface TradingProgresRecords
+{   
+    id:String;
+    tradingId: string;
+    message: string;
+    identifier : string;
+}
+
 @Component(
 {
     selector: 'app-messaging-board',
@@ -92,15 +101,20 @@ export interface NotificationRecords
 
 export class MessagingBoardComponent implements OnInit
 {
+
+    socket: any;
     // Table Codes Start
     displayedColumns: string[] = ['id','tradingId','createdDateInfo','createdTimeInfo','createdByName','message','action'];
     displayedColumnsNotificaiton: string[] = ['id','notification','createdAt'];
+    displayedColumnsTradingProgress: string[] = ['identifier'];
     messageCenterRecords = new MatTableDataSource<PeriodicElement>();
     notificationRecords = new MatTableDataSource<NotificationRecords>();
+    tradingProgressRecords = new MatTableDataSource<TradingProgresRecords>();
     applyFilter(filterValue: string)
     {
         this.messageCenterRecords.filter = filterValue.trim().toLowerCase();
         this.notificationRecords.filter = filterValue.trim().toLowerCase();
+        this.tradingProgressRecords.filter = filterValue.trim().toLowerCase();
     }
     dialogRef: any;
     hasSelectedContacts: boolean;
@@ -129,6 +143,9 @@ export class MessagingBoardComponent implements OnInit
     isActive : string;
     isDelete: string;
     action : string;
+    currentDate : string;
+    date1 : string;
+    date2 : string;
     // Main Data Variables End
 
     // Show Hide Variables Start
@@ -143,6 +160,8 @@ export class MessagingBoardComponent implements OnInit
     submitted = false;
     NudgesMessageCenterForm : FormGroup;
     get NudgesMessageCenterFormValues() { return this.NudgesMessageCenterForm.controls; }
+    SystemAlertsCenterForm : FormGroup;
+    get SystemAlertsCenterFormValues() { return this.SystemAlertsCenterForm.controls; }
     // General Variable Emd
     
     // Assign API Data Response And Array Variables Start
@@ -154,6 +173,10 @@ export class MessagingBoardComponent implements OnInit
 
     notificationRecordsResponse: any;
     notificationRecordsResponseArray = [];
+
+    tradingProgressRecordsServerSide : any;
+    tradingProgressRecordsServerSideData : any;
+    notification =[];
     // Assign API Data Response And Array Variables End
     
     /**
@@ -179,12 +202,22 @@ export class MessagingBoardComponent implements OnInit
         
     )
     {
+
+        this.socket = io('http://localhost:3001');
+        this.socket.on('message', (result) => {
+            console.log(result);
+            this.notification.push(result.data);
+
+        });
+
         this.messageCenterRecords = new MatTableDataSource(this.messageCenterResponseArray);
         this.notificationRecords = new MatTableDataSource(this.notificationRecordsResponseArray);
     }
 
     ngOnInit()
     {
+        this.currentDate = moment().format("YYYY-MM-DD");
+
         // Assign Paginator Values Start
         this.messageCenterRecords.paginator = this.paginator;
         this.messageCenterRecords.sort = this.sort;
@@ -199,6 +232,11 @@ export class MessagingBoardComponent implements OnInit
             tradingId: ['', Validators.required],
             message: ['', Validators.required]
         });
+        this.SystemAlertsCenterForm = this._formBuilder.group(
+        {
+            date1: [this.currentDate, Validators.required],
+            date2: [this.currentDate, Validators.required]
+        });
         // Assign Form Values End
         
         this.userDataUpdateToMessageCenter();
@@ -211,6 +249,7 @@ export class MessagingBoardComponent implements OnInit
     {
         this.alertService.clear();
         this.NudgesMessageCenterForm.reset();
+        // this.SystemAlertsCenterForm.reset();
 
         this.nudgesTableDiv = false;
         this.nudgesFormDiv = false;
@@ -231,6 +270,7 @@ export class MessagingBoardComponent implements OnInit
         if(type == '3')
         {
             this.systemAlertsDiv = true;
+            this.SystemAlertsRecordsServerSide();
         }
 
         if(type == '4')
@@ -327,11 +367,7 @@ export class MessagingBoardComponent implements OnInit
             this._userService.TradingFormRecordsServerSide(arrfilterInfo).pipe(first()).subscribe((res) =>
             {
                 this.tradingRecordsResponse = res;
-
                 this.tradingRecordsResponseArray = this.tradingRecordsResponse.data;
-
-                console.log(this.tradingRecordsResponse,'data');
-                
             },err => { this.alertService.error(err, 'Error'); });
         } catch (err){}
     }
@@ -360,6 +396,120 @@ export class MessagingBoardComponent implements OnInit
                 updatedBy: localStorage.getItem('userId'),
                 companyId: localStorage.getItem('companyId'),
             };
+
+            const header = new HttpHeaders();
+            header.append('Content-Type', 'application/json');
+            const headerOptions = { headers: header }
+
+            if(localStorage.getItem('userRoleId') == '3')
+            {
+                if(this.chartererId !=  '' && this.chartererId != null && this.chartererId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.chartererId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+
+                            this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+                if(this.ownerId !=  '' && this.ownerId != null && this.ownerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.ownerId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+
+                        this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+            }
+
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                if(this.brokerId !=  '' && this.brokerId != null && this.brokerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.brokerId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+                        this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+                if(this.ownerId !=  '' && this.ownerId != null && this.ownerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.ownerId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+                        this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                if(this.brokerId !=  '' && this.brokerId != null && this.brokerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.brokerId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+                        this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+                if(this.chartererId !=  '' && this.chartererId != null && this.chartererId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.chartererId,
+                        notification    :       'You have new nudge message',
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{
+                        this.socket.emit('new-notification', {tradingNotificationData});
+
+                    },err =>{});
+                }
+            }
             
             this.loading = true;
             try
@@ -373,11 +523,14 @@ export class MessagingBoardComponent implements OnInit
                 this.http.post(`${config.baseUrl}/messageCenterCreate`, req, headerOptions).subscribe(
                 res =>
                 {
+                    this.socket.emit('new-notification', {req});
+
                     this.alertService.success('Message Created And Send Successfully', 'Success');
                     this.showHideModules(1);
                     this.userDataUpdateToMessageCenter();
                     this.messageCenterRecordsServerSide();
                 },
+
                 err =>
                 {
                     this.alertService.error(err, 'Error');
@@ -419,4 +572,86 @@ export class MessagingBoardComponent implements OnInit
         this.notificationRecords.paginator = this.paginator;
         this.notificationRecords.sort = this.sort;
     }
+
+    // System Alerts Records Server Side
+    SystemAlertsRecordsServerSide()
+    {
+        var filter = {};
+            filter["date1"] = this.SystemAlertsCenterFormValues.date1.value;
+            filter["date2"] = this.SystemAlertsCenterFormValues.date2.value;
+            filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
+        this._userService.tradingProgressRecordsServerSide(filter).pipe(first())
+        .subscribe(res =>
+        {
+            this.tradingProgressRecordsServerSide = res;
+            if (this.tradingProgressRecordsServerSide.success === true)
+            {
+                this.tradingProgressRecordsServerSideData = this.tradingProgressRecordsServerSide.data;
+                this.tradingProgressRecords = new MatTableDataSource(this.tradingProgressRecordsServerSide.data);
+                this.tradingProgressRecords.paginator = this.paginator;
+                this.tradingProgressRecords.sort = this.sort;
+                setTimeout(() =>
+                {
+                    this.updateTradingProgressPaginatior();
+                }, 100);
+            }   
+        }); 
+    }
+
+     // Update Notification Paginator
+     updateTradingProgressPaginatior()
+     {
+         this.tradingProgressRecords = new MatTableDataSource(this.tradingProgressRecordsServerSide.data);
+         this.tradingProgressRecords.paginator = this.paginator;
+         this.tradingProgressRecords.sort = this.sort;
+     }
+ 
+
+    // // System Alerts Records Server Side
+    // SystemAlertsRecordsServerSide(): void
+    // {
+    //     this.submitted = true;
+    //     this.alertService.clear();
+    //     if (this.SystemAlertsCenterForm.invalid)
+    //     { 
+    //         return;
+    //     } else {
+
+    //         this.date1 = this.SystemAlertsCenterFormValues.date1.value;
+    //         this.date2 = this.SystemAlertsCenterFormValues.date2.value;
+
+    //         const req =
+    //         {
+    //             date1 : this.date1,
+    //             date2 : this.date2,
+    //             companyId: localStorage.getItem('companyId'),
+    //         };
+            
+    //         this.loading = true;
+    //         try
+    //         {
+    //             const header = new HttpHeaders();
+    //             header.append('Content-Type', 'application/json');
+    //             const headerOptions =
+    //             {
+    //                 headers: header
+    //             }
+    //             this.http.post(`${config.baseUrl}/messageCenterCreate`, req, headerOptions).subscribe(
+    //             res =>
+    //             {
+    //                 this.alertService.success('Message Created And Send Successfully', 'Success');
+    //                 this.showHideModules(1);
+    //                 this.userDataUpdateToMessageCenter();
+    //                 this.messageCenterRecordsServerSide();
+    //             },
+    //             err =>
+    //             {
+    //                 this.alertService.error(err, 'Error');
+    //             }
+    //             );
+    //         } catch (err)
+    //         {
+    //         } 
+    //     }
+    // }
 }

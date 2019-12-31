@@ -173,12 +173,26 @@
                             <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff ">{{ chatDetails.message }}</label>
                         </th>
                          <th style="width: 100%; text-align: left;" [ngClass]="{'d-none': chatDetails.senderId == currentUserId}" >
+                            <!-- <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff" *ngFor="let m of msg">{{ m.message }}</label> -->
+
                             <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff">{{ msg }}</label>
+                        </th>
+                      
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </tr>
+                    <tr *ngFor="let m of msg">
+                        <th style="width: 100%; text-align: left;"  >
+                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff" >{{m}}</label>
+
+                            <!-- <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff">{{ msg }}</label> -->
                         </th>
                         <br>
-                        <th style="width: 100%; text-align: right" [ngClass]="{'d-none': chatDetails.senderId != currentUserId}" >
-                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff">{{ msg }}</label>
-                        </th>
+                        <!-- <th style="width: 100%; text-align: right"  >
+                            <label style="font-size: 16px;  background: #1e88e5; padding:1% 10%; border-radius: 25px; color:#fff" >{{m}}</label>
+                        </th> -->
                         <br>
                         <br>
                         <br>

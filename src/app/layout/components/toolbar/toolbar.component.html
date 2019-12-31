@@ -68,21 +68,22 @@
 
             <div class="toolbar-separator"></div>
 
-            <button mat-button fxHide fxShow.gt-xs class="language-button" >
+            <button mat-button  [matMenuTriggerFor]="languageMenu" fxHide fxShow.gt-xs class="language-button" >
                 <div fxLayout="row" fxLayoutAlign="center center">
                     <img class="flag mr-8" [src]="'assets/images/avatars/bell.jpg'">
-                    <!-- <span class="iso text-uppercase">{{selectedLanguage.id}}</span> -->
+                    <span class="iso text-uppercase">{{counter}}</span>
                 </div>
             </button>
 
             <mat-menu #languageMenu="matMenu" [overlapTrigger]="false">
 
-                <button mat-menu-item *ngFor="let lang of languages" (click)="setLanguage(lang)">
+                <button mat-menu-item *ngFor="let m of msg" (click)="setLanguage(lang)">
                     <span fxLayout="row" fxLayoutAlign="start center">
-                        <img class="flag mr-16" [src]="'assets/icons/flags/'+lang.flag+'.png'">
-                        <span class="iso">{{lang.title}}</span>
+                        <!-- <img class="flag mr-16" [src]="'assets/icons/flags/'+lang.flag+'.png'"> -->
+                        <span class="iso">{{m}}</span>
                     </span>
                 </button>
+               
 
                 <button mat-menu-item [routerLink]="'/components/multi-language'">
                     <div fxLayout="row" fxLayoutAlign="start center">

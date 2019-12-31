@@ -8,10 +8,10 @@ import {Router} from '@angular/router';
 import { AlertService, AuthenticationService } from '../../../_services';
 import { FuseConfigService } from '@fuse/services/config.service';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
-
+import * as io from 'socket.io-client';
 import { navigation } from 'app/navigation/navigation';
 import { id } from '@swimlane/ngx-charts/release/utils';
-
+// import * as io from 'socket.io-client';
 @Component({
     selector     : 'toolbar',
     templateUrl  : './toolbar.component.html',
@@ -20,6 +20,8 @@ import { id } from '@swimlane/ngx-charts/release/utils';
 })
 
 export class ToolbarComponent implements OnInit, OnDestroy {
+
+    socket:any;
     horizontalNavbar: boolean;
     rightNavbar: boolean;
     hiddenNavbar: boolean;
@@ -30,6 +32,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     isLoggedIn = false;
     userInfo: any;
     email: string;
+    msg =  [];
+    counter:number  =0;
     // Private
     private _unsubscribeAll: Subject<any>;
 
@@ -49,6 +53,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private alertService: AlertService
     )
     {
+          this.socket = io('http://localhost:3001');
+          this.socket.on('message', (result) => {
+            this.msg.push(result.data);
+          console.log(result);
+          console.log(this.msg);
+          this.counter = this.counter +1;
+          });
+          this.socket.on('new-notifaction', (result) => {
+            this.msg.push(result.data);
+          console.log(result);
+          console.log(this.msg);
+          this.counter = this.counter +1;
+          });
         this.userInfo = '';
         // Set the defaults
         this.userStatusOptions = [
@@ -106,6 +123,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+       
         // Subscribe to the config changes
         this._fuseConfigService.config
             .pipe(takeUntil(this._unsubscribeAll))

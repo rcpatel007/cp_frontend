@@ -831,4 +831,21 @@ export class UserService {
         {
             return this.http.post(`${config.baseUrl}/chartererInviteOwnerForTrade`,req)
         }
+        clauseCategoryRecordsServerSideTrading(req)
+        {
+            return this.http.post(`${config.baseUrl}/clauseCategoryRecordsServerSideTrading`,req)
+        }
+        ownerInviteChartererForTrade(req)
+        {
+            return this.http.post(`${config.baseUrl}/ownerInviteChartererForTrade`,req)
+        }
+        tradingProgressRecordsServerSide(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingProgressRecordsServerSide`,req)
+        }
+
+         newUsersRecords(req)
+        {
+            return this.http.post(`${config.baseUrl}/newUsersRecords`,req)
+        }
 }

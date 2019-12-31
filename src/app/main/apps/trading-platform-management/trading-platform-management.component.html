@@ -21,7 +21,7 @@
                     </div>
                     <div class="row-col-6"></div>
                     <div class="row-col-3">
-                        <button class="add-item add-item--main-button" style="float:right" (click)="divShowHide(2)"> Create Trade </button>
+                        <button *ngIf="createTradeButtonView" class="add-item add-item--main-button" style="float:right" (click)="divShowHide(2)"> Create Trade </button>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                             <mat-icon aria-hidden="false" aria-label="Example home icon">done</mat-icon>
                         </button>
 
-                        <h4 style="font-size: 22px;font-weight: bold; color: #23da28;" [ngClass]="{'d-none': row.isChartererAccepted != 'Y'}" >BID</h4>
+                        <h4 style="font-size: 22px;font-weight: bold; color: #23da28;" [ngClass]="{'d-none': row.isChartererAccepted != 'Y'}" >{{ row.tradeType }}</h4>
 
                         <button [ngClass]="{'d-none': row.isChartererAccepted != 'P'}" mat-button class="click-icon click-icon--clear" [disabled]="row.isChartererAccepted === 'N'"
                             (click)="showInActiveModal('N', row.id,row.ownerId,row.chartererId,row.brokerId)">
@@ -138,7 +138,7 @@
                             <mat-icon aria-hidden="false" aria-label="Example home icon">done</mat-icon>
                         </button>
 
-                        <h4 style="font-size: 22px;font-weight: bold; color: #23da28;" [ngClass]="{'d-none': row.isOwnerAccepted != 'Y'}" >OFFER</h4>
+                        <h4 style="font-size: 22px;font-weight: bold; color: #23da28;" [ngClass]="{'d-none': row.isOwnerAccepted != 'Y'}" >{{ row.tradeType }}</h4>
 
 
                         <button [ngClass]="{'d-none': row.isOwnerAccepted != 'P'}" mat-button class="click-icon click-icon--clear" [disabled]="row.isOwnerAccepted === 'N'"
@@ -158,7 +158,7 @@
 
                         <!-- Broker Edit Button Start -->
                         <button 
-                            [ngClass]="{'d-none': isBrokerView == 'N'}" 
+                            [ngClass]="{'d-none': isBrokerView == 'N' || row.isDetailTermDone == '1' }" 
                             mat-button class="click-icon click-icon--done"  style="background:#f28a38;"
                             (click)="editView(row.id)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
@@ -167,7 +167,7 @@
 
                         <!-- Charterer Edit Button Start -->
                         <button 
-                            [ngClass]="{'d-none': row.isChartererAccepted != 'Y' || isChartererView == 'N' }" 
+                            [ngClass]="{'d-none': row.isChartererAccepted != 'Y' || isChartererView == 'N' || row.isDetailTermDone == '1' }" 
                             mat-button class="click-icon click-icon--done"  style="background:#f28a38;"
                             (click)="editView(row.id)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
@@ -176,12 +176,21 @@
 
                         <!-- Owner Edit Button Start -->
                         <button 
-                            [ngClass]="{'d-none': row.isOwnerAccepted != 'Y' || isOwnerView == 'N' }" 
+                            [ngClass]="{'d-none': row.isOwnerAccepted != 'Y' || isOwnerView == 'N' || row.isDetailTermDone == '1' }" 
                             mat-button class="click-icon click-icon--done"  style="background:#f28a38;"
                             (click)="editView(row.id)">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
                         </button>
                         <!-- Owner Edit Button End -->
+
+                        <!-- Recap View Button Start -->
+                        <button 
+                            [ngClass]="{'d-none': row.isMainTermDone != '1'}" 
+                            mat-button class="click-icon click-icon--done"  style="background:#f28a38;"
+                            (click)="recapView(row.id)">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">remove_red_eye</mat-icon>
+                        </button>
+                        <!-- Recap Viwe Edit Button End -->
 
                     </td>
                 </ng-container>
@@ -198,7 +207,7 @@
                         <mat-select formControlName="tradeType" matSelect (selectionChange)="setTradeFormView($event)">
                             <mat-option [value]="1"> Bid </mat-option>
                             <mat-option [value]="2"> Offer </mat-option>
-                            <mat-option [value]="3"> Both</mat-option>
+                            <!-- <mat-option [value]s="3"> Both</mat-option> -->
                         </mat-select>
                         <mat-error *ngIf="tradingForm.get('tradeType').hasError('required')"> Trade Type Is Required</mat-error>
                     </mat-form-field>

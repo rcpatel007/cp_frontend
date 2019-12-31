@@ -198,7 +198,7 @@
                     <mat-form-field class="customFormfullWidth" appearance="outline">
                         <mat-label><i class="material-icons">location_city</i> City</mat-label>
                         <mat-select formControlName="lifted_city"  matSelect>
-                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            <mat-option *ngFor="let cityManagementData of cityRecordsServerSideResponseData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
                             [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -208,7 +208,7 @@
                     <mat-form-field class="customFormfullWidth" appearance="outline">
                         <mat-label><i class="material-icons">location_city</i> Charter Party Place</mat-label>
                         <mat-select formControlName="lifted_charter_party_place"  matSelect>
-                            <mat-option *ngFor="let cityManagementData of cityManagementData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
+                            <mat-option *ngFor="let cityManagementData of cityRecordsServerSideResponseData" [ngClass]="{'d-none': cityManagementData.isActive === 'N'}" 
                             [value]="cityManagementData.id" > {{cityManagementData.cityName}} </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -365,10 +365,25 @@
                                 margin-bottom: 0px;">{{ vesselName }}</h4>
                         </td>
                     </tr>
-                    <tr class="tableTr" >
+                    <tr class="tableTr"  >
                         <td style="width: 200px;color: #1e88e5;">Charterer</td>
                         <td style="width: 100px;">:</td>
-                        <td style="width: 200px;">{{ chartererName }}</td>
+                        <td style="width: 200px;">
+                            <form *ngIf="chartererDropdownView" [formGroup]="chartererDropDownForm"  style="margin-left: -30px !important; padding: 0px !important;">
+                                <mat-form-field class="customFormfullWidth" appearance="outline" style="margin-bottom: -30px !important;">
+                                    <mat-label>Charterer</mat-label>
+                                    <mat-select matSelect formControlName="chartererId" (selectionChange)="onChangeCharterer($event)">
+                                        <mat-option *ngFor="let chartererData of chartererRecordsServerSideResponseData" [ngClass]="{'d-none': chartererData.isActive === 'N'}" 
+                                        [value]="chartererData.id"> {{chartererData.username}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </form>
+                            <h4 *ngIf="ownerNameView"
+                                style="font-size: 25px !important;
+                                        font-weight: bold !important;
+                                        text-align: left;    margin-top: 0px;
+                                margin-bottom: 0px;">{{ chartererName }}</h4>
+                        </td>
                     </tr>
                     <!-- <tr class="tableTr" [ngClass]="{'d-none': isChartererAccepted != 'N'}">
                         <td style="width: 200px;color: #1e88e5;">Charterer</td>
@@ -856,12 +871,58 @@
                     <button class="mat-fab mat-accent" (click)="customClauseToggleOpen('addCustomClausePanel')" style="margin-top: 30px; margin-left: 30px;">
                         <span class="mat-button-wrapper" style="font-size: 70px !important; color: #fff !important; padding: 10px 0px !important;">+</span>
                     </button>
+                    <br>
+                    <br>
+                    
+                    <mat-checkbox 
+                        *ngIf="mainTermOwnerSignOffView"
+                        style="margin-left: 35px"
+                        (change)="ownerMainTermCheckBoxChange($event)" 
+                        [checked]="ownerMainTermChecked === 'Y'"
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        [disabled]=" ownerMainTermDisabled == 'Y' "
+                        [value] = '1'
+                    > Owner Sign OFF </mat-checkbox>
+
+                    <mat-checkbox 
+                        *ngIf="mainTermChartererSignOffView"
+                        style="margin-left: 35px"
+                        (change)="chartererMainTermCheckBoxChange($event)" 
+                        [checked]="chartererMainTermChecked === 'Y'"
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        [disabled]=" chartererMainTermDisabled == 'Y' "
+                        [value] = '1'
+                    > Charterer Sign OFF </mat-checkbox>
+
+
+                    <mat-checkbox 
+                        *ngIf="detailTermOwnerSignOffView"
+                        style="margin-left: 35px"
+                        (change)="ownerDetailTermCheckBoxChange($event)" 
+                        [checked]="ownerDetailTermChecked === 'Y'"
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        [disabled]=" ownerDetailTermDisabled == 'Y' "
+                        [value] = '1'
+                    > Owner Sign OFF </mat-checkbox>
+
+
+                    <mat-checkbox 
+                        *ngIf="detailTermChartererSignOffView"
+                        style="margin-left: 35px"
+                        (change)="chartererDetailTermCheckBoxChange($event)" 
+                        [checked]="chartererDetailTermChecked === 'Y'"
+                        class="matCheckboxLayoutCustom matCheckboxCustom clauseTermsOfClause" 
+                        [disabled]=" chartererDetailTermDisabled == 'Y' "
+                        [value] = '1'
+                    > Charterer Sign OFF </mat-checkbox>
+
+                
                 </form>
                 <br />
                 <br />
                 <div class="text-right">
                     <button class="submit-item submit-item--back-button" style="clear: both !important;float: left; margin: 35px; background: green;" (click)="secondScreenView()">Previous</button>
-                    <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="submit()" style="margin: 30px" >Submit</button>
+                    <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="submit()" style="margin: 30px" >{{ submitButtonText }}</button>
                 </div>
                 <br />
                 <br />
@@ -1175,3 +1236,19 @@
     </div>
 </div>
 <!-- Vessel Change Modal End -->
+
+<!-- Charterer Change Modal Start -->
+<div class="cst-modal" [ngClass]="{'cst-modal--active' : chartererModal } ">
+    <div class="cst-modal__overlay"></div>
+    <div class="cst-modal__content">
+        <div class="cst-modal__header">
+            <h4 class="cst-modal__title" style="margin: 0 auto;"> Are You Sure You Want To Select This Charterer?</h4>
+            <button class="cst-modal__close" (click)="hideChartererChangeModal()">&times;</button>
+        </div>
+        <div class="cst-modal__footer">
+            <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="changeCharterer()">Yes</button>
+            <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideChartererChangeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+<!-- Charterer Change Modal End -->

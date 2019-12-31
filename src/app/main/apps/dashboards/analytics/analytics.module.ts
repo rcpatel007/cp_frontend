@@ -25,6 +25,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { AnalyticsDashboardComponent } from 'app/main/apps/dashboards/analytics/analytics.component';
 import { AnalyticsDashboardService } from 'app/main/apps/dashboards/analytics/analytics.service';
 
+import { CommonModule } from '@angular/common';
+import {MatRadioModule} from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { FuseConfirmDialogModule, FuseSidebarModule } from '@fuse/components';
+
 const routes: Routes = [
     {
         path: '**',
@@ -42,6 +48,11 @@ const routes: Routes = [
     imports: [
         RouterModule.forChild(routes),
 
+        CommonModule,
+        MatRadioModule,
+        MatProgressBarModule,
+        MatGridListModule,
+        FuseConfirmDialogModule,
         MatButtonModule,
         MatFormFieldModule,
         MatIconModule,

@@ -1,4 +1,4 @@
-import { Component, OnDestroy,AfterViewChecked, OnInit,ElementRef, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnDestroy, AfterViewChecked, OnInit, ElementRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
@@ -15,13 +15,12 @@ import { config } from '../../../config/config';
 import { first } from 'rxjs/operators';
 import { AlertService, AuthenticationService } from '../../../_services';
 import { getNumberOfCurrencyDigits } from '@angular/common';
-import {FormGroupDirective, NgForm,} from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
+import { FormGroupDirective, NgForm, } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import * as moment from 'moment';
 import * as io from 'socket.io-client';
-export interface UserData
-{
-    
+export interface UserData {
+
     id: string;
     tradingId: string;
     message: string;
@@ -36,17 +35,16 @@ export interface UserData
     createdAt: string;
     updatedBy: string;
     updatedAt: string;
-    isActive : string;
+    isActive: string;
     isDelete: string;
-    action : string;
+    action: string;
 
-    createdDateInfo : string;
-    createdTimeInfo : string;
-    createdByName : string;
+    createdDateInfo: string;
+    createdTimeInfo: string;
+    createdByName: string;
 }
 
-export interface PeriodicElement
-{   
+export interface PeriodicElement {
     id: string;
     tradingId: string;
     message: string;
@@ -61,18 +59,17 @@ export interface PeriodicElement
     createdAt: string;
     updatedBy: string;
     updatedAt: string;
-    isActive : string;
+    isActive: string;
     isDelete: string;
-    action : string;
+    action: string;
 
-    createdDateInfo : string;
-    createdTimeInfo : string;
-    createdByName : string;
+    createdDateInfo: string;
+    createdTimeInfo: string;
+    createdByName: string;
 }
 
-export interface NotificationRecords
-{   
-    id:String;
+export interface NotificationRecords {
+    id: String;
     fromUserId: string;
     toUserId: string;
     notification: string;
@@ -83,27 +80,25 @@ export interface NotificationRecords
 }
 
 @Component(
-{
-    selector: 'app-chat-management',
-    templateUrl: './chat-management.component.html',
-    styleUrls: ['./chat-management.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    animations: fuseAnimations
-})
+    {
+        selector: 'app-chat-management',
+        templateUrl: './chat-management.component.html',
+        styleUrls: ['./chat-management.component.scss'],
+        encapsulation: ViewEncapsulation.None,
+        animations: fuseAnimations
+    })
 
-export class ChatManagementComponent implements OnInit
-{
+export class ChatManagementComponent implements OnInit {
     // @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
-    socket:any;
+    socket: any;
 
     // Table Codes Start
-    displayedColumns: string[] = ['id','tradingId','createdDateInfo','createdTimeInfo','createdByName','message','action'];
-    displayedColumnsNotificaiton: string[] = ['id','notification','createdAt'];
+    displayedColumns: string[] = ['id', 'tradingId', 'createdDateInfo', 'createdTimeInfo', 'createdByName', 'message', 'action'];
+    displayedColumnsNotificaiton: string[] = ['id', 'notification', 'createdAt'];
     messageCenterRecords = new MatTableDataSource<PeriodicElement>();
     notificationRecords = new MatTableDataSource<NotificationRecords>();
-    applyFilter(filterValue: string)
-    {
+    applyFilter(filterValue: string) {
         this.messageCenterRecords.filter = filterValue.trim().toLowerCase();
         this.notificationRecords.filter = filterValue.trim().toLowerCase();
     }
@@ -114,9 +109,9 @@ export class ChatManagementComponent implements OnInit
     showUpdateModalStatus = false;
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
-   
+
     // Table Codes End
-    
+
     // Main Data Variables Start
     id: string;
     tradingId: string;
@@ -131,19 +126,19 @@ export class ChatManagementComponent implements OnInit
     createdAt: string;
     updatedBy: string;
     updatedAt: string;
-    isActive : string;
+    isActive: string;
     isDelete: string;
-    action : string;
+    action: string;
 
-    userType : string;
-    userId : string;
-    message : string;
-    currentUserId : string;
-    toUserName : string;
-    newMessageTitle : string;
-    chatMessage : string;
-    user2:string;
-    isDetailPageOpen : string;
+    userType: string;
+    userId: string;
+    message: string;
+    currentUserId: string;
+    toUserName: string;
+    newMessageTitle: string;
+    chatMessage: string;
+    user2: string;
+    isDetailPageOpen: string;
 
     // Main Data Variables End
 
@@ -156,17 +151,17 @@ export class ChatManagementComponent implements OnInit
     // General Variable Start
     loading = false;
     submitted = false;
-    chatManagementForm : FormGroup;
+    chatManagementForm: FormGroup;
     get chatManagementFormValues() { return this.chatManagementForm.controls; }
     // General Variable Emd
-    
+
     // Assign API Data Response And Array Variables Start
     brokerRecordsResponse: any;
     brokerRecordsResponseArray = [];
 
     chartererRecordsResponse: any;
     chartererRecordsResponseArray = [];
-    
+
     ownerRecordsResponse: any;
     ownerRecordsResponseArray = [];
 
@@ -180,12 +175,12 @@ export class ChatManagementComponent implements OnInit
 
     tradingRecordsResponse: any;
     tradingRecordsResponseArray = [];
-    msg= [];
+    msg = [];
 
     notificationRecordsResponse: any;
     notificationRecordsResponseArray = [];
     // Assign API Data Response And Array Variables End
-    
+
     /**
      * Constructor
      *
@@ -196,27 +191,30 @@ export class ChatManagementComponent implements OnInit
      */
 
     constructor
-    (
-        private _userService: UserService,
-        private _fuseSidebarService: FuseSidebarService,
-        private http: HttpClient,
-        private alertService: AlertService,
-        private router: Router,
+        (
+            private _userService: UserService,
+            private _fuseSidebarService: FuseSidebarService,
+            private http: HttpClient,
+            private alertService: AlertService,
+            private router: Router,
 
-        private _formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private authenticationService: AuthenticationService,
-        
-    )
-    {
+            private _formBuilder: FormBuilder,
+            private route: ActivatedRoute,
+            private authenticationService: AuthenticationService,
+
+    ) {
         this.socket = io('http://localhost:3001');
-      
+        this.socket.on('message', (result) => {
+            console.log(result);
+            this.msg.push(result.data);
+
+        });
+
         this.messageCenterRecords = new MatTableDataSource(this.chatManagementResponseArray);
         this.notificationRecords = new MatTableDataSource(this.notificationRecordsResponseArray);
     }
 
-    ngOnInit()
-    {
+    ngOnInit() {
         this.isDetailPageOpen = 'N';
         this.currentUserId = localStorage.getItem('userId');
 
@@ -230,40 +228,40 @@ export class ChatManagementComponent implements OnInit
 
         // Assign Form Values Start
         this.chatManagementForm = this._formBuilder.group(
-        {
-            userType: ['', Validators.required],
-            userId: ['', Validators.required],
-            message: ['', Validators.required]
-        });
+            {
+                userType: ['', Validators.required],
+                userId: ['', Validators.required],
+                message: ['', Validators.required]
+            });
         // Assign Form Values End
-        
+
         this.brokerRecords();
         this.charterersRecords();
         this.ownerRecords();
 
         this.chatManagementRecordsServerSide();
 
-        this.socket.on('new-message', (result) => {     
-            this.msg.push(result.data.message);
-   
-            console.log(result,"data");
-            
-            var container = document.getElementById("msgContainer");    
-            container.scrollTop = container.scrollHeight; 
 
-                    //   console.log(this.msg,"hello ");
 
-          });
+        // this.socket.on('new-event', (result) => {     
+        //     this.msg.push(result.data.message);
+
+        //     console.log(result,"data");
+
+        //     var container = document.getElementById("msgContainer");    
+        //     container.scrollTop = container.scrollHeight; 
+
+        //   });
         // this.socket.on('new-message', (result) => {
         //     // this.display = true;
-            
+
         //   console.log(this.msg,"hello ");
-          
+
         //   });
         // setInterval(() =>
         // {
-            this.realTimeChatFetch();
-            this.fetchRealTimeChatData();
+        this.realTimeChatFetch();
+        this.fetchRealTimeChatData();
         // }, 5000);
     }
     // scrollToBottom(): void {
@@ -272,107 +270,90 @@ export class ChatManagementComponent implements OnInit
     //     } catch(err) { }                 
     // }
     // Fetch Brokers
-    brokerRecords(): void
-    {
+    brokerRecords(): void {
         var filter = {};
-            filter['companyId'] = localStorage.getItem('companyId');
-            filter['userRoleId'] = '3';
-        try 
-        {
+        filter['companyId'] = localStorage.getItem('companyId');
+        filter['userRoleId'] = '3';
+        try {
             this._userService.userRecordsServerSide(filter)
-            .pipe(first())
-            .subscribe((res) =>
-            {
-                this.brokerRecordsResponse = res;
-                if (this.brokerRecordsResponse.success === true)
-                {
-                    this.brokerRecordsResponseArray = this.brokerRecordsResponse.data;
-                    console.log(this.brokerRecordsResponseArray);
-                    
-                }
-            },err => {});
-        } catch (err) {}
+                .pipe(first())
+                .subscribe((res) => {
+                    this.brokerRecordsResponse = res;
+                    if (this.brokerRecordsResponse.success === true) {
+                        this.brokerRecordsResponseArray = this.brokerRecordsResponse.data;
+                        console.log(this.brokerRecordsResponseArray);
+
+                    }
+                }, err => { });
+        } catch (err) { }
     }
 
     // Fetch Charterers
-    charterersRecords(): void
-    {
+    charterersRecords(): void {
         var filter = {};
-            filter['companyId'] = localStorage.getItem('companyId');
-            filter['userRoleId'] = '4';
-        try 
-        {
+        filter['companyId'] = localStorage.getItem('companyId');
+        filter['userRoleId'] = '4';
+        try {
             this._userService.userRecordsServerSide(filter)
-            .pipe(first())
-            .subscribe((res) =>
-            {
-                this.chartererRecordsResponse = res;
-                if (this.chartererRecordsResponse.success === true)
-                {
-                    this.chartererRecordsResponseArray = this.chartererRecordsResponse.data;
+                .pipe(first())
+                .subscribe((res) => {
+                    this.chartererRecordsResponse = res;
+                    if (this.chartererRecordsResponse.success === true) {
+                        this.chartererRecordsResponseArray = this.chartererRecordsResponse.data;
 
-                    console.log(this.chartererRecordsResponseArray);
-                    
-                }
-            },err => {});
-        } catch (err) {}
+                        console.log(this.chartererRecordsResponseArray);
+
+                    }
+                }, err => { });
+        } catch (err) { }
     }
 
     // Fetch Owners
-    ownerRecords(): void
-    {
+    ownerRecords(): void {
         var filter = {};
-            filter['companyId'] = localStorage.getItem('companyId');
-            filter['userRoleId'] = '6';
-        try 
-        {
+        filter['companyId'] = localStorage.getItem('companyId');
+        filter['userRoleId'] = '6';
+        try {
             this._userService.userRecordsServerSide(filter)
-            .pipe(first())
-            .subscribe((res) =>
-            {
-                this.ownerRecordsResponse = res;
-                if (this.ownerRecordsResponse.success === true)
-                {
-                    this.ownerRecordsResponseArray = this.ownerRecordsResponse.data;
-                    console.log(this.ownerRecordsResponseArray);
-                    
-                }
-            },err => {});
-        } catch (err) {}
+                .pipe(first())
+                .subscribe((res) => {
+                    this.ownerRecordsResponse = res;
+                    if (this.ownerRecordsResponse.success === true) {
+                        this.ownerRecordsResponseArray = this.ownerRecordsResponse.data;
+                        console.log(this.ownerRecordsResponseArray);
+
+                    }
+                }, err => { });
+        } catch (err) { }
     }
 
     // View User By User Type Vise
-    viewUserByUserTypeVise(event)
-    {
+    viewUserByUserTypeVise(event) {
         this.userType = this.chatManagementFormValues.userType.value;
         this.userId = this.chatManagementFormValues.userId.value;
         this.message = this.chatManagementFormValues.message.value;
         // Assign Form Values Start
         this.chatManagementForm = this._formBuilder.group(
-        {
-            userType: [this.userType, Validators.required],
-            userId: ['', Validators.required],
-            message: [this.message, Validators.required]
-        });
+            {
+                userType: [this.userType, Validators.required],
+                userId: ['', Validators.required],
+                message: [this.message, Validators.required]
+            });
         // Assign Form Values End
         this.commonUserOptionArray = [];
-        if(event.value == '1')
-        {
+        if (event.value == '1') {
             this.commonUserOptionArray = this.brokerRecordsResponseArray;
         }
-        if(event.value == '2')
-        {
+        if (event.value == '2') {
             this.commonUserOptionArray = this.chartererRecordsResponseArray;
         }
-        if(event.value == '3')
-        {
+        if (event.value == '3') {
             this.commonUserOptionArray = this.ownerRecordsResponseArray;
         }
     }
-    
+
     // Show Hide Div
-    showHideModules(type)
-    {
+    showHideModules(type) {
         this.isDetailPageOpen = 'N';
         this.alertService.clear();
         this.chatManagementForm.reset();
@@ -381,128 +362,107 @@ export class ChatManagementComponent implements OnInit
         this.chatFormDiv = false;
         this.chatDetailsDiv = false;
 
-        if(type == '1')
-        {
+        if (type == '1') {
             this.chatTableDiv = true;
             this.chatManagementRecordsServerSide();
         }
 
-        if(type == '2')
-        {
+        if (type == '2') {
             this.chatFormDiv = true;
         }
 
-        if(type == '3')
-        {
+        if (type == '3') {
             this.chatDetailsDiv = true;
             this.isDetailPageOpen = 'Y';
         }
     }
 
     // Chat Message Records Server Side
-    chatManagementRecordsServerSide(): void
-    {
+    chatManagementRecordsServerSide(): void {
         var filter = {};
-            filter['cb.user1'] = localStorage.getItem('userId');
+        filter['cb.user1'] = localStorage.getItem('userId');
         this._userService.chatRecordsServerSide(filter).pipe(first())
-        .subscribe(res =>
-        {
-            this.chatManagementResponse = res;
-            if (this.chatManagementResponse.success === true)
-            {
-                this.chatManagementResponseArray = this.chatManagementResponse.data;
-                if(this.chatManagementResponse.newMessages == 1)
-                {
-                    this.newMessageTitle = '1 New Message';
+            .subscribe(res => {
+                this.chatManagementResponse = res;
+                if (this.chatManagementResponse.success === true) {
+                    this.chatManagementResponseArray = this.chatManagementResponse.data;
+                    if (this.chatManagementResponse.newMessages == 1) {
+                        this.newMessageTitle = '1 New Message';
+                    }
+                    if (this.chatManagementResponse.newMessages > 1) {
+                        this.newMessageTitle = this.chatManagementResponse.newMessages + ' New Messages';
+                    }
+                    console.log(this.newMessageTitle);
                 }
-                if(this.chatManagementResponse.newMessages > 1)
-                {
-                    this.newMessageTitle = this.chatManagementResponse.newMessages+' New Messages';
-                }
-                console.log(this.newMessageTitle);
-            }   
-        }); 
+            });
     }
 
     // User Chat Details
-    fetchChatDetails(user2,toUserName)
-    {   
+    fetchChatDetails(user2, toUserName) {
         this.user2 = user2;
         this.toUserName = toUserName;
         var filter = {};
-            filter['user1'] = localStorage.getItem('userId');
-            filter['user2'] = user2;
+        filter['user1'] = localStorage.getItem('userId');
+        filter['user2'] = user2;
         this._userService.fetchChatDetails(filter).pipe(first())
-        .subscribe(res =>
-        {
-            this.chatManagementDetailsResponse = res;
-            if (this.chatManagementDetailsResponse.success === true)
-            {
-                this.chatManagementDetailsResponseArray = this.chatManagementDetailsResponse.data;
-                this.showHideModules(3);
-            }
-        });
+            .subscribe(res => {
+                this.chatManagementDetailsResponse = res;
+                if (this.chatManagementDetailsResponse.success === true) {
+                    this.chatManagementDetailsResponseArray = this.chatManagementDetailsResponse.data;
+                    this.showHideModules(3);
+                }
+            });
     }
 
     // Real TIme Chat Fetch
-    realTimeChatFetch()
-    {
-        if(this.isDetailPageOpen == 'N')
-        {
+    realTimeChatFetch() {
+        if (this.isDetailPageOpen == 'N') {
             var filter = {};
-                filter['user1'] = localStorage.getItem('userId');
+            filter['user1'] = localStorage.getItem('userId');
             this._userService.realTimeChatRecordsServerSide(filter).pipe(first())
-            .subscribe(res =>
-            {
-                this.chatManagementResponse = res;
-                if (this.chatManagementResponse.success === true)
-                {
-                    // this.scrollToBottom();
-                    this.chatManagementResponseArray = this.chatManagementResponse.data;
-                    this.newMessageTitle = '';
-                    if(this.chatManagementResponse.newMessages > 0)
-                    {
-                        
-                        if(this.chatManagementResponse.newMessages == 1)
-                        {
-                            
-                            this.newMessageTitle = '1 New Message';
-                        }
-                        if(this.chatManagementResponse.newMessages > 1)
-                        {
-                            this.newMessageTitle = this.chatManagementResponse.newMessages+' New Messages';
+                .subscribe(res => {
+                    this.chatManagementResponse = res;
+                    if (this.chatManagementResponse.success === true) {
+                        // this.scrollToBottom();
+                        this.chatManagementResponseArray = this.chatManagementResponse.data;
+                        this.newMessageTitle = '';
+                        if (this.chatManagementResponse.newMessages > 0) {
+
+                            if (this.chatManagementResponse.newMessages == 1) {
+
+                                this.newMessageTitle = '1 New Message';
+                            }
+                            if (this.chatManagementResponse.newMessages > 1) {
+                                this.newMessageTitle = this.chatManagementResponse.newMessages + ' New Messages';
+                            }
                         }
                     }
-                }   
-            }); 
+                });
         }
     }
 
     // Chat Form Submit
-    chatManagementFormSubmit(): void
-    {
+    chatManagementFormSubmit(): void {
         this.submitted = true;
         this.alertService.clear();
-        if (this.chatManagementForm.invalid)
-        { 
+        if (this.chatManagementForm.invalid) {
             return;
         } else {
 
             const req =
             {
                 senderId: localStorage.getItem('userId'),
-                userId : this.chatManagementFormValues.userId.value,
-                message : this.chatManagementFormValues.message.value,
-                date :  moment(new Date()).format("YYYY-MM-DD"),
-                time :  moment(new Date()).format("HH:mm A"),
+                userId: this.chatManagementFormValues.userId.value,
+                message: this.chatManagementFormValues.message.value,
+                date: moment(new Date()).format("YYYY-MM-DD"),
+                time: moment(new Date()).format("HH:mm A"),
                 createdBy: localStorage.getItem('userId'),
                 updatedBy: localStorage.getItem('userId'),
                 companyId: localStorage.getItem('companyId'),
             };
-            
+
             this.loading = true;
-            try
-            {
+            try {
                 const header = new HttpHeaders();
                 header.append('Content-Type', 'application/json');
                 const headerOptions =
@@ -510,90 +470,78 @@ export class ChatManagementComponent implements OnInit
                     headers: header
                 }
                 this.http.post(`${config.baseUrl}/chatCreate`, req, headerOptions).subscribe(
-                res =>
-                {
-                    
-                       this.socket.emit('new-message', { data: req });
+                    res => {
 
-                    this.alertService.success('Message Created And Send Successfully', 'Success');
-                    this.showHideModules(1);
-                    this.chatManagementRecordsServerSide();
-                },
-                err =>
-                {
-                    this.alertService.error(err, 'Error');
-                }
+                        this.socket.emit('new-event', {req});
+
+                        this.alertService.success('Message Created And Send Successfully', 'Success');
+                        this.showHideModules(1);
+                        this.chatManagementRecordsServerSide();
+                    },
+                    err => {
+                        this.alertService.error(err, 'Error');
+                    }
                 );
-            } catch (err)
-            {
-            } 
+            } catch (err) {
+            }
         }
     }
 
     // Send Message
-    sendMessage()
-    {
+    sendMessage() {
         console.log(this.chatMessage);
         const req =
         {
             senderId: localStorage.getItem('userId'),
-            userId : this.user2,
-            message : this.chatMessage,
-            date :  moment(new Date()).format("YYYY-MM-DD"),
-            time :  moment(new Date()).format("HH:mm A"),
+            userId: this.user2,
+            message: this.chatMessage,
+            date: moment(new Date()).format("YYYY-MM-DD"),
+            time: moment(new Date()).format("HH:mm A"),
             createdBy: localStorage.getItem('userId'),
             updatedBy: localStorage.getItem('userId'),
             companyId: localStorage.getItem('companyId'),
         };
-        
+
         this.loading = true;
-        try
-        {
+        try {
             const header = new HttpHeaders();
             header.append('Content-Type', 'application/json');
             const headerOptions =
             {
                 headers: header
             }
-            this.socket.emit('new-message', { data: req });
+            this.socket.emit('new-event', this.chatMessage);
 
             this.http.post(`${config.baseUrl}/chatCreate`, req, headerOptions).subscribe(
-            res =>
-            {
-                this.chatMessage = '';
-            },
-            err =>
-            {
-                this.alertService.error(err, 'Error');
-            }
+                res => {
+                    this.chatMessage = '';
+                },
+                err => {
+                    this.alertService.error(err, 'Error');
+                }
             );
-        } catch (err)
-        {
-        } 
+        } catch (err) {
+        }
     }
 
     // Fetch Real Time Chat Data
-    fetchRealTimeChatData()
-    {
-        if(this.user2 != '' && this.user2 != null && this.user2 != undefined && this.isDetailPageOpen == 'Y')
-        {
+    fetchRealTimeChatData() {
+        if (this.user2 != '' && this.user2 != null && this.user2 != undefined && this.isDetailPageOpen == 'Y') {
             var filter = {};
-                filter['user1'] = localStorage.getItem('userId');
-                filter['user2'] = this.user2;
-            
-            this._userService.fetchRealTimeChatData(filter).pipe(first())
-            .subscribe(res =>
-            {
-                    this.chatManagementDetailsResponse = res;
-                    if (this.chatManagementDetailsResponse.success === true)
-                {
-                     var container = document.getElementById("msgContainer");    
-            container.scrollTop = container.scrollHeight; 
+            filter['user1'] = localStorage.getItem('userId');
+            filter['user2'] = this.user2;
 
-                    this.chatManagementDetailsResponseArray = this.chatManagementDetailsResponse.data;
-                    
-                }
-            });
+            this._userService.fetchRealTimeChatData(filter).pipe(first())
+                .subscribe(res => {
+                    this.chatManagementDetailsResponse = res;
+                    if (this.chatManagementDetailsResponse.success === true) {
+                        var container = document.getElementById("msgContainer");
+                        container.scrollTop = container.scrollHeight;
+
+                        this.chatManagementDetailsResponseArray = this.chatManagementDetailsResponse.data;
+
+                    }
+                });
         }
     }
 }

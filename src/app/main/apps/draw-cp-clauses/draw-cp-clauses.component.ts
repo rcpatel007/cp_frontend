@@ -323,12 +323,15 @@ export class DrawCpClausesComponent implements OnInit
 
     counterNumberInfo : any;
 
+    submitButtonText : any;
+
     // New Code Start
 
     // Assign Variables Start
     drawId: String;
     brokerId: String;
     ownerId : string;
+    tempChartererId : string;
     tempOwnerId : string;
     tempVesselId : string;
     tradingId: String;
@@ -353,11 +356,33 @@ export class DrawCpClausesComponent implements OnInit
     vesselYear : string;
     vesselDescription : string;
 
+    message : any;
+
     ownerCounterNumber : string;
     chartererCounterNumber : string;
 
+    ownerDetailCounterNumber : string;
+    chartererDetailCounterNumber : string;
+
     ownerModal:any;
+    chartererModal:any;
     vesselModal:any;
+
+    is_owner_main_term_sign_off : any;
+    is_charterer_main_term_sign_off : any;
+    is_owner_detail_term_sign_off : any;
+    is_charterer_detail_term_sign_off : any;
+
+    ownerMainTermChecked : any;
+    chartererMainTermChecked : any;
+    ownerDetailTermChecked : any;
+    chartererDetailTermChecked : any;
+
+    ownerMainTermDisabled : any;
+    chartererMainTermDisabled : any;
+    ownerDetailTermDisabled : any;
+    chartererDetailTermDisabled : any;
+    
 
     ownerCheckedClauses = [];
     ownerCheckedCustomClauses = [];
@@ -391,6 +416,15 @@ export class DrawCpClausesComponent implements OnInit
 
     vesselDropdownView = false;
     vesselNameView = false;
+
+    chartererDropdownView = false;
+    chartererNameView = false;
+    
+    mainTermOwnerSignOffView = false;
+    mainTermChartererSignOffView = false;
+    
+    detailTermOwnerSignOffView = false;
+    detailTermChartererSignOffView = false;
     
     // Set View Variables End
 
@@ -405,6 +439,11 @@ export class DrawCpClausesComponent implements OnInit
     ownerRecordsServerSideResponseData = [];
     vesselRecordsServerSideResponse : any;
     vesselRecordsServerSideResponseData = [];
+
+    chartererRecordsServerSideResponse : any;
+    chartererRecordsServerSideResponseData = [];
+
+    mainTermCheckedClausesCategory = [];
     // Assign API Variable End
 
     // Form Settings End
@@ -417,12 +456,19 @@ export class DrawCpClausesComponent implements OnInit
     vesselDropDownFormSubmitResponse : any;
     vesselDropDownFormSubmitResponseData = [];
     get vesselDropDownFormValue() { return this.vesselDropDownForm.controls; }
+
+    chartererDropDownForm: FormGroup;
+    chartererDropDownFormSubmitResponse : any;
+    chartererDropDownFormSubmitResponseData = [];
+    get chartererDropDownFormValue() { return this.chartererDropDownForm.controls; }
     // Form Settings End
 
     // Assign Form Values Start
     clauseForm: FormGroup;
     get clauseFormValues() { return this.clauseForm.controls; }
     // Assign Form Values End
+
+    
 
     // New Code End
 
@@ -463,8 +509,11 @@ export class DrawCpClausesComponent implements OnInit
     ngOnInit()
     {
         // New Code Start
-
+        
         // Assign Values Start
+
+        this.submitButtonText = 'Submit';
+
         var clauseFilterData = JSON.parse(localStorage.getItem('clauseFilterData'));
         this.drawId = clauseFilterData.drawId;
         this.tradingId = clauseFilterData.tradingId;
@@ -472,6 +521,7 @@ export class DrawCpClausesComponent implements OnInit
         this.formId = clauseFilterData.formId;
         this.companyId = localStorage.getItem('companyId');
         this.pageTitle = (this.isTrading == '2') ? 'Draw C/P Clauses' : 'Trading Clauses';
+        this.message = (this.isTrading == '2') ? 'Draw C/P Clauses' : 'Trading Clauses';
         this.ownerName = '';
         this.chartererName = '';
         this.brokerName = '';
@@ -487,6 +537,7 @@ export class DrawCpClausesComponent implements OnInit
         this.thirdScreen = false;
         this.ownerNameView = false;
         this.ownerDropdownView = false;
+        this.chartererDropdownView = false;
         // Set Default Values End
 
         if(this.formId != '' && this.formId != null && this.formId != undefined)
@@ -509,6 +560,10 @@ export class DrawCpClausesComponent implements OnInit
         {
             vesselId: ['', Validators.required]
         });
+        this.chartererDropDownForm = this._formBuilder.group(
+        {
+            chartererId: ['', Validators.required]
+        });
         // Set Form And Its Validation End
 
         if(this.isTrading == '2')
@@ -516,6 +571,7 @@ export class DrawCpClausesComponent implements OnInit
             this.fetchDrawDataRecap();
             this.termsReviewRecords();
         } else {
+            this.firstScreen = false;
             this.fetchTradingData();
         }
 
@@ -648,6 +704,35 @@ export class DrawCpClausesComponent implements OnInit
     }
     // On Owner Change End
 
+    // Charterer Records Server Side Start
+    chartererRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.chartererRecordsServerSideResponse = res;
+                if (this.chartererRecordsServerSideResponse.success === true)
+                {
+                    this.chartererRecordsServerSideResponseData = this.chartererRecordsServerSideResponse.data;
+                }
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Charterer Records Server Side End
+
+    // On Charterer Change Start
+    onChangeCharterer(event)
+    {
+        this.tempChartererId =  event.value;
+        this.chartererModal = !this.chartererModal;
+    }
+    // On Charterer Change End
+
     // Fetch Trading Data Start
     fetchTradingData ()
     {
@@ -662,26 +747,67 @@ export class DrawCpClausesComponent implements OnInit
                 {
                     this.tradingRecordsServerSideResponseData = this.tradingRecordsServerSideResponse.data[0];
 
+                    this.is_owner_main_term_sign_off = this.tradingRecordsServerSideResponseData['is_owner_main_term_sign_off'];
+                    this.is_charterer_main_term_sign_off = this.tradingRecordsServerSideResponseData['is_charterer_main_term_sign_off'];
+                    this.is_owner_detail_term_sign_off = this.tradingRecordsServerSideResponseData['is_owner_detail_term_sign_off'];
+                    this.is_charterer_detail_term_sign_off = this.tradingRecordsServerSideResponseData['is_charterer_detail_term_sign_off'];
+
                     // Set Page Title Start
                     var ownerCounter = this.tradingRecordsServerSideResponseData['owner_counter'];
                     var chartererCounter = this.tradingRecordsServerSideResponseData['charterer_counter'];
 
-                    this.ownerCounterNumber = ownerCounter;
-                    this.chartererCounterNumber = chartererCounter;
+                    var ownerDetailCounter = this.tradingRecordsServerSideResponseData['owner_detail_counter'];
+                    var chartererDetailCounter = this.tradingRecordsServerSideResponseData['charterer_detail_counter'];
 
-                    if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                    if(this.is_owner_main_term_sign_off != '1' && this.is_charterer_main_term_sign_off != '1')
                     {
-                        if (ownerCounter > 1)
+                        this.ownerCounterNumber = ownerCounter;
+                        this.chartererCounterNumber = chartererCounter;
+
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                         {
-                            this.chartererCounterNumber = chartererCounter + 1;
-                            this.pageTitle = 'Charterer '+this.NumInWords(chartererCounter)+' Counter';
+                            if (ownerCounter > 1)
+                            {
+                                this.chartererCounterNumber = chartererCounter + 1;
+                                this.pageTitle = 'Charterer '+this.NumInWords(chartererCounter)+' Counter';
+                                if(this.is_owner_main_term_sign_off == '1')
+                                {
+                                    this.pageTitle = 'Charterer Final Counter ';
+                                }
+                                this.message = this.pageTitle;
+                            }
+                        }
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                        {
+                            this.ownerCounterNumber = ownerCounter + 1;
+                            this.pageTitle = 'Owner '+this.NumInWords(ownerCounter)+' Counter';
+                            this.message = this.pageTitle;
+                        }
+                    } else {
+                        this.ownerDetailCounterNumber = ownerDetailCounter;
+                        this.chartererDetailCounterNumber = chartererDetailCounter;
+
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                        {
+                            if (ownerDetailCounter > 1)
+                            {
+                                this.chartererDetailCounterNumber = chartererDetailCounter + 1;
+                                this.pageTitle = 'Charterer Detail '+this.NumInWords(chartererDetailCounter)+' Counter';
+                                if(this.is_owner_detail_term_sign_off == '1')
+                                {
+                                    this.pageTitle = 'Charterer Detail Final Counter ';
+                                }
+                                this.message = this.pageTitle;
+                            }
+                        }
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                        {
+                            this.ownerDetailCounterNumber = ownerDetailCounter + 1;
+                            this.pageTitle = 'Owner Detail '+this.NumInWords(ownerDetailCounter)+' Counter';
+                            this.message = this.pageTitle;
                         }
                     }
-                    if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                    {
-                        this.ownerCounterNumber = ownerCounter + 1;
-                        this.pageTitle = 'Owner '+this.NumInWords(ownerCounter)+' Counter';
-                    }
+                    
                     // Set Page Title End
 
                     // Assign Values Start
@@ -714,6 +840,62 @@ export class DrawCpClausesComponent implements OnInit
                             cpDate: [this.cpDate, Validators.required],
                         }
                     );
+
+                    this.lifted_by = this.tradingRecordsServerSideResponseData['lifted_by'];
+                    this.lifted_time = this.tradingRecordsServerSideResponseData['lifted_time'];
+                    this.lifted_date = this.tradingRecordsServerSideResponseData['lifted_date'];
+                    this.lifted_city = this.tradingRecordsServerSideResponseData['lifted_city'];
+                    this.lifted_charter_party_place = this.tradingRecordsServerSideResponseData['lifted_charter_party_place'];
+                    this.lifted_charter_fully_style = this.tradingRecordsServerSideResponseData['lifted_charter_fully_style'];
+                    this.lifted_charter_domicile = this.tradingRecordsServerSideResponseData['lifted_charter_domicile'];
+                    this.lifted_owner_fully_style = this.tradingRecordsServerSideResponseData['lifted_owner_fully_style'];
+                    this.lifted_owner_domicile = this.tradingRecordsServerSideResponseData['lifted_owner_domicile'];
+                    this.lifted_owner_type = this.tradingRecordsServerSideResponseData['lifted_owner_type'];
+                    this.lifted_vessel_name = this.tradingRecordsServerSideResponseData['lifted_vessel_name'];
+                    this.lifted_vessel_imo = this.tradingRecordsServerSideResponseData['lifted_vessel_imo'];
+                    this.lifted_vessel_flag = this.tradingRecordsServerSideResponseData['lifted_vessel_flag'];
+                    this.lifted_vessel_year_built = this.tradingRecordsServerSideResponseData['lifted_vessel_year_built'];
+                    this.lifted_vessel_dwat_metric_tons = this.tradingRecordsServerSideResponseData['lifted_vessel_dwat_metric_tons'];
+                    this.lifted_vessel_draft_on_marks = this.tradingRecordsServerSideResponseData['lifted_vessel_draft_on_marks'];
+                    this.lifted_vessel_loa = this.tradingRecordsServerSideResponseData['lifted_vessel_loa'];
+                    this.lifted_vessel_beam = this.tradingRecordsServerSideResponseData['lifted_vessel_beam'];
+                    this.lifted_vessel_holds = this.tradingRecordsServerSideResponseData['lifted_vessel_holds'];
+                    this.lifted_vessel_hatches = this.tradingRecordsServerSideResponseData['lifted_vessel_hatches'];
+                    this.lifted_vessel_gear = this.tradingRecordsServerSideResponseData['lifted_vessel_gear'];
+                    this.lifted_vessel_swl = this.tradingRecordsServerSideResponseData['lifted_vessel_swl'];
+                        
+                    this.stdBidForm = this._formBuilder.group
+                    (
+                        {
+                            cpTimeStdBid: [this.cpTime, Validators.required],
+                            cityIdStdBid: [this.cityId, Validators.required],
+                            cpDateStdBid: [this.cpDate, Validators.required],
+                            fixture_subject: [this.fixture_subject, ''],
+                            lifted_by: [this.lifted_by, ''],
+                            lifted_time: [this.lifted_time, ''],
+                            lifted_date: [this.lifted_date, ''],
+                            lifted_city: [this.lifted_city, ''],
+                            lifted_charter_party_place: [this.lifted_charter_party_place, ''],
+                            lifted_charter_fully_style: [this.lifted_charter_fully_style, ''],
+                            lifted_charter_domicile: [this.lifted_charter_domicile, ''],
+                            lifted_owner_fully_style: [this.lifted_owner_fully_style, ''],
+                            lifted_owner_domicile: [this.lifted_owner_domicile, ''],
+                            lifted_owner_type: [this.lifted_owner_type, ''],
+                            lifted_vessel_name: [this.lifted_vessel_name, ''],
+                            lifted_vessel_imo: [this.lifted_vessel_imo, ''],
+                            lifted_vessel_flag: [this.lifted_vessel_flag, ''],
+                            lifted_vessel_year_built: [this.lifted_vessel_year_built, ''],
+                            lifted_vessel_dwat_metric_tons : [this.lifted_vessel_dwat_metric_tons, ''],
+                            lifted_vessel_draft_on_marks : [this.lifted_vessel_draft_on_marks, ''],
+                            lifted_vessel_loa : [this.lifted_vessel_loa, ''],
+                            lifted_vessel_beam : [this.lifted_vessel_beam, ''],
+                            lifted_vessel_holds : [this.lifted_vessel_holds, ''],
+                            lifted_vessel_hatches : [this.lifted_vessel_hatches, ''],
+                            lifted_vessel_gear : [this.lifted_vessel_gear, ''],
+                            lifted_vessel_swl : [this.lifted_vessel_swl, ''],
+                        }
+                    );
+
                     // Assign Form Values End
                     // Set Array For Checked Clauses Start
                     this.checkedClauseCategory = [];
@@ -764,15 +946,109 @@ export class DrawCpClausesComponent implements OnInit
                         // Owner Records Server Side End
                         this.ownerDropdownView = true;
                     }
+
                     if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
                     {
                         this.ownerNameView = true;
                     }
+
+                    if(this.chartererId == '' || this.chartererId == null || this.chartererId == undefined)
+                    {
+                        // Owner Records Server Side Start
+                        this.chartererRecordsServerSide();
+                        // Owner Records Server Side End
+                        this.chartererDropdownView = true;
+                    }
+
+                    if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                    {
+                        this.chartererNameView = true;
+                    }
+
+                    if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                    {
+                        this.mainTermOwnerSignOffView = true;
+                    }
+                    this.mainTermChartererSignOffView = false;
+                    
+                    this.detailTermOwnerSignOffView = false;
+                    this.detailTermChartererSignOffView = false;
+
+                    this.ownerMainTermDisabled = 'Y';
+                    this.chartererMainTermDisabled = 'Y';
+                    this.ownerDetailTermDisabled = 'Y';
+                    this.chartererDetailTermDisabled = 'Y';
+
+                    this.ownerMainTermChecked = 'N';
+                    this.chartererMainTermChecked = 'N';
+                    this.ownerDetailTermChecked = 'N';
+                    this.chartererDetailTermChecked = 'N';
+
+                    this.ownerMainTermChecked = (this.is_owner_main_term_sign_off == '1') ? 'Y' : 'N';
+                    this.chartererMainTermChecked = (this.is_charterer_main_term_sign_off == '1') ? 'Y' : 'N';
+                    this.ownerDetailTermChecked = (this.is_owner_detail_term_sign_off == '1') ? 'Y' : 'N';
+                    this.chartererDetailTermChecked = (this.is_charterer_detail_term_sign_off == '1') ? 'Y' : 'N';
+
+                    if(this.is_owner_main_term_sign_off == '1')
+                    {
+                        this.mainTermChartererSignOffView = true;
+                    }
+
+                    if(this.is_owner_main_term_sign_off == '1' && this.is_charterer_main_term_sign_off == '1')
+                    {
+                        this.mainTermOwnerSignOffView = false;
+                        this.mainTermChartererSignOffView = false;
+                        this.detailTermOwnerSignOffView = true;
+                    }
+
+                    if(this.is_owner_detail_term_sign_off == '1')
+                    {
+                        this.detailTermChartererSignOffView = true;
+                    }
+
+                    if(this.is_owner_detail_term_sign_off == '1')
+                    {
+                        this.detailTermChartererSignOffView = true;
+                        this.firstScreenStdBidBroker = true;
+                        this.firstScreen = false;
+                        this.submitButtonText = 'Raise A Request';
+                    } else {
+                        this.firstScreen = true;
+                    }
+
+                    this.ownerMainTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '6' && this.ownerMainTermChecked == 'N') ? 'N' : 'Y';
+                    this.ownerDetailTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '6' && this.ownerDetailTermChecked == 'N') ? 'N' : 'Y';
+
+                    this.chartererMainTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '4' && this.chartererMainTermChecked == 'N') ? 'N' : 'Y';
+                    this.chartererDetailTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '4' && this.chartererDetailTermChecked == 'N') ? 'N' : 'Y';
+                    
                 }
             });
         }catch (err){}
     }
     // Fetch Trading Data End
+
+    // Owner Charterer Checkgbxo Changed
+
+    ownerMainTermCheckBoxChange(event)
+    {
+        this.is_owner_main_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
+
+    chartererMainTermCheckBoxChange(event)
+    {
+        this.is_charterer_main_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
+
+    ownerDetailTermCheckBoxChange(event)
+    {
+        this.is_owner_detail_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
+
+    chartererDetailTermCheckBoxChange(event)
+    {
+        this.is_charterer_detail_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
 
     // Vessel Records Sever Side Start
     vesselRecordsServerSide()
@@ -907,8 +1183,21 @@ export class DrawCpClausesComponent implements OnInit
             }, err => {  });
         } catch (err)
         {  }
+
+        var updateData = {};
+            updateData['ownerId'] = this.ownerId;  
+            updateData['id'] = this.tradingId;
+            updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
+        try
+        {
+            this._userService.tradingDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>
+            {
+            }, err => {  });
+        } catch (err)
+        {  }
     }
     // Change Owner End
+    
 
     // Show Vessel Change Modal Start
     showVesselChangeModal(): void
@@ -941,6 +1230,7 @@ export class DrawCpClausesComponent implements OnInit
             }
         }
         var updateData = {};
+            updateData['ownerId'] = this.ownerId;    
             updateData['vesselId'] = this.vesselId;
             updateData['id'] = this.tradingId;
             updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
@@ -957,6 +1247,61 @@ export class DrawCpClausesComponent implements OnInit
         {  }
     }
     // Change Vessel End
+
+
+    // Show Charterer Change Modal Start
+    showChartererChangeModal(): void
+    {
+        this.chartererModal = !this.chartererModal;
+    }
+    // Show Charterer Change Modal End
+
+    // Hide Charterer Change Modal Start
+    hideChartererChangeModal(): void
+    {
+        this.chartererModal = !this.chartererModal;
+        this.chartererDropDownForm = this._formBuilder.group(
+        {
+            chartererId: ['', Validators.required]
+        });
+    }
+    // Hide Charterer Change Modal End
+
+    // Change Charterer Start
+    changeCharterer()
+    {
+        this.chartererModal = !this.chartererModal;
+        this.chartererId = this.tempChartererId;
+        for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+        {
+            if(this.chartererId == this.chartererRecordsServerSideResponseData[index].id)
+            {
+                this.chartererName = this.chartererRecordsServerSideResponseData[index].username;
+                this.chartererEmail = this.chartererRecordsServerSideResponseData[index].email;
+            }
+        }
+        var updateData = {};
+            updateData['ownerId'] = JSON.parse(localStorage.getItem('userId'));
+            updateData['chartererId'] = this.chartererId;
+            updateData['brokerId'] = this.brokerId;
+            updateData['tradingId'] = this.tradingId;
+            updateData['chartererEmail'] = this.chartererEmail;
+            updateData['chartererName'] = this.chartererName;
+            updateData['notification'] = 'You are invited for trade';
+            updateData['createdBy'] = JSON.parse(localStorage.getItem('userId'));
+            updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
+        try
+        {
+            this._userService.chartererInviteOwnerForTrade(updateData).pipe(first()).subscribe((res) =>
+            {
+                this.chartererDropdownView = false;
+                this.chartererNameView = true;
+                this.alertService.success('Charterer Updated Successfully', 'Success');
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Change Charterer End
 
     // OLD CODES START
 
@@ -1638,7 +1983,7 @@ export class DrawCpClausesComponent implements OnInit
     // First Screen View
     firstScreenView()
     {
-        if(this.isStdBid == 'Y')
+        if(this.isTrading == '1')
         {
             this.stdBidForm = this._formBuilder.group
             (
@@ -1672,11 +2017,11 @@ export class DrawCpClausesComponent implements OnInit
                 }
             );
 
-            if (JSON.parse(localStorage.getItem('userRoleId')) == 3)
+            if(this.is_owner_detail_term_sign_off == '1' && this.is_charterer_detail_term_sign_off == '1')
             {
-                this.firstScreenStdBidBroker= true;
+                this.firstScreenStdBidBroker = true;
             } else {
-                this.firstScreenStdBid = true;
+                this.firstScreen = true;    
             }
             
         } else {
@@ -1697,18 +2042,14 @@ export class DrawCpClausesComponent implements OnInit
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         this.isTrading = filter.isTrading;
 
-        if(filter.isStdBid == 'Y')
+        if(filter.isTrading == '2')
         {
-            this.stdBidSubmit();
+            this.customInputDrawDataUpdate();
+            this.fetchDrawData();    
         } else {
-            if(filter.isTrading == '2')
-            {
-                this.customInputDrawDataUpdate();
-                this.fetchDrawData();    
-            } else {
-                this.customInputTradingDataUpdate();
-                this.fetchTradingData();
-            }
+            // this.customInputTradingDataUpdate();
+            // this.fetchTradingData();
+            this.stdBidSubmit();
         }
     }
 
@@ -1800,9 +2141,6 @@ export class DrawCpClausesComponent implements OnInit
                 }
                 this.http.post(`${config.baseUrl}/StandardBidFormDataUpdate`, req, headerOptions).subscribe(res =>{},err =>{this.alertService.error(err, 'Error');});
             } catch (err){} 
-
-            this.customInputTradingDataUpdate();
-            this.fetchTradingData();
         }
     }
 
@@ -2264,7 +2602,7 @@ export class DrawCpClausesComponent implements OnInit
                         this.pageTitle = 'Owner Offer';
                     } else {
                         this.pageTitle = 'Owner '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
-                    }    
+                    }
                     
                     // this.pageTitle = 'Owner '+this.NumInWords(this.counterResponse.data.counterNumber)+' Counter';
                 }
@@ -4315,22 +4653,76 @@ export class DrawCpClausesComponent implements OnInit
             var convertedDate = moment(this.clauseFormValues.cpDate.value).format("YYYY-MM-DD");
             var updateData = {};
                 updateData['id'] = this.tradingId;
-                updateData['progress'] = '30';
-                updateData['progress_info'] = '3';
+
+                if(this.ownerCounterNumber > '1')
+                {
+                    updateData['progress'] = '30';
+                    updateData['progress_info'] = '3';
+                }
+                
+                if(this.is_owner_main_term_sign_off == '1' && this.ownerDetailCounterNumber == '1')
+                {
+                    updateData['progress'] = '40';
+                    updateData['progress_info'] = '4';
+                    this.message = 'Owner Sign Off Main Term';
+                }
+
+                if(this.is_charterer_main_term_sign_off == '1' && this.ownerDetailCounterNumber == '1')
+                {
+                    updateData['progress'] = '50';
+                    updateData['progress_info'] = '5';
+                    this.message = 'Charterer Sign Off Main Term';
+                }
+
+                if(this.ownerDetailCounterNumber > '1')
+                {
+                    updateData['progress'] = '60';
+                    updateData['progress_info'] = '6';
+
+                }
+
+                if(this.is_owner_detail_term_sign_off == '1')
+                {
+                    updateData['progress'] = '70';
+                    updateData['progress_info'] = '7';
+                    this.message = 'Owner Sign Off Detail Term';
+                }
+
+                if(this.is_charterer_detail_term_sign_off == '1')
+                {
+                    updateData['progress'] = '80';
+                    updateData['progress_info'] = '8';
+                    this.message = 'Charterer Sign Off Detail Term';
+                }
+
+                
                 updateData['cpTime'] = this.clauseFormValues.cpTime.value;
                 updateData['cpCity'] = this.clauseFormValues.cityId.value;
                 updateData['cpDate'] = convertedDate;
+
+                updateData['is_owner_main_term_sign_off'] = this.is_owner_main_term_sign_off;
+                updateData['is_charterer_main_term_sign_off'] = this.is_charterer_main_term_sign_off;
+                updateData['is_owner_detail_term_sign_off'] = this.is_owner_detail_term_sign_off;
+                updateData['is_charterer_detail_term_sign_off'] = this.is_charterer_detail_term_sign_off;
+
+                if(this.is_owner_main_term_sign_off == '1' && this.is_charterer_main_term_sign_off == '1')
+                {
+                    updateData['main_term_checked_clauses'] = this.checkedClauseCategory.join();
+                }
+
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '3')
                 {
                     updateData['broker_clauses'] = checkedCheckBox;    
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
+                    updateData['charterer_detail_counter'] = this.chartererDetailCounterNumber;
                     updateData['charterer_counter'] = this.chartererCounterNumber;
                     updateData['charterer_clauses'] = checkedCheckBox;    
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
+                    updateData['owner_detail_counter'] = this.ownerDetailCounterNumber;
                     updateData['owner_counter'] = this.ownerCounterNumber;
                     updateData['owner_clauses'] = checkedCheckBox;    
                 }
@@ -4360,14 +4752,19 @@ export class DrawCpClausesComponent implements OnInit
                 tradingMessageInsertData['tradingId'] = this.tradingId;
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
-                    tradingMessageInsertData['message'] = this.pageTitle;
+                    tradingMessageInsertData['message'] = this.message;
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
                     tradingMessageInsertData['message'] = 'Charterer Updates';
                     if(this.ownerCounterNumber > '1')
                     {
-                        tradingMessageInsertData['message'] = this.pageTitle;
+                        tradingMessageInsertData['message'] = this.message;
+                    }
+
+                    if(this.ownerDetailCounterNumber > '1')
+                    {
+                        tradingMessageInsertData['message'] = this.message;
                     }
                 }
                 tradingMessageInsertData['createdBy'] = localStorage.getItem('userId');
@@ -4381,16 +4778,22 @@ export class DrawCpClausesComponent implements OnInit
                 tradingProgressInsertData['chartererId'] = this.chartererId;
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
                 {
-                    tradingProgressInsertData['message'] = this.pageTitle;
+                    tradingProgressInsertData['message'] = this.message;
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
                     tradingProgressInsertData['message'] = 'Charterer Updates';
                     if(this.ownerCounterNumber > '1')
                     {
-                        tradingProgressInsertData['message'] = this.pageTitle;
+                        tradingProgressInsertData['message'] = this.message;
+                    }
+                    if(this.ownerDetailCounterNumber > '1')
+                    {
+                        tradingProgressInsertData['message'] = this.message;
                     }
                 }
+
+
                 tradingProgressInsertData['createdBy'] = localStorage.getItem('userId');
                 tradingProgressInsertData['updatedBy'] = localStorage.getItem('userId');
 

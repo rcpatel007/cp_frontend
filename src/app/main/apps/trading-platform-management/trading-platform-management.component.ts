@@ -18,7 +18,7 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
-
+import * as io from 'socket.io-client';
 export interface PeriodicElement
 {
     id:String;
@@ -76,6 +76,7 @@ export class TradingPlatformManagementComponent implements OnInit
 {
     // Assign Div Name For Hide And Show Start
     tradeRecordsDiv = true;
+    createTradeButtonView = false;
     tradingFormDiv = false;
     tradeBothView = false;
     tradeChartererView = false;
@@ -121,7 +122,7 @@ export class TradingPlatformManagementComponent implements OnInit
     chartererMobileNumber : string;
     chartererStatus : string;
     chartererStatusInfo : string;
-    
+    socket: any;
     companyName : string;
     tradeType : string;
     bidNameLabel : string;
@@ -163,7 +164,7 @@ export class TradingPlatformManagementComponent implements OnInit
     fixtureRecordsServerSideResponse : any;
     fixtureRecordsServerSideResponseData = [];
     // Assign API Variable End
-
+    notification = [];
     // Datatable Settings Start
     tradingRecordsDisplayColumn: string[] = ['identifier','cpDateInfo','brokerName','chartererName','ownerName', 'vesselName',
      'progress','statusInfo','isChartererAccepted','isOwnerAccepted','action'];
@@ -199,6 +200,13 @@ export class TradingPlatformManagementComponent implements OnInit
         
     )
     {
+        this.socket = io('http://localhost:3001');
+        this.socket.on('message', (result) => {
+            console.log(result);
+            this.notification.push(result.data);
+
+        });
+
         this.tradingRecordsData = new MatTableDataSource(this.tradingRecordsServerSideResponseData );
     }
 
@@ -243,6 +251,7 @@ export class TradingPlatformManagementComponent implements OnInit
        
         if(JSON.parse(localStorage.getItem('userRoleId')) == '3')
         {
+            this.createTradeButtonView = true;
             this.isBrokerView = 'Y';
             this.isEditView = true;    
             this.isRecapView = true;
@@ -570,7 +579,11 @@ export class TradingPlatformManagementComponent implements OnInit
                             };
                             this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`,
                             ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
-
+                         
+                         
+                            this.socket.emit('new-notification', {ownerNotificationData});
+                           
+                           
                             const tradingProgressData =
                             {
                                 tradingId       :       this.tradingId,
@@ -613,7 +626,10 @@ export class TradingPlatformManagementComponent implements OnInit
                                 updatedBy       :       localStorage.getItem('userId')
                             };
                             this.http.post(`${config.baseUrl}/tradingProgressInsert`,
-                            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
+                            tradingProgressData, headerOptions).subscribe(res =>{
+                                this.socket.emit('new-notification', {tradingProgressData});
+
+                            },err =>{});
                         }
                         this.tradeSubmitInformationView = true;
                     }
@@ -742,15 +758,31 @@ export class TradingPlatformManagementComponent implements OnInit
             };
             this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
             
-            const statusUpdateData =
+            // const statusUpdateData =
+            // {
+            //     tradingId: this.tradingId,
+            //     ownerId: this.ownerId,
+            //     chartererId: this.chartererId,
+            //     isAccepted: this.statusAction,
+            //     updatedBy: localStorage.getItem('userId'),
+            // };
+
+            var updateData = {};
+                updateData['tradingId'] = this.tradingId;
+                updateData['isAccepted'] = this.statusAction;
+                updateData['updatedBy'] = localStorage.getItem('userId');
+        
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
             {
-                tradingId: this.tradingId,
-                ownerId: this.ownerId,
-                chartererId: this.chartererId,
-                isAccepted: this.statusAction,
-                updatedBy: localStorage.getItem('userId'),
-            };
-            this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+                updateData['chartererId'] = this.chartererId;
+            }
+
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                updateData['ownerId'] = this.ownerId;
+            }
+
+            this._userService.TradingPlatformRequestStatusUpdateCommon(updateData).pipe(first()).subscribe(data =>
             {
                 this.tradingDataUpdateResponse = data;
                 if (this.tradingDataUpdateResponse.success === true)
@@ -766,7 +798,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 this.alertService.error(error.message, 'Error');
             });
 
-            if(statusUpdateData.isAccepted == 'Y')
+            if(updateData['isAccepted'] == 'Y')
             {
                 const tradingDataUpdate =
                 {
@@ -776,16 +808,29 @@ export class TradingPlatformManagementComponent implements OnInit
                     updatedBy: localStorage.getItem('userId')
                 };
                 this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+            } else {
+                var finalUpdateData = {};
+                    finalUpdateData['id'] = this.tradingId;
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    finalUpdateData['chartererId'] = null;
+                }
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    finalUpdateData['ownerId'] = null;
+                    finalUpdateData['vesselId'] = null;
+                }
+                this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
             }
 
             if(localStorage.getItem('userRoleId') == '4')
             {
-                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+                var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
             }
 
             if(localStorage.getItem('userRoleId') == '6')
             {
-                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+                var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected Offer';
             }
 
             const tradingMessageData =
@@ -934,7 +979,22 @@ export class TradingPlatformManagementComponent implements OnInit
                 updatedBy: localStorage.getItem('userId')
             };
             this.http.post(`${config.baseUrl}/copyTradingData`, copyTradingData, headerOptions).subscribe( res =>{});
-            
+
+            var updateData = {};
+            updateData['tradingId'] = this.tradingId;
+            updateData['isAccepted'] = this.statusAction;
+            updateData['updatedBy'] = localStorage.getItem('userId');
+    
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+            {
+                updateData['chartererId'] = this.chartererId;
+            }
+
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                updateData['ownerId'] = this.ownerId;
+            }
+
             const statusUpdateData =
             {
                 tradingId: this.tradingId,
@@ -943,7 +1003,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 isAccepted: this.statusAction,
                 updatedBy: localStorage.getItem('userId'),
             };
-            this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+            this._userService.TradingPlatformRequestStatusUpdateCommon(updateData).pipe(first()).subscribe(data =>
             {
                 this.tradingDataUpdateResponse = data;
                 if (this.tradingDataUpdateResponse.success === true)
@@ -969,6 +1029,19 @@ export class TradingPlatformManagementComponent implements OnInit
                     updatedBy: localStorage.getItem('userId')
                 };
                 this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+            } else {
+                var finalUpdateData = {};
+                finalUpdateData['id'] = this.tradingId;
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    finalUpdateData['chartererId'] = null;
+                }
+                if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    finalUpdateData['ownerId'] = null;
+                    finalUpdateData['vesselId'] = null;
+                }
+                this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, finalUpdateData, headerOptions).subscribe( res =>{});
             }
 
             if(localStorage.getItem('userRoleId') == '4')
@@ -978,7 +1051,7 @@ export class TradingPlatformManagementComponent implements OnInit
 
             if(localStorage.getItem('userRoleId') == '6')
             {
-                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+                var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected OfferfownerDropdownView';
             }
 
             const tradingMessageData =
@@ -1082,21 +1155,36 @@ export class TradingPlatformManagementComponent implements OnInit
     // Accept / Reject Charterer Owner Request Start
     acceptRejectChartererOwnerTradeRequest(): void
     {
-        const statusUpdateData =
+        var updateData = {};
+            updateData['tradingId'] = this.tradingId;
+            updateData['isAccepted'] = this.statusAction;
+            updateData['updatedBy'] = localStorage.getItem('userId');
+        
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
         {
-            tradingId: this.tradingId,
-            ownerId: this.ownerId,
-            chartererId: this.chartererId,
-            isAccepted: this.statusAction,
-            updatedBy: localStorage.getItem('userId'),
-        };
-        this._userService.TradingPlatformRequestStatusUpdateCommon(statusUpdateData).pipe(first()).subscribe(data =>
+            updateData['chartererId'] = this.chartererId;
+        }
+
+        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+        {
+            updateData['ownerId'] = this.ownerId;
+        }
+
+        // const statusUpdateData =
+        // {
+        //     tradingId: this.tradingId,
+        //     ownerId: this.ownerId,
+        //     chartererId: this.chartererId,
+        //     isAccepted: this.statusAction,
+        //     updatedBy: localStorage.getItem('userId'),
+        // };
+        this._userService.TradingPlatformRequestStatusUpdateCommon(updateData).pipe(first()).subscribe(data =>
         {
             this.tradingDataUpdateResponse = data;
             if (this.tradingDataUpdateResponse.success === true)
             {
                 this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
-                if(statusUpdateData.isAccepted == 'Y')
+                if(updateData['isAccepted'] == 'Y')
                 {
                     this.activeModalStatus = !this.activeModalStatus;
                 } else {
@@ -1115,7 +1203,7 @@ export class TradingPlatformManagementComponent implements OnInit
         const header = new HttpHeaders();
         header.append('Content-Type', 'application/json');
         const headerOptions = { headers: header }
-        if(statusUpdateData.isAccepted == 'Y')
+        if(updateData['isAccepted'] == 'Y')
         {
             const tradingDataUpdate =
             {
@@ -1125,16 +1213,29 @@ export class TradingPlatformManagementComponent implements OnInit
                 updatedBy: localStorage.getItem('userId')
             };
             this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
+        } else {
+            var finalUpdateData = {};
+                finalUpdateData['id'] = this.tradingId;
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+            {
+                finalUpdateData['chartererId'] = null;
+            }
+            if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+            {
+                finalUpdateData['ownerId'] = null;
+                finalUpdateData['vesselId'] = null;
+            }
+            this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, finalUpdateData, headerOptions).subscribe( res =>{});
         }
 
         if(localStorage.getItem('userRoleId') == '4')
         {
-            var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+            var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
         }
 
         if(localStorage.getItem('userRoleId') == '6')
         {
-            var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Bid' : 'Owner Rejected Bid';
+            var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected Offer';
         }
 
         const tradingMessageData =
@@ -1241,21 +1342,18 @@ export class TradingPlatformManagementComponent implements OnInit
     }
     // Trade Edit View End
 
-    // Old Codes
-
-    recapView(tradingId,formId,chartererId)
+    // Trade Recap View Start
+    recapView(tradingId)
     {
         const reqData =
         {
             mainUserId: localStorage.getItem('userId'),
             companyId: localStorage.getItem('companyId'),
             tradingId: tradingId,
-            formId : formId,
-            chartererId : chartererId,
             isTrading : '1',
         };
-        console.log(reqData,"Recap View");
         localStorage.setItem('clauseFilterData', JSON.stringify(reqData));
         this.router.navigate(['/apps/recap-management']);
     }
+    // Trade Recap View End
 }

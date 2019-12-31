@@ -2,7 +2,6 @@ import { FuseNavigation } from '@fuse/types';
 
 
 var childrenArray = [];
-if (JSON.parse(localStorage.getItem('userRoleId')) != '7'){
 var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'dashboard';
     childrenArrayInfo["title"] = 'Dashboard';
@@ -10,8 +9,10 @@ var childrenArrayInfo = {};
     childrenArrayInfo["type"] = 'item';
     childrenArrayInfo["icon"] = 'network_check';
     childrenArrayInfo["url"] = '/apps/dashboards/analytics';
-
+    childrenArray.push(childrenArrayInfo);
    
+if (JSON.parse(localStorage.getItem('userRoleId')) != '7'){
+
 console.log(JSON.parse(localStorage.getItem('userRoleId')));
 
 if (JSON.parse(localStorage.getItem('userRoleId')) == '5')
@@ -144,6 +145,8 @@ var childrenArrayInfo = {};
     childrenArrayInfo["icon"] = 'notes';
     childrenArrayInfo["url"] = '/apps/contact';
     childrenArray.push(childrenArrayInfo);
+
+    
 
 var childrenArrayInfo = {};
     childrenArrayInfo["id"] = 'Notification';

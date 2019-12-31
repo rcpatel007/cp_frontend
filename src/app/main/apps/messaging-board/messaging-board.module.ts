@@ -19,6 +19,7 @@ import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseConfirmDialogModule, FuseSidebarModule } from '@fuse/components';
 import {MatSelectModule} from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MessagingBoardComponent } from 'app/main/apps/messaging-board/messaging-board.component';
 
 const routes: Routes =
@@ -40,6 +41,7 @@ const routes: Routes =
         CommonModule,
         RouterModule.forChild(routes),
         MatPaginatorModule,
+        MatExpansionModule,
         MatButtonModule,
         MatRadioModule,
         MatCheckboxModule,
