@@ -207,7 +207,7 @@
                         <mat-select formControlName="tradeType" matSelect (selectionChange)="setTradeFormView($event)">
                             <mat-option [value]="1"> Bid </mat-option>
                             <mat-option [value]="2"> Offer </mat-option>
-                            <!-- <mat-option [value]s="3"> Both</mat-option> -->
+                            <!-- <mat-option [value]="3"> Both</mat-option> -->
                         </mat-select>
                         <mat-error *ngIf="tradingForm.get('tradeType').hasError('required')"> Trade Type Is Required</mat-error>
                     </mat-form-field>
@@ -330,7 +330,7 @@
                         <button class="cst-modal__close" (click)="hideActionTypeModal()">&times;</button>
                     </div>
                     <div class="cst-modal__footer">
-                        <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="showPerformaModal()">Performa</button>
+                        <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="showPerformaModal()">Proforma</button>
                         <button class="cst-modal__button cst-modal__button--active" style="width: 110px !important;" (click)="showExecutedModal()">Executed</button>
                         <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideActionTypeModal()">Cancel</button>
                     </div>
@@ -342,7 +342,7 @@
                 <div class="cst-modal__overlay"></div>
                 <div class="cst-modal__content">
                     <div class="cst-modal__header">
-                        <h4 class="cst-modal__title" style="margin: 0 auto;"> Please select cp form to continue</h4>
+                        <h4 class="cst-modal__title" style="margin: 0 auto;"> Please select CP FORM to continue</h4>
                         <button class="cst-modal__close" (click)="hidePerformaModal()">&times;</button>
                     </div>
                     <div class="cst-modal__body">
@@ -355,11 +355,12 @@
                                 </mat-select>
                                 <mat-error *ngIf="performaForm.get('cpFormId').hasError('required')"> CP FORM Is Required</mat-error>
                             </mat-form-field>
-                            <button style="margin-right: 200px; margin-top: 10px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
+                            <button class="cst-modal__button cst-modal__button--cancel" style="width: 150px !important;margin-right: -30px;background: #f48730;" (click)="hidePerformaModal()">Cancel</button>
+                            <button style="width: 150px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
                         </form>
                     </div>
                     <div class="cst-modal__footer">
-                        <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hidePerformaModal()">Cancel</button>
+                        
                     </div>
                 </div>
             </div>
@@ -382,11 +383,13 @@
                             </mat-select>
                             <mat-error *ngIf="executedForm.get('copyTradingId').hasError('required')"> Fixture Is Required</mat-error>
                         </mat-form-field>
-                        <button style="margin-right: 200px; margin-top: 10px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
+                        <button class="cst-modal__button cst-modal__button--cancel" style="width: 150px !important;margin-right: -30px;background: #f48730;" (click)="hideExecutedModal()">Cancel</button>
+                        <button style="width: 150px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button>
+                        <!-- <button style="margin-right: 200px; margin-top: 10px;" class="cst-modal__button cst-modal__button--submit" type="submit">Submit</button> -->
                     </form>
                 </div>
                 <div class="cst-modal__footer">
-                    <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideExecutedModal()">Cancel</button>
+                    <!-- <button class="cst-modal__button cst-modal__button--cancel" style="width: 110px !important;" (click)="hideExecutedModal()">Cancel</button> -->
                 </div>
             </div>
         </div>

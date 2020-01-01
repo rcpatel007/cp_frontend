@@ -84,11 +84,7 @@ export class AnalyticsDashboardComponent implements OnInit
 {
     widget6: any = {};
 
-    fixture1:String;
-type1 :String;
-type2:String;
-status1:String;
-status2:String;
+    
 
     widgets: any;
     widget1SelectedYear = '2016';
@@ -105,6 +101,9 @@ status2:String;
 
     tradingRecordsServerSideResponse : any;
     tradingRecordsServerSideResponseData = [];
+
+    tradeStatusDataServerSideResponse : any;
+    tradeStatusDataServerSideResponseData = [];
 
     // Vessel Search Form Settings Start
 
@@ -139,7 +138,9 @@ status2:String;
 
     acceptRejectTitle : any;
     afteracceptRejectTitle : any;
-
+    active:number;
+    notSigned:number;
+    Signed:number;
     vesselSearchForm : FormGroup;
     get vesselSearchFormValues() { return this.vesselSearchForm.controls; }
     // Vessel Search Form Settings End
@@ -198,6 +199,31 @@ status2:String;
             }
         };
     }
+    
+    companyId : string;
+    
+ tradeStatusDataServerSideResponsefull: any;
+ tradeStatusDataServerSideResponseDatafull = [];
+
+
+
+    tradingFixtureRecordsServerSideResponse : any;
+    tradingFixtureRecordsServerSideResponseData = [];
+
+    brokerRecordsServerSideResponse : any;
+    brokerRecordsServerSideResponseData = [];
+
+    ownerRecordsServerSideResponse : any;
+    ownerRecordsServerSideResponseData = [];
+
+    chartererRecordsServerSideResponse : any;
+    chartererRecordsServerSideResponseData = [];
+
+    cityRecordsServerSideResponse: any;
+    cityRecordsServerSideResponseData = [];
+
+    is_owner_detail_term_sign_off : string;
+    is_charterer_detail_term_sign_off : string;
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -208,6 +234,9 @@ status2:String;
      */
 
     ngOnInit(): void {
+        
+        this.companyId = JSON.parse(localStorage.getItem('companyId'));
+
         // Get the widgets from the service
         this.widgets = this._analyticsDashboardService.widgets;
         this.newUsersRecords();
@@ -220,27 +249,12 @@ status2:String;
         this.vesselSearchForm = this._formBuilder.group(
         {
             vesselName: ['', ''],
-            keywords: ['', ''],
-            charterer: ['', ''],
-            dateMin: ['', ''],
-            dateMax: ['', ''],
-            owner: ['', ''],
-            vessel_type: ['', ''],
-            status: ['', ''],
-            charterer_broker: ['', ''],
-            fixture_id: ['', ''],
-            owner_signed: ['', ''],
-            charterer_signed: ['', ''],
-            owner_not_signed: ['', ''],
-            charterer_not_signed: ['', ''],
-            cp_not_signed: ['', ''],
-            owner_broker: ['', ''],
-            created_by: ['', ''],
-            responsible_user: ['', ''],
-            bookmarked_by: ['', ''],
-            active_user: ['', ''],
-            office_location: ['', ''],
-            hits_page: ['', ''],
+            ownerId: ['', ''],
+            chartererId: ['', ''],
+            brokerId: ['', ''],
+            cpDate: ['', ''],
+            fixtureId: ['', ''],
+            cpCity: ['', '']
         });
 
          // Assign Default Values Start
@@ -275,12 +289,245 @@ status2:String;
              this.isRecapView = true;
          }
 
+         this.tradeStatusData();
+
+        this.brokerRecordsServerSide();
+        this.ownerRecordsServerSide();
+        this.chartererRecordsServerSide();
+        this.tradingFixtureIDS();
+        this.cityRecordsServerSide();
+
+        this.is_charterer_detail_term_sign_off = undefined;
+        this.is_owner_detail_term_sign_off = undefined;
+        
+    }
+
+    chartererSigned(event)
+    {
+        this.is_charterer_detail_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
+
+    ownerSigned(event)
+    {
+        this.is_owner_detail_term_sign_off =  (event.checked == true) ? '1' : '0';
+    }
+
+    chartererNotSigned(event)
+    {
+        this.is_charterer_detail_term_sign_off =  (event.checked == true) ? '0' : '1';
+    }
+
+    ownerNotSigned(event)
+    {
+        this.is_owner_detail_term_sign_off =  (event.checked == true) ? '0' : '1';
+    }
+
+     // Fetch City Records Start
+     cityRecordsServerSide(): void
+     {
+         try {
+             this._userService.CityRecords()
+                 .pipe(first())
+                 .subscribe((res) =>
+                 {
+                     this.cityRecordsServerSideResponse = res;
+                     if (this.cityRecordsServerSideResponse.success === true)
+                     {
+                         this.cityRecordsServerSideResponseData = this.cityRecordsServerSideResponse.data;
+                     }
+                 },
+                 err => {
+                 });
+         } catch (err) {}
+     }
+     // Fetch City Records End
+
+     tradeStatusData() {
+        var filter = {};
+        filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
+        this._userService.tradeStatusData(filter).pipe(first())
+            .subscribe(res => {
+                this.tradeStatusDataServerSideResponse = res;
+                if (this.tradeStatusDataServerSideResponse.success === true) {
+                    this.tradeStatusDataServerSideResponseData.push(this.tradeStatusDataServerSideResponse  .data);
+
+                    this.active = this.tradeStatusDataServerSideResponseData[0].active;
+                    this.Signed = this.tradeStatusDataServerSideResponseData[0].cpSigned;
+                    this.notSigned = this.tradeStatusDataServerSideResponseData[0].cpNotSigned;
+                    let widget7 = {
+                        scheme: {
+                            domain: ['#21B025', '#A833FF', '#FF5733']
+                        },
+                        devices: [
+                            {
+                                name: 'active',
+                                value: this.tradeStatusDataServerSideResponseData[0].active,
+                                change: -0.6
+                            },
+                            {
+                                name: 'C/P  Signed',
+                                value: this.tradeStatusDataServerSideResponseData[0].cpSigned,
+                                change: 0.7
+                            },
+                            {
+                                name: 'C/P NotSigned',
+                                value: this.tradeStatusDataServerSideResponseData[0].cpNotSigned,
+                                change: 0.1
+                            }
+                        ]
+                    }
+
+                    this.widgets = { widget7: widget7 };
+                    console.log(this.widgets);
+                    console.log(this.tradeStatusDataServerSideResponse);
+                    console.log(this.tradeStatusDataServerSideResponseData);
+                }
+            });
+    }
+
+
+    // Trading Records Server Side Start
+    tradingFixtureIDS(): void
+    {
+        this.tradingFixtureRecordsServerSideResponseData  = [];
+        var conditionData = {};
+           conditionData["dcm.companyId"] = localStorage.getItem('companyId');
+           conditionData["dcm.createdBy"] = (JSON.parse(localStorage.getItem('userRoleId')) == '3') ? localStorage.getItem('userId') : undefined;
+           conditionData["dcm.chartererId"] = (JSON.parse(localStorage.getItem('userRoleId')) == '4') ? localStorage.getItem('userId') : undefined;
+           conditionData["dcm.ownerId"] = (JSON.parse(localStorage.getItem('userRoleId')) == '6') ? localStorage.getItem('userId') : undefined;
+        try
+        {
+            this._userService.TradingFormRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.tradingFixtureRecordsServerSideResponse = res;
+                if (this.tradingFixtureRecordsServerSideResponse.success === true)
+                {
+                    this.tradingFixtureRecordsServerSideResponseData  = this.tradingFixtureRecordsServerSideResponse.data;
+                }
+            },err => { });
+        } catch (err){}
+    }
+
+     // Broker Records Server Side Start
+     brokerRecordsServerSide()
+     {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '3';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.brokerRecordsServerSideResponse = res;
+                if (this.brokerRecordsServerSideResponse.success === true)
+                {
+                this.brokerRecordsServerSideResponseData = this.brokerRecordsServerSideResponse.data;
+                }
+            }, err => {  });
+        } catch (err){  }
+     }
+     // Broker Records Server Side End
+
+     // Owners Records Server Side Start
+     ownerRecordsServerSide()
+     {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '6';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.ownerRecordsServerSideResponse = res;
+                if (this.ownerRecordsServerSideResponse.success === true)
+                {
+                this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                }
+            }, err => {  });
+        } catch (err){  }
+     }
+     // Owners Records Server Side End
+ 
+     // Charterer Records Server Side Start
+     chartererRecordsServerSide()
+     {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.chartererRecordsServerSideResponse = res;
+                if (this.chartererRecordsServerSideResponse.success === true)
+                {
+                    this.chartererRecordsServerSideResponseData = this.chartererRecordsServerSideResponse.data;
+                }
+            }, err => {  });
+        } catch (err)
+        {  }
+     }
+     // Charterer Records Server Side End
+
+     // Trading Records Server Side According To Vessel Search Start
+    tradingRecordsServerSideAccordingToVessel(): void
+    {
+        var vesselName = this.vesselSearchFormValues.vesselName.value;
+        var cpDate = this.vesselSearchFormValues.cpDate.value;
+        var brokerId = this.vesselSearchFormValues.brokerId.value;
+        var chartererId = this.vesselSearchFormValues.chartererId.value;
+        var ownerId = this.vesselSearchFormValues.ownerId.value;
+        var fixtureId = this.vesselSearchFormValues.fixtureId.value;
+        var cpCity = this.vesselSearchFormValues.cpCity.value;
+
+        this.tradingRecordsServerSideResponseData  = [];
+        var conditionData = {};
+            conditionData["companyId"] = localStorage.getItem('companyId');
+            conditionData["vesselName"] = (vesselName != '' && vesselName != null && vesselName != undefined) ? vesselName : undefined;
+            conditionData["cpDate"] = (cpDate != '' && cpDate != null && cpDate != undefined) ? moment(cpDate).format("YYYY-MM-DD") : undefined;
+            conditionData["brokerId"] = (brokerId != '' && brokerId != null && brokerId != undefined) ? brokerId : undefined;
+            conditionData["chartererId"] = (chartererId != '' && chartererId != null && chartererId != undefined) ? chartererId : undefined;
+            conditionData["ownerId"] = (ownerId != '' && ownerId != null && ownerId != undefined) ? ownerId : undefined;
+            conditionData["fixtureId"] = (fixtureId != '' && fixtureId != null && fixtureId != undefined) ? fixtureId : undefined;
+            conditionData["cpCity"] = (cpCity != '' && cpCity != null && cpCity != undefined) ? cpCity : undefined;
+            conditionData["is_charterer_detail_term_sign_off"] = (this.is_charterer_detail_term_sign_off != '' && this.is_charterer_detail_term_sign_off != null && this.is_charterer_detail_term_sign_off != undefined) ? this.is_charterer_detail_term_sign_off : undefined;
+            conditionData["is_owner_detail_term_sign_off"] = (this.is_owner_detail_term_sign_off != '' && this.is_owner_detail_term_sign_off != null && this.is_owner_detail_term_sign_off != undefined) ? this.is_owner_detail_term_sign_off : undefined;
+        try
+        {
+            this._userService.tradingRecordsServerSideAccordingToVessel(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.tradingRecordsServerSideResponse = res;
+                if (this.tradingRecordsServerSideResponse.success === true)
+                {
+                    this.tradingRecordsServerSideResponseData  = this.tradingRecordsServerSideResponse.data;
+                    setTimeout(() => { this.setPaginatorOfTradingRecordsDataTable(); }, 100);
+                }
+            },err => { });
+        } catch (err){}
     }
 
     advanceOptionView()
     {
         this.advanceView = !this.advanceView;
     }
+
+    // Trade Status Data
+    // tradeStatusData()
+    // {
+    //     var filter = {};
+    //         filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
+    //     this._userService.tradeStatusData(filter).pipe(first())
+    //     .subscribe(res =>
+    //     {
+    //         this.tradeStatusDataServerSideResponse = res;
+    //         if (this.tradeStatusDataServerSideResponse.success === true)
+    //         {
+    //             this.tradeStatusDataServerSideResponseData = this.tradeStatusDataServerSideResponse.data;
+    //             console.log(this.tradeStatusDataServerSideResponse);
+    //             console.log(this.tradeStatusDataServerSideResponseData);
+    //         }   
+    //     }); 
+    // }
 
     // New Users Records
     newUsersRecords()
@@ -363,6 +610,8 @@ status2:String;
             },err => { });
         } catch (err){}
     }
+
+    
 
       // Trading Records Paginator Set Start
     setPaginatorOfTradingRecordsDataTable()

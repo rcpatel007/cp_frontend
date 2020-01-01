@@ -18,7 +18,7 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
-import * as io from 'socket.io-client';
+
 export interface PeriodicElement
 {
     id:String;
@@ -111,6 +111,7 @@ export class TradingPlatformManagementComponent implements OnInit
     
     ownerId : string;
     ownerName :  string;
+    ownerNameNotification :  string;
     ownerEmailID : string;
     ownerMobileNumber : string;
     ownerStatus : string;
@@ -118,11 +119,12 @@ export class TradingPlatformManagementComponent implements OnInit
 
     chartererId: string;
     chartererName : string;
+    chartererNameNotification : string;
     chartererEmailID : string;
     chartererMobileNumber : string;
     chartererStatus : string;
     chartererStatusInfo : string;
-    socket: any;
+    
     companyName : string;
     tradeType : string;
     bidNameLabel : string;
@@ -164,7 +166,7 @@ export class TradingPlatformManagementComponent implements OnInit
     fixtureRecordsServerSideResponse : any;
     fixtureRecordsServerSideResponseData = [];
     // Assign API Variable End
-    notification = [];
+
     // Datatable Settings Start
     tradingRecordsDisplayColumn: string[] = ['identifier','cpDateInfo','brokerName','chartererName','ownerName', 'vesselName',
      'progress','statusInfo','isChartererAccepted','isOwnerAccepted','action'];
@@ -200,13 +202,6 @@ export class TradingPlatformManagementComponent implements OnInit
         
     )
     {
-        this.socket = io('http://localhost:3001');
-        this.socket.on('message', (result) => {
-            console.log(result);
-            this.notification.push(result.data);
-
-        });
-
         this.tradingRecordsData = new MatTableDataSource(this.tradingRecordsServerSideResponseData );
     }
 
@@ -214,6 +209,12 @@ export class TradingPlatformManagementComponent implements OnInit
     {
         // Assign Default Values To Variable Start
         this.bidNameLabel = 'Trade Name';
+        this.ownerName = ' ------ ';
+        this.ownerEmailID = ' ------ ';
+        this.ownerMobileNumber = ' ------ ';
+        this.chartererName = ' ------ ';
+        this.chartererEmailID = ' ------ ';
+        this.chartererMobileNumber = ' ------ ';
         // Assign Default Values To Variable End
         
         // Data Table On Page Load Settings Start
@@ -226,7 +227,7 @@ export class TradingPlatformManagementComponent implements OnInit
         this.tradingForm = this._formBuilder.group(
         {
             tradeType: ['', Validators.required],
-            std_bid_name: ['', Validators.required],
+            std_bid_name:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
             chartererId: ['', Validators.required],
             ownerId: ['', Validators.required],
             vesselId: ['', Validators.required],
@@ -274,6 +275,9 @@ export class TradingPlatformManagementComponent implements OnInit
             this.isEditView = true;    
             this.isRecapView = true;
         }
+
+        this.chartererRecordsServerSide();
+        this.ownerRecordsServerSide();
     }
 
     // Trading Records Server Side Start
@@ -312,6 +316,24 @@ export class TradingPlatformManagementComponent implements OnInit
     // Trading Div Hide Show Start
     divShowHide(type) : void
     {
+        this.tradeSubmitInformationView = false;
+
+        this.ownerName = ' ------ ';
+        this.ownerEmailID = ' ------ ';
+        this.ownerMobileNumber = ' ------ ';
+        this.chartererName = ' ------ ';
+        this.chartererEmailID = ' ------ ';
+        this.chartererMobileNumber = ' ------ ';
+
+        this.tradingForm = this._formBuilder.group(
+        {
+            tradeType: ['', Validators.required],
+            std_bid_name:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
+            chartererId: ['', Validators.required],
+            ownerId: ['', Validators.required],
+            vesselId: ['', Validators.required],
+        });
+
         this.tradingFormDiv = false;
         this.tradeRecordsDiv = false;
         if(type == 1)
@@ -327,6 +349,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.fetchCompanyData();
             // Fetch Company Data End
         }
+       
     }
     // Trading Div Hide Show End
 
@@ -344,7 +367,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.tradingForm = this._formBuilder.group(
             {
                 tradeType: [tradeType, Validators.required],
-                std_bid_name: ['', Validators.required],
+                std_bid_name:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
                 chartererId: ['', Validators.required],
                 ownerId: ['', ''],
                 vesselId: ['', '']
@@ -361,7 +384,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.tradingForm = this._formBuilder.group(
             {
                 tradeType: [tradeType, Validators.required],
-                std_bid_name: ['', Validators.required],
+                std_bid_name:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
                 chartererId: ['', ''],
                 ownerId: ['', Validators.required],
                 vesselId: ['', Validators.required]
@@ -378,7 +401,7 @@ export class TradingPlatformManagementComponent implements OnInit
             this.tradingForm = this._formBuilder.group(
             {
                 tradeType: [tradeType, Validators.required],
-                std_bid_name: ['', Validators.required],
+                std_bid_name:  ['',[ Validators.required, Validators.pattern("[a-zA-Z0-9][ a-zA-Z0-9]+")] ],
                 chartererId: ['', Validators.required],
                 ownerId: ['', Validators.required],
                 vesselId: ['', Validators.required]
@@ -408,6 +431,17 @@ export class TradingPlatformManagementComponent implements OnInit
                 if (this.chartererRecordsServerSideResponse.success === true)
                 {
                     this.chartererRecordsServerSideResponseData   = this.chartererRecordsServerSideResponse.data;
+                    if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                    {
+                        var userID = JSON.parse(localStorage.getItem('userId'));
+                        for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+                        {
+                            if(userID == this.chartererRecordsServerSideResponseData[ index].id)
+                            {
+                                this.chartererNameNotification = this.chartererRecordsServerSideResponseData[index].username;
+                            }
+                        }
+                    }
                 }
             }, err => { console.log(err); });
         } catch (err)
@@ -446,6 +480,17 @@ export class TradingPlatformManagementComponent implements OnInit
                 if (this.ownerRecordsServerSideResponse.success === true)
                 {
                     this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                    if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                    {
+                        var userID = JSON.parse(localStorage.getItem('userId'));
+                        for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+                        {
+                            if(userID == this.ownerRecordsServerSideResponseData[index].id)
+                            {
+                                this.ownerNameNotification = this.ownerRecordsServerSideResponseData[index].username;
+                            }
+                        }
+                    }
                 }
             }, err => { console.log(err); });
         } catch (err)
@@ -556,7 +601,7 @@ export class TradingPlatformManagementComponent implements OnInit
                         const tradingMessageData =
                         {
                             tradingId       :       this.tradingId,
-                            message         :       'Broker Intiated Trade',
+                            message         :       'BROKER INITIATED TRADE',
                             createdBy       :       localStorage.getItem('userId'),
                             updatedBy       :       localStorage.getItem('userId')
                         };
@@ -579,18 +624,14 @@ export class TradingPlatformManagementComponent implements OnInit
                             };
                             this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`,
                             ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
-                         
-                         
-                            this.socket.emit('new-notification', {ownerNotificationData});
-                           
-                           
+
                             const tradingProgressData =
                             {
                                 tradingId       :       this.tradingId,
                                 ownerId         :       this.ownerId,
                                 brokerId        :       localStorage.getItem('userId'),
                                 chartererId     :       null,
-                                message         :       'Broker Intiated Trade',
+                                message         :       'BROKER INITIATED TRADE',
                                 createdBy       :       localStorage.getItem('userId'),
                                 updatedBy       :       localStorage.getItem('userId')
                             };
@@ -621,18 +662,18 @@ export class TradingPlatformManagementComponent implements OnInit
                                 ownerId         :       null,
                                 brokerId        :       localStorage.getItem('userId'),
                                 chartererId     :       this.chartererId,
-                                message         :       'Broker Intiated Trade',
+                                message         :       'BROKER INITIATED TRADE',
                                 createdBy       :       localStorage.getItem('userId'),
                                 updatedBy       :       localStorage.getItem('userId')
                             };
                             this.http.post(`${config.baseUrl}/tradingProgressInsert`,
-                            tradingProgressData, headerOptions).subscribe(res =>{
-                                this.socket.emit('new-notification', {tradingProgressData});
-
-                            },err =>{});
+                            tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
                         }
                         this.tradeSubmitInformationView = true;
                     }
+
+
+                    this.tradingRecordsServerSide();
                 },
                 err =>
                 {
@@ -758,15 +799,6 @@ export class TradingPlatformManagementComponent implements OnInit
             };
             this.http.post(`${config.baseUrl}/tradingDataUpdateCommon`, tradingDataUpdate, headerOptions).subscribe( res =>{});
             
-            // const statusUpdateData =
-            // {
-            //     tradingId: this.tradingId,
-            //     ownerId: this.ownerId,
-            //     chartererId: this.chartererId,
-            //     isAccepted: this.statusAction,
-            //     updatedBy: localStorage.getItem('userId'),
-            // };
-
             var updateData = {};
                 updateData['tradingId'] = this.tradingId;
                 updateData['isAccepted'] = this.statusAction;
@@ -788,7 +820,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 if (this.tradingDataUpdateResponse.success === true)
                 {
                     this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
-                    this.tradingRecordsServerSide();
+                    
                 } else {
                     this.alertService.error(this.tradingDataUpdateResponse.message, 'Error');
                 }
@@ -826,11 +858,26 @@ export class TradingPlatformManagementComponent implements OnInit
             if(localStorage.getItem('userRoleId') == '4')
             {
                 var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+
+                var userName =  this.chartererNameNotification;
+                var identifier = this.tradingId;
+
+                var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+
+                var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
+
             }
 
             if(localStorage.getItem('userRoleId') == '6')
             {
                 var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected Offer';
+
+                var userName =  this.ownerNameNotification;
+                var identifier = this.tradingId;
+
+                var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+
+                var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
             }
 
             const tradingMessageData =
@@ -847,7 +894,7 @@ export class TradingPlatformManagementComponent implements OnInit
             {
                 fromUserId      :       localStorage.getItem('userId'),
                 toUserId        :       this.brokerId,
-                notification    :       UpdateMessage,
+                notification    :       updateMessageForNotification,
                 createdBy       :       localStorage.getItem('userId'),
                 updatedBy       :       localStorage.getItem('userId')
             };
@@ -862,7 +909,7 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         fromUserId      :       localStorage.getItem('userId'),
                         toUserId        :       this.ownerId,
-                        notification    :       UpdateMessage,
+                        notification    :       updateMessageForNotification,
                         createdBy       :       localStorage.getItem('userId'),
                         updatedBy       :       localStorage.getItem('userId')
                     };
@@ -879,7 +926,7 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         fromUserId      :       localStorage.getItem('userId'),
                         toUserId        :       this.chartererId,
-                        notification    :       UpdateMessage,
+                        notification    :       updateMessageForNotification,
                         createdBy       :       localStorage.getItem('userId'),
                         updatedBy       :       localStorage.getItem('userId')
                     };
@@ -919,7 +966,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 this.http.post(`${config.baseUrl}/tradingProgressInsert`,
                 tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
             }
-
+            this.tradingRecordsServerSide();
         }
     }
     // Trading Form Submit End
@@ -1009,7 +1056,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 if (this.tradingDataUpdateResponse.success === true)
                 {
                     this.alertService.success(this.tradingDataUpdateResponse.message, 'Success');
-                    this.tradingRecordsServerSide();
+                    // this.tradingRecordsServerSide();
                 } else {
                     this.alertService.error(this.tradingDataUpdateResponse.message, 'Error');
                 }
@@ -1047,11 +1094,19 @@ export class TradingPlatformManagementComponent implements OnInit
             if(localStorage.getItem('userRoleId') == '4')
             {
                 var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+                var userName =  this.chartererNameNotification;
+                var identifier = this.tradingId;
+                var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+                var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
             }
 
             if(localStorage.getItem('userRoleId') == '6')
             {
                 var UpdateMessage = (statusUpdateData.isAccepted == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected OfferfownerDropdownView';
+                var userName =  this.ownerNameNotification;
+                var identifier = this.tradingId;
+                var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+                var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
             }
 
             const tradingMessageData =
@@ -1068,7 +1123,7 @@ export class TradingPlatformManagementComponent implements OnInit
             {
                 fromUserId      :       localStorage.getItem('userId'),
                 toUserId        :       this.brokerId,
-                notification    :       UpdateMessage,
+                notification    :       updateMessageForNotification,
                 createdBy       :       localStorage.getItem('userId'),
                 updatedBy       :       localStorage.getItem('userId')
             };
@@ -1083,7 +1138,7 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         fromUserId      :       localStorage.getItem('userId'),
                         toUserId        :       this.ownerId,
-                        notification    :       UpdateMessage,
+                        notification    :       updateMessageForNotification,
                         createdBy       :       localStorage.getItem('userId'),
                         updatedBy       :       localStorage.getItem('userId')
                     };
@@ -1100,7 +1155,7 @@ export class TradingPlatformManagementComponent implements OnInit
                     {
                         fromUserId      :       localStorage.getItem('userId'),
                         toUserId        :       this.chartererId,
-                        notification    :       UpdateMessage,
+                        notification    :       updateMessageForNotification,
                         createdBy       :       localStorage.getItem('userId'),
                         updatedBy       :       localStorage.getItem('userId')
                     };
@@ -1140,7 +1195,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 this.http.post(`${config.baseUrl}/tradingProgressInsert`,
                 tradingProgressData, headerOptions).subscribe(res =>{},err =>{});
             }
-
+            this.tradingRecordsServerSide();
         }
     }
     // Executed Form Submit End
@@ -1231,11 +1286,19 @@ export class TradingPlatformManagementComponent implements OnInit
         if(localStorage.getItem('userRoleId') == '4')
         {
             var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Charterer Accepted Bid' : 'Charterer Rejected Bid';
+            var userName =  this.chartererNameNotification;
+            var identifier = this.tradingId;
+            var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+            var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
         }
 
         if(localStorage.getItem('userRoleId') == '6')
         {
             var UpdateMessage = (updateData['isAccepted'] == 'Y') ? 'Owner Accepted Offer' : 'Owner Rejected Offer';
+            var userName =  this.ownerNameNotification;
+            var identifier = this.tradingId;
+            var acceptedRejected = (updateData['isAccepted'] == 'Y') ? 'Accepted' : 'Rejected';
+            var updateMessageForNotification = userName + ' '+acceptedRejected+' Bid '+identifier;
         }
 
         const tradingMessageData =
@@ -1252,7 +1315,7 @@ export class TradingPlatformManagementComponent implements OnInit
         {
             fromUserId      :       localStorage.getItem('userId'),
             toUserId        :       this.brokerId,
-            notification    :       UpdateMessage,
+            notification    :       updateMessageForNotification,
             createdBy       :       localStorage.getItem('userId'),
             updatedBy       :       localStorage.getItem('userId')
         };
@@ -1267,7 +1330,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 {
                     fromUserId      :       localStorage.getItem('userId'),
                     toUserId        :       this.ownerId,
-                    notification    :       UpdateMessage,
+                    notification    :       updateMessageForNotification,
                     createdBy       :       localStorage.getItem('userId'),
                     updatedBy       :       localStorage.getItem('userId')
                 };
@@ -1284,7 +1347,7 @@ export class TradingPlatformManagementComponent implements OnInit
                 {
                     fromUserId      :       localStorage.getItem('userId'),
                     toUserId        :       this.chartererId,
-                    notification    :       UpdateMessage,
+                    notification    :       updateMessageForNotification,
                     createdBy       :       localStorage.getItem('userId'),
                     updatedBy       :       localStorage.getItem('userId')
                 };

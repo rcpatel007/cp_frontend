@@ -110,6 +110,7 @@ export class RecapComponent implements OnInit
     tradingId : string;
     drawId : string;
     formId : string;
+    companyId : string;
     chartererId : string;
 
     isTrading : string;
@@ -190,6 +191,24 @@ export class RecapComponent implements OnInit
     dynamicInputNumber : any;
     mainDynamicStringArray = [];
     
+    is_owner_main_term_sign_off : any;
+    is_charterer_main_term_sign_off : any;
+    is_owner_detail_term_sign_off : any;
+    is_charterer_detail_term_sign_off : any;
+
+    signatureView = false;
+
+    brokerId : string;
+    ownerId : string;
+
+    ownerRecordsServerSideResponse : any;
+    ownerRecordsServerSideResponseData = [];
+
+    chartererRecordsServerSideResponse : any;
+    chartererRecordsServerSideResponseData = [];
+
+    ownerNameNotification : string;
+    chartererNameNotification : string;
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -293,6 +312,7 @@ export class RecapComponent implements OnInit
 
         var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
         this.drawId = filter.drawId;
+        this.formId = filter.formId;
         this.tradingId = filter.tradingId;
         var isTrading = filter.isTrading;
 
@@ -301,7 +321,7 @@ export class RecapComponent implements OnInit
             this.fetchDrawData();
             this.drawStatusInfoUpdate();
         } else {
-            this.clauseCategoryRecordsServerSide();
+            // this.clauseCategoryRecordsServerSide();
             this.fetchTradingData();
         }
 
@@ -336,7 +356,99 @@ export class RecapComponent implements OnInit
             {
             });
         }
+
+        this.ownerRecordsServerSide();
+        this.chartererRecordsServerSide();
     }
+
+    // Owners Records Server Side Start
+    ownerRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '6';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.ownerRecordsServerSideResponse = res;
+                if (this.ownerRecordsServerSideResponse.success === true)
+                {
+                    this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                    if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                    {
+                        for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+                        {
+                            if(this.ownerId == this.ownerRecordsServerSideResponseData[index].id)
+                            {
+                                this.ownerName = this.ownerRecordsServerSideResponseData[index].username;
+                                this.ownerNameNotification = this.ownerRecordsServerSideResponseData[index].username;
+                            }
+                        }
+                    } else {
+                        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                        {
+                            var userID = JSON.parse(localStorage.getItem('userId'));
+                            for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+                            {
+                                if(userID == this.ownerRecordsServerSideResponseData[index].id)
+                                {
+                                    this.ownerNameNotification = this.ownerRecordsServerSideResponseData[index].username;
+                                }
+                            }
+                        }
+                    }
+                }
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Owners Records Server Side End
+
+
+    // Charterer Records Server Side Start
+    chartererRecordsServerSide()
+    {
+        var conditionData = {};
+            conditionData['companyId'] = this.companyId;
+            conditionData['userRoleId'] = '4';
+        try
+        {
+            this._userService.userRecordsServerSide(conditionData).pipe(first()).subscribe((res) =>
+            {
+                this.chartererRecordsServerSideResponse = res;
+                if (this.chartererRecordsServerSideResponse.success === true)
+                {
+                    this.chartererRecordsServerSideResponseData = this.chartererRecordsServerSideResponse.data;
+                    if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                    {
+                        for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+                        {
+                            if(this.chartererId == this.chartererRecordsServerSideResponseData[ index].id)
+                            {   
+                                this.chartererName = this.chartererRecordsServerSideResponseData[index].username;
+                                this.chartererNameNotification = this.chartererRecordsServerSideResponseData[index].username;
+                            }
+                        }
+                    } else {
+                        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                        {
+                            var userID = JSON.parse(localStorage.getItem('userId'));
+                            for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+                            {
+                                if(userID == this.chartererRecordsServerSideResponseData[ index].id)
+                                {
+                                    this.chartererNameNotification = this.chartererRecordsServerSideResponseData[index].username;
+                                }
+                            }
+                        }    
+                    }
+                }
+            }, err => {  });
+        } catch (err)
+        {  }
+    }
+    // Charterer Records Server Side End
 
      // Custom Input Draw Data Update
      customInputDrawDataUpdate()
@@ -391,7 +503,7 @@ export class RecapComponent implements OnInit
                 {
                     id: this.drawId,
                     charterer_signed_check: 20,
-                    statusInfo: 'Charterer Signed',
+                    statusInfo: this.chartererNameNotification+ ' Signed',
                     updatedBy: localStorage.getItem('userId')
                 };
                 this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
@@ -405,7 +517,7 @@ export class RecapComponent implements OnInit
                 {
                     id: this.drawId,
                     owner_signed_check: 20,
-                    statusInfo: 'Owner Signed',
+                    statusInfo: this.ownerNameNotification+' Owner Signed',
                     updatedBy: localStorage.getItem('userId')
                 };
                 this.http.post(`${config.baseUrl}/drawProgressUpdate`, newReq, headerOptions).subscribe( res =>
@@ -415,19 +527,94 @@ export class RecapComponent implements OnInit
             
 
         } else {
-            const req =
-            {
-                tradingId : this.tradingId,
-                signature1: this.currentSignature1,
-                signature2: this.currentSignature2,
-            };
-            const header = new HttpHeaders();
-            header.append('Content-Type', 'application/json');
-            const headerOptions = { headers: header }
-            this.http.post(`${config.baseUrl}/tradingDataSignatureUpadate`, req, headerOptions).subscribe( res =>
-            {
+                
+            var updateData = {};
+                updateData['id'] = this.tradingId;
+                updateData['signature1'] = this.currentSignature1;
+                updateData['signature2'] = this.currentSignature2;
 
-            });
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                {
+                    updateData['progress'] = '90';
+                    updateData['progress_info'] = '90';
+                }
+
+                if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                {
+                    updateData['progress'] = '100';
+                    updateData['progress_info'] = '100';
+                }
+                
+                updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
+        
+                try{ this._userService.tradingDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>{}, err => {  }); } catch (err){  }
+                
+                const header = new HttpHeaders();
+                header.append('Content-Type', 'application/json');
+                const headerOptions = { headers: header }
+                var tradingMessageInsertData = {};
+                    tradingMessageInsertData['tradingId'] = this.tradingId;
+                    tradingMessageInsertData['message'] = (JSON.parse(localStorage.getItem('userRoleId')) == '6') ? this.ownerNameNotification+' Signed' : this.chartererNameNotification+' Signed';
+                    tradingMessageInsertData['createdBy'] = localStorage.getItem('userId');
+                    tradingMessageInsertData['updatedBy'] = localStorage.getItem('userId');
+                    this.http.post(`${config.baseUrl}/tradingMessageInsert`,tradingMessageInsertData, headerOptions).subscribe(res =>{},err =>{});
+
+                var tradingProgressInsertData = {};
+                    tradingProgressInsertData['tradingId'] = this.tradingId;
+                    tradingProgressInsertData['ownerId'] = this.ownerId;
+                    tradingProgressInsertData['brokerId'] = this.brokerId;
+                    tradingProgressInsertData['chartererId'] = this.chartererId;
+                    tradingProgressInsertData['message'] = (JSON.parse(localStorage.getItem('userRoleId')) == '6') ? this.ownerNameNotification+' Signed' : this.chartererNameNotification+' Signed';
+                    tradingProgressInsertData['createdBy'] = localStorage.getItem('userId');
+                    tradingProgressInsertData['updatedBy'] = localStorage.getItem('userId');
+
+                this.http.post(`${config.baseUrl}/tradingProgressInsert`,tradingProgressInsertData, headerOptions).subscribe(res =>{},err =>{});
+
+                const tradingNotificationData =
+                {
+                    fromUserId      :       localStorage.getItem('userId'),
+                    toUserId        :       this.brokerId,
+                    notification    :       tradingProgressInsertData['message'] +' Fixture ' + this.tradingId,
+                    createdBy       :       localStorage.getItem('userId'),
+                    updatedBy       :       localStorage.getItem('userId')
+                };
+                this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                
+                if(localStorage.getItem('userRoleId') == '4')
+                {
+                    if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                    {
+                        const tradingNotificationData =
+                        {
+                            fromUserId      :       localStorage.getItem('userId'),
+                            toUserId        :       this.ownerId,
+                            notification    :       tradingProgressInsertData['message'] +' Fixture ' + this.tradingId,
+                            createdBy       :       localStorage.getItem('userId'),
+                            updatedBy       :       localStorage.getItem('userId')
+                        };
+                        this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                        tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                    }
+                }
+
+                if(localStorage.getItem('userRoleId') == '6')
+                {
+                    if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                    {
+                        const tradingNotificationData =
+                        {
+                            fromUserId      :       localStorage.getItem('userId'),
+                            toUserId        :       this.chartererId,
+                            notification    :       tradingProgressInsertData['message'] +' Fixture ' + this.tradingId,
+                            createdBy       :       localStorage.getItem('userId'),
+                            updatedBy       :       localStorage.getItem('userId')
+                        };
+                        this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                        tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                    }
+                }
+
         }
     }
 
@@ -563,9 +750,6 @@ export class RecapComponent implements OnInit
     // Fetch Trading Data
     fetchTradingData()
     {
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-            this.tradingId = filter.tradingId;
-
         var filterCondition = {};
             filterCondition["dcm.id"] = this.tradingId;
         try
@@ -576,6 +760,40 @@ export class RecapComponent implements OnInit
                 if(this.tradingResponseInformation.success == true)
                 {
                     this.tradingResponseInformationData = this.tradingResponseInformation.data[0];
+
+                    this.is_owner_main_term_sign_off = this.tradingResponseInformationData['is_owner_main_term_sign_off'];
+                    this.is_charterer_main_term_sign_off = this.tradingResponseInformationData['is_charterer_main_term_sign_off'];
+                    this.is_owner_detail_term_sign_off = this.tradingResponseInformationData['is_owner_detail_term_sign_off'];
+                    this.is_charterer_detail_term_sign_off = this.tradingResponseInformationData['is_charterer_detail_term_sign_off'];
+
+                    if(this.is_owner_detail_term_sign_off == '1' && this.is_charterer_detail_term_sign_off == '1')
+                    {
+                        this.signatureView = true;
+                    }
+
+
+                    // Assign Values Start
+
+
+                    this.ownerName = this.tradingResponseInformationData['ownerName'];
+                    this.chartererName = this.tradingResponseInformationData['chartererName'];
+                    this.brokerName = this.tradingResponseInformationData['brokerName'];
+                    this.cityName = this.tradingResponseInformationData['cityName'];
+                    this.formId = this.tradingResponseInformationData['formId'];
+                    this.companyId = this.tradingResponseInformationData['companyId'];
+                    this.vesselId = this.tradingResponseInformationData['vesselId'];
+                    this.ownerId = this.tradingResponseInformationData['ownerId'];
+                    this.chartererId = this.tradingResponseInformationData['chartererId'];
+                    this.metricTonValue = this.tradingResponseInformationData['metricTonValue'];
+                    this.customInput1 = this.tradingResponseInformationData['customInput1'];
+                    this.customInput2 = this.tradingResponseInformationData['customInput2'];
+                    this.cpTime = this.tradingResponseInformationData['cpTime'];
+                    this.cpDate = this.tradingResponseInformationData['cpDate'];
+                    
+                    this.cpTime = (this.cpTime != '' && this.cpTime != null && this.cpTime != undefined) ? this.cpTime : null;
+                    this.cpDate = (this.cpDate != '' && this.cpDate != null && this.cpDate != undefined) ? this.cpDate : null;
+                    this.cpDate = (this.cpDate != null) ? moment(this.cpDate).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD");
+                    // Assign Values End
 
                     this.tradingResponseInformationData['cityName'] = (this.tradingResponseInformationData['cityName'] == null) ? '' : this.tradingResponseInformationData['cityName'];
 
@@ -605,19 +823,126 @@ export class RecapComponent implements OnInit
                     this.customInput1 = this.tradingResponseInformation.data[0].customInput1;
                     this.customInput2 = this.tradingResponseInformation.data[0].customInput2;
 
-                    console.log(cpTime);
-                    console.log(cpDate);
-                    console.log(cityName);
+                    if(this.is_owner_main_term_sign_off == '1' && this.is_charterer_main_term_sign_off == '1' && this.is_owner_detail_term_sign_off != '1'  && this.is_charterer_detail_term_sign_off != '1')
+                    {
+                        var checked_clauses = this.tradingResponseInformation.data[0].main_term_checked_clauses;
+                        
+                        if(checked_clauses != '' && checked_clauses != null)
+                        {
+                            this.checkedCheckClause = checked_clauses.split(',');
+                        } else {
+                            this.checkedCheckClause = [];
+                        }
 
-                    console.log(this.ownerName);
-                    console.log(this.chartererName);
-                    console.log(this.brokerName);
+                        var checkedCheckBoxArray = this.checkedCheckClause;
+                        this.checkedCheckClause = [];
+                        for (let index = 0; index < checkedCheckBoxArray.length; index++)
+                        {
+                            this.checkedCheckClause.push(Number(checkedCheckBoxArray[index]));
+                        }
+
+                        this.clauseCategoryRecordsServerSideTrading();
+                        
+                    }
+
+
+
+                    if(this.is_owner_detail_term_sign_off == '1' && this.is_charterer_detail_term_sign_off == '1')
+                    {
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                        {
+                            this.updateSignatureButtonViewCharterer = true;
+                        }
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                        {
+                            this.updateSignatureButtonViewOwner = true;
+                        }
+                    }
+
+                    if(this.tradingResponseInformation.data[0].signature1 != '' && this.tradingResponseInformation.data[0].signature1 != null && this.tradingResponseInformation.data[0].signature1 != undefined)
+                    {   
+                        this.updateSignatureButtonViewOwner = false;
+                    }
+
+                    if(this.tradingResponseInformation.data[0].signature2 != '' && this.tradingResponseInformation.data[0].signature2 != null && this.tradingResponseInformation.data[0].signature2 != undefined)
+                    {   
+                        this.updateSignatureButtonViewCharterer = false;
+                    }
+
+                    this.currentSignature1 = this.tradingResponseInformationData['signature1'];
+                    this.currentSignature2 = this.tradingResponseInformationData['signature2'];
+                    
+                    var signature1 = this.currentSignature1;
+                    if(signature1 != '' && signature1 != null)
+                    {
+                        this.signature1MainImageView = true;
+                    }
+
+                    var signature2 = this.currentSignature2;
+                    if(signature2 != '' && signature2 != null)
+                    {
+                        this.signature2MainImageView = true;
+                    }
+
+                    if(this.is_owner_detail_term_sign_off == '1'  && this.is_charterer_detail_term_sign_off == '1')
+                    {
+                        // this.checkedCheckClause = [];
+                        this.clauseCategoryRecordsServerSideTrading();
+                    }
 
                     this.fetchVesselData();
                 }
             });
         }catch (err){}
     }
+
+    // Clause Category Records Server Side
+    clauseCategoryRecordsServerSideTrading()
+    {   
+        var filterCondition = {};
+            filterCondition['cpFormId'] = this.formId;
+            filterCondition['checkedClauseCategory'] = this.checkedCheckClause;
+        try
+        {
+            this._userService.clauseCategoryRecordsServerSideTrading(filterCondition).pipe(first()).subscribe((res) =>
+            {
+                this.clauseCategoryRecordResponse = res;
+                if(this.clauseCategoryRecordResponse.success == true)
+                {
+                    this.clauseCategoryRecordResponseData = this.clauseCategoryRecordResponse.data;
+
+                    if(this.is_owner_detail_term_sign_off == '1'  && this.is_charterer_detail_term_sign_off == '1')
+                    {
+                        for (let index = 0; index < this.clauseCategoryRecordResponseData.length; index++)
+                        {
+                            this.checkedCheckClause.push(this.clauseCategoryRecordResponseData[index].id);
+                        }
+                    }
+
+                    var mainClauseCategoryData = this.clauseCategoryRecordResponseData;
+
+                    this.checkedClauseCategory = [];
+                    this.clauseCategoryRecordResponseData = [];
+                    for (let index = 0; index < mainClauseCategoryData.length; index++)
+                    {
+                        if(this.checkedCheckClause.indexOf(mainClauseCategoryData[index].id) >= 0)
+                        {
+                            this.checkedClauseCategory.push(mainClauseCategoryData[index].id);
+                            this.clauseCategoryRecordResponseData.push(mainClauseCategoryData[index]);
+                        }  
+                    }
+
+                    console.log(this.clauseCategoryRecordResponseData, " Clause Category Data ");
+
+                    this.checkedClauseCategory = this.checkedCheckClause;
+
+
+                    this.termsReviewRecords();
+                }
+            });
+        }catch (err){}
+    }
+
 
     // Fetch Draw Data
     fetchDrawData()
@@ -660,6 +985,8 @@ export class RecapComponent implements OnInit
                         this.nonPrintView = false;
                         this.printView = true;
                     }
+
+                    this.signatureView = true;
 
                     if(this.drawResponseInformation.data[0].signature1 != '' && this.drawResponseInformation.data[0].signature1 != null && this.drawResponseInformation.data[0].signature1 != undefined)
                     {   
@@ -735,16 +1062,6 @@ export class RecapComponent implements OnInit
                         }
                     }
 
-                    console.log(this.checkedCheckClause,"Checked Clauses");
-
-                    console.log(cpTime);
-                    console.log(cpDate);
-                    console.log(cityName);
-
-                    console.log(this.ownerName);
-                    console.log(this.chartererName);
-                    console.log(this.brokerName);
-
                     this.clauseCategoryRecordsServerSide();
 
                     this.fetchVesselData();
@@ -804,11 +1121,7 @@ export class RecapComponent implements OnInit
 
     // Clause Category Records Server Side
     clauseCategoryRecordsServerSide()
-    {
-        console.log(this.checkedCheckClause,"Checked Clauses");
-        var filter = JSON.parse(localStorage.getItem('clauseFilterData'));
-        this.formId = filter.formId;
-
+    {   
         var filterCondition = {};
             filterCondition['cpFormId'] = this.formId;
             filterCondition['checkedClauseCategory'] = this.checkedCheckClause;
@@ -883,14 +1196,6 @@ export class RecapComponent implements OnInit
         var companyId = filter.companyId;
         var isTrading = filter.isTrading;
 
-        localStorage.setItem('tradingId',tradingId);
-        localStorage.setItem('drawId',drawId);
-        localStorage.setItem('cpFormId',formID);
-
-        this.tradingId = tradingId;
-        this.drawId = drawId;
-        this.formId = formID; 
-        this.chartererId = chartererId; 
 
         this.termsReviewRecordsData = [];
 
@@ -950,9 +1255,9 @@ export class RecapComponent implements OnInit
             } catch (err) { }
         } else {
             var clauseCategoryFilterCondition = {};
-            clauseCategoryFilterCondition["cpFormId"] = formID;
-            clauseCategoryFilterCondition["tradingId"] = tradingId;
-            clauseCategoryFilterCondition["companyId"] = companyId;
+            clauseCategoryFilterCondition["cpFormId"] = this.formId;
+            clauseCategoryFilterCondition["tradingId"] = this.tradingId;
+            clauseCategoryFilterCondition["companyId"] = this.companyId;
             clauseCategoryFilterCondition["commonClauses"] = [];
             clauseCategoryFilterCondition["commonClausesCustomArray"] = [];
             clauseCategoryFilterCondition["checked_clauses"] = this.checkedClauseCategory;
@@ -970,14 +1275,14 @@ export class RecapComponent implements OnInit
                                 if(mainString != '' && mainString != null && mainString != undefined)
                                 {
                                     mainString = mainString.replace(/<[^>]*>/g, '');
-                                    this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['mainTermRecord'] = 
+                                    this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecord'] = 
                                     this.createStringWithDynamicDateTimeNumberPicker(mainString);
                                 }
 								this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['identifier'] = String.fromCharCode(97 + sindex);
 							}
 							for (let sindex = 0; sindex < this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom.length; sindex++)
 							{
-                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTerms[sindex]['mainTermRecordCustom'];
+                                var mainString = this.termsReviewRecordsData[index].clauseCategoryTermsUpdateCustom[sindex]['mainTermRecordCustom'];
                                 if(mainString != '' && mainString != null && mainString != undefined)
                                 {
                                     mainString = mainString.replace(/<[^>]*>/g, '');
@@ -995,7 +1300,6 @@ export class RecapComponent implements OnInit
                     });
             } catch (err) { }
 
-            this.tradingProgressUpdate();
         }
         
     }
@@ -1109,22 +1413,22 @@ export class RecapComponent implements OnInit
     //     });
     // }
 
-    // Trading Progress Update
-    tradingProgressUpdate()
-    {
-        const req =
-        {
-            tradingId: this.tradingId,
-            updatedBy: localStorage.getItem('userId')
-        };
-        const header = new HttpHeaders();
-        header.append('Content-Type', 'application/json');
-        const headerOptions = { headers: header }
-        this.http.post(`${config.baseUrl}/tradingProgressUpdate`, req, headerOptions).subscribe( res =>
-        {
-            this.tradingStatusInfoUpdate();
-        });
-    }
+    // // Trading Progress Update
+    // tradingProgressUpdate()
+    // {
+    //     const req =
+    //     {
+    //         tradingId: this.tradingId,
+    //         updatedBy: localStorage.getItem('userId')
+    //     };
+    //     const header = new HttpHeaders();
+    //     header.append('Content-Type', 'application/json');
+    //     const headerOptions = { headers: header }
+    //     this.http.post(`${config.baseUrl}/tradingProgressUpdate`, req, headerOptions).subscribe( res =>
+    //     {
+    //         this.tradingStatusInfoUpdate();
+    //     });
+    // }
 
     // Draw Status Information Update
     drawStatusInfoUpdate()

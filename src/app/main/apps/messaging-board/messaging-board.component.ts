@@ -18,7 +18,6 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
-import * as io from 'socket.io-client';
 
 export interface UserData
 {
@@ -101,8 +100,6 @@ export interface TradingProgresRecords
 
 export class MessagingBoardComponent implements OnInit
 {
-
-    socket: any;
     // Table Codes Start
     displayedColumns: string[] = ['id','tradingId','createdDateInfo','createdTimeInfo','createdByName','message','action'];
     displayedColumnsNotificaiton: string[] = ['id','notification','createdAt'];
@@ -176,7 +173,7 @@ export class MessagingBoardComponent implements OnInit
 
     tradingProgressRecordsServerSide : any;
     tradingProgressRecordsServerSideData : any;
-    notification =[];
+
     // Assign API Data Response And Array Variables End
     
     /**
@@ -202,14 +199,6 @@ export class MessagingBoardComponent implements OnInit
         
     )
     {
-
-        this.socket = io('http://localhost:3001');
-        this.socket.on('message', (result) => {
-            console.log(result);
-            this.notification.push(result.data);
-
-        });
-
         this.messageCenterRecords = new MatTableDataSource(this.messageCenterResponseArray);
         this.notificationRecords = new MatTableDataSource(this.notificationRecordsResponseArray);
     }
@@ -414,11 +403,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-
-                            this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
                 if(this.ownerId !=  '' && this.ownerId != null && this.ownerId != undefined)
                 {
@@ -431,11 +416,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-
-                        this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
             }
 
@@ -452,10 +433,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-                        this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
                 if(this.ownerId !=  '' && this.ownerId != null && this.ownerId != undefined)
                 {
@@ -468,10 +446,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-                        this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
             }
 
@@ -488,10 +463,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-                        this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
                 if(this.chartererId !=  '' && this.chartererId != null && this.chartererId != undefined)
                 {
@@ -504,10 +476,7 @@ export class MessagingBoardComponent implements OnInit
                         updatedBy       :       localStorage.getItem('userId')
                     };
                     this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
-                    tradingNotificationData, headerOptions).subscribe(res =>{
-                        this.socket.emit('new-notification', {tradingNotificationData});
-
-                    },err =>{});
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
                 }
             }
             
@@ -523,8 +492,6 @@ export class MessagingBoardComponent implements OnInit
                 this.http.post(`${config.baseUrl}/messageCenterCreate`, req, headerOptions).subscribe(
                 res =>
                 {
-                    this.socket.emit('new-notification', {req});
-
                     this.alertService.success('Message Created And Send Successfully', 'Success');
                     this.showHideModules(1);
                     this.userDataUpdateToMessageCenter();

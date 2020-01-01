@@ -17,10 +17,10 @@
             <div class="main-tab">
                 <div>
                     <div class="divHeaderMainScreen" style="float:left">
-                        <!-- <img src="http://18.219.59.88/Charter/Logo/logo4.png" height="100" width="100" style="margin-left: 20px"> -->
-                        <img src="http://18.219.59.88/Charter/Logo/logo1.png" height="100" width="100" style="margin-left: 20px">
-                        <img src="http://18.219.59.88/Charter/Logo/logo2.png" height="100" width="100" style="margin-left: 20px">
-                        <img src="http://18.219.59.88/Charter/Logo/logo3.png" height="200" width="200" style="margin-left: 20px">
+                        <!-- <img src="http://3.18.221.80/Charter/Logo/logo4.png" height="100" width="100" style="margin-left: 20px"> -->
+                        <img src="http://3.18.221.80/Charter/Logo/logo1.png" height="100" width="100" style="margin-left: 20px">
+                        <img src="http://3.18.221.80/Charter/Logo/logo2.png" height="100" width="100" style="margin-left: 20px">
+                        <img src="http://3.18.221.80/Charter/Logo/logo3.png" height="200" width="200" style="margin-left: 20px">
                     </div>
                     <div class="divHeaderMainScreen" style="float: right;">
                         <button class="submit-item submit-item--back-button" style="clear: both !important;float: right; margin: 35px;" (click)="printPage()">Print</button>
@@ -32,10 +32,10 @@
                             <tr>
                                 <th class="report-header-cell">
                                     <div class="header-info divHeader" style="float: left; margin-bottom: 20px;">
-                                        <!-- <img src="http://18.219.59.88/Charter/Logo/logo4.png" height="50" width="50" style="margin-left: 20px"> -->
-                                        <img src="http://18.219.59.88/Charter/Logo/logo1.png" height="50" width="50" style="margin-left: 20px">
-                                        <img src="http://18.219.59.88/Charter/Logo/logo2.png" height="50" width="50" style="margin-left: 20px">
-                                        <img src="http://18.219.59.88/Charter/Logo/logo3.png" height="50" width="50" style="margin-left: 20px">
+                                        <!-- <img src="http://3.18.221.80/Charter/Logo/logo4.png" height="50" width="50" style="margin-left: 20px"> -->
+                                        <img src="http://3.18.221.80/Charter/Logo/logo1.png" height="50" width="50" style="margin-left: 20px">
+                                        <img src="http://3.18.221.80/Charter/Logo/logo2.png" height="50" width="50" style="margin-left: 20px">
+                                        <img src="http://3.18.221.80/Charter/Logo/logo3.png" height="50" width="50" style="margin-left: 20px">
                                     </div>
                                     <br>
                                     <br>
@@ -175,7 +175,7 @@
                                                 </div>
                                             </div>
                                         </ng-container>
-                                        <table [ngClass]="{'d-none': isChartererAccepted == 'P' }" style="margin-top: 40px; clear: both;">
+                                        <table *ngIf="signatureView" style="margin-top: 40px; clear: both;">
                                             <tr>
                                                 <td class="customFontWeight" colspan="3">
                                                     <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold;">
@@ -244,7 +244,7 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        <table [ngClass]="{'d-none': isChartererAccepted == 'P' }" style="margin-top: 40px; clear: both;">
+                                        <table *ngIf="signatureView" style="margin-top: 40px; clear: both;">
                                             <tr>
                                                 <td>
                                                     <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">
@@ -260,7 +260,7 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        <table [ngClass]="{'d-none': isChartererAccepted == 'P' }" style="margin-top: 40px; clear: both;">
+                                        <table  *ngIf="signatureView" style="margin-top: 40px; clear: both;">
                                             <tr>
                                                 <td>
                                                     <h4 style="margin-left: 40px; font-size: 20px; margin-top: -10px; font-weight: bold; text-decoration: underline;">

@@ -454,6 +454,10 @@ export class UserService {
             return this.http.post(`${config.baseUrl}/TradingFormCreate`,req)
         }
     
+tradeStatusData(req)
+{
+    return this.http.post(`${config.baseUrl}/tradeStatusData`,req)
+}
         TradingFormRecordsServerSide(req)
         {
             return this.http.post(`${config.baseUrl}/TradingFormRecordsServerSide`,req)
@@ -847,5 +851,10 @@ export class UserService {
          newUsersRecords(req)
         {
             return this.http.post(`${config.baseUrl}/newUsersRecords`,req)
+        }
+       
+        tradingRecordsServerSideAccordingToVessel(req)
+        {
+            return this.http.post(`${config.baseUrl}/tradingRecordsServerSideAccordingToVessel`,req)
         }
 }

@@ -356,6 +356,9 @@ export class DrawCpClausesComponent implements OnInit
     vesselYear : string;
     vesselDescription : string;
 
+    ownerNameNotification : string;
+    chartererNameNotification : string;
+
     message : any;
 
     ownerCounterNumber : string;
@@ -522,6 +525,7 @@ export class DrawCpClausesComponent implements OnInit
         this.companyId = localStorage.getItem('companyId');
         this.pageTitle = (this.isTrading == '2') ? 'Draw C/P Clauses' : 'Trading Clauses';
         this.message = (this.isTrading == '2') ? 'Draw C/P Clauses' : 'Trading Clauses';
+
         this.ownerName = '';
         this.chartererName = '';
         this.brokerName = '';
@@ -574,6 +578,9 @@ export class DrawCpClausesComponent implements OnInit
             this.firstScreen = false;
             this.fetchTradingData();
         }
+
+        this.ownerRecordsServerSide();
+        this.chartererRecordsServerSide();
 
         // New Code End
         
@@ -689,6 +696,32 @@ export class DrawCpClausesComponent implements OnInit
                 if (this.ownerRecordsServerSideResponse.success === true)
                 {
                     this.ownerRecordsServerSideResponseData = this.ownerRecordsServerSideResponse.data;
+                    if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                    {
+                        for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+                        {
+                            if(this.ownerId == this.ownerRecordsServerSideResponseData[index].id)
+                            {
+                                this.ownerName = this.ownerRecordsServerSideResponseData[index].username;
+                                this.ownerNameNotification = this.ownerRecordsServerSideResponseData[index].username;
+
+                                // this.pageTitle = this.ownerName+ ' Trading Updates';
+                                // this.message = this.ownerName+ ' Trading Updates';
+                            }
+                        }
+                    } else {
+                        if(JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                        {
+                            var userID = JSON.parse(localStorage.getItem('userId'));
+                            for(let index = 0; index < this.ownerRecordsServerSideResponseData.length; index++)
+                            {
+                                if(userID == this.ownerRecordsServerSideResponseData[index].id)
+                                {
+                                    this.ownerNameNotification = this.ownerRecordsServerSideResponseData[index].username;
+                                }
+                            }
+                        }
+                    }
                 }
             }, err => {  });
         } catch (err)
@@ -718,6 +751,32 @@ export class DrawCpClausesComponent implements OnInit
                 if (this.chartererRecordsServerSideResponse.success === true)
                 {
                     this.chartererRecordsServerSideResponseData = this.chartererRecordsServerSideResponse.data;
+                    if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                    {
+                        for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+                        {
+                            if(this.chartererId == this.chartererRecordsServerSideResponseData[ index].id)
+                            {   
+                                this.chartererName = this.chartererRecordsServerSideResponseData[index].username;
+                                this.chartererNameNotification = this.chartererRecordsServerSideResponseData[index].username;
+
+                                // this.pageTitle = this.chartererName+ ' Trading Updates';
+                                // this.message = this.chartererName+ ' Trading Updates';
+                            }
+                        }
+                    } else {
+                        if(JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                        {
+                            var userID = JSON.parse(localStorage.getItem('userId'));
+                            for(let index = 0; index < this.chartererRecordsServerSideResponseData.length; index++)
+                            {
+                                if(userID == this.chartererRecordsServerSideResponseData[ index].id)
+                                {
+                                    this.chartererNameNotification = this.chartererRecordsServerSideResponseData[index].username;
+                                }
+                            }
+                        }    
+                    }
                 }
             }, err => {  });
         } catch (err)
@@ -751,64 +810,6 @@ export class DrawCpClausesComponent implements OnInit
                     this.is_charterer_main_term_sign_off = this.tradingRecordsServerSideResponseData['is_charterer_main_term_sign_off'];
                     this.is_owner_detail_term_sign_off = this.tradingRecordsServerSideResponseData['is_owner_detail_term_sign_off'];
                     this.is_charterer_detail_term_sign_off = this.tradingRecordsServerSideResponseData['is_charterer_detail_term_sign_off'];
-
-                    // Set Page Title Start
-                    var ownerCounter = this.tradingRecordsServerSideResponseData['owner_counter'];
-                    var chartererCounter = this.tradingRecordsServerSideResponseData['charterer_counter'];
-
-                    var ownerDetailCounter = this.tradingRecordsServerSideResponseData['owner_detail_counter'];
-                    var chartererDetailCounter = this.tradingRecordsServerSideResponseData['charterer_detail_counter'];
-
-                    if(this.is_owner_main_term_sign_off != '1' && this.is_charterer_main_term_sign_off != '1')
-                    {
-                        this.ownerCounterNumber = ownerCounter;
-                        this.chartererCounterNumber = chartererCounter;
-
-                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-                        {
-                            if (ownerCounter > 1)
-                            {
-                                this.chartererCounterNumber = chartererCounter + 1;
-                                this.pageTitle = 'Charterer '+this.NumInWords(chartererCounter)+' Counter';
-                                if(this.is_owner_main_term_sign_off == '1')
-                                {
-                                    this.pageTitle = 'Charterer Final Counter ';
-                                }
-                                this.message = this.pageTitle;
-                            }
-                        }
-                        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                        {
-                            this.ownerCounterNumber = ownerCounter + 1;
-                            this.pageTitle = 'Owner '+this.NumInWords(ownerCounter)+' Counter';
-                            this.message = this.pageTitle;
-                        }
-                    } else {
-                        this.ownerDetailCounterNumber = ownerDetailCounter;
-                        this.chartererDetailCounterNumber = chartererDetailCounter;
-
-                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
-                        {
-                            if (ownerDetailCounter > 1)
-                            {
-                                this.chartererDetailCounterNumber = chartererDetailCounter + 1;
-                                this.pageTitle = 'Charterer Detail '+this.NumInWords(chartererDetailCounter)+' Counter';
-                                if(this.is_owner_detail_term_sign_off == '1')
-                                {
-                                    this.pageTitle = 'Charterer Detail Final Counter ';
-                                }
-                                this.message = this.pageTitle;
-                            }
-                        }
-                        if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
-                        {
-                            this.ownerDetailCounterNumber = ownerDetailCounter + 1;
-                            this.pageTitle = 'Owner Detail '+this.NumInWords(ownerDetailCounter)+' Counter';
-                            this.message = this.pageTitle;
-                        }
-                    }
-                    
-                    // Set Page Title End
 
                     // Assign Values Start
                     this.ownerName = this.tradingRecordsServerSideResponseData['ownerName'];
@@ -1021,6 +1022,69 @@ export class DrawCpClausesComponent implements OnInit
 
                     this.chartererMainTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '4' && this.chartererMainTermChecked == 'N') ? 'N' : 'Y';
                     this.chartererDetailTermDisabled = (JSON.parse(localStorage.getItem('userRoleId')) == '4' && this.chartererDetailTermChecked == 'N') ? 'N' : 'Y';
+
+                     // Set Page Title Start
+                     var ownerCounter = this.tradingRecordsServerSideResponseData['owner_counter'];
+                     var chartererCounter = this.tradingRecordsServerSideResponseData['charterer_counter'];
+ 
+                     var ownerDetailCounter = this.tradingRecordsServerSideResponseData['owner_detail_counter'];
+                     var chartererDetailCounter = this.tradingRecordsServerSideResponseData['charterer_detail_counter'];
+ 
+                     if(this.is_owner_main_term_sign_off != '1' && this.is_charterer_main_term_sign_off != '1')
+                     {
+                        this.ownerCounterNumber = ownerCounter;
+                        this.chartererCounterNumber = chartererCounter;
+ 
+                        if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                        {
+                            if (ownerCounter > 1)
+                            {
+                                this.chartererCounterNumber = chartererCounter + 1;
+                                this.pageTitle = this.chartererNameNotification+' '+this.NumInWords(chartererCounter)+' Counter';
+                                if(this.is_owner_main_term_sign_off == '1')
+                                {
+                                    this.pageTitle = this.chartererNameNotification+' Final Counter ';
+                                }
+                                this.message = this.pageTitle;
+                            }
+                        }
+                         if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                         {
+                             this.ownerCounterNumber = ownerCounter + 1;
+                             this.pageTitle = this.ownerNameNotification+' '+this.NumInWords(ownerCounter)+' Counter';
+                             this.message = this.pageTitle;
+                         }
+
+                         console.log(this.message);
+
+                     } else {
+                         this.ownerDetailCounterNumber = ownerDetailCounter;
+                         this.chartererDetailCounterNumber = chartererDetailCounter;
+ 
+                         if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
+                         {
+                             if (ownerDetailCounter > 1)
+                             {
+                                 this.chartererDetailCounterNumber = chartererDetailCounter + 1;
+                                 this.pageTitle = this.chartererNameNotification+' Detail '+this.NumInWords(chartererDetailCounter)+' Counter';
+                                 if(this.is_owner_detail_term_sign_off == '1')
+                                 {
+                                     this.pageTitle = this.chartererNameNotification+' Detail Final Counter ';
+                                 }
+                                 this.message = this.pageTitle;
+                             }
+                         }
+                         if (JSON.parse(localStorage.getItem('userRoleId')) == '6')
+                         {
+                             this.ownerDetailCounterNumber = ownerDetailCounter + 1;
+                             this.pageTitle = this.ownerNameNotification+' Detail '+this.NumInWords(ownerDetailCounter)+' Counter';
+                             this.message = this.pageTitle;
+                         }
+                     }
+
+                     console.log(this.message);
+                     
+                     // Set Page Title End
                     
                 }
             });
@@ -1038,6 +1102,7 @@ export class DrawCpClausesComponent implements OnInit
     chartererMainTermCheckBoxChange(event)
     {
         this.is_charterer_main_term_sign_off =  (event.checked == true) ? '1' : '0';
+        console.log(this.is_charterer_main_term_sign_off,"Charterer Signed OFF");
     }
 
     ownerDetailTermCheckBoxChange(event)
@@ -1477,7 +1542,7 @@ export class DrawCpClausesComponent implements OnInit
                     var cpCity = this.drawResponseInformationData['cpCity'];
                     var cityName = this.drawResponseInformationData['cityName'];
 
-                    var current_date = (cpDate != '') ? cpDate : moment(new Date()).format("YYYY-MM-DD")
+                    var current_date = (cpDate != '') ? cpDate : moment(new Date()).format("YYYY-MM-DD");
                     var current_time = (cpTime != '') ? cpTime : moment().format("HH:mm A");
                     var cityID = (cpCity != '') ? cpCity : '0';
 
@@ -2070,6 +2135,8 @@ export class DrawCpClausesComponent implements OnInit
             
             this.fixture_subject = this.fStdBidSubmit.fixture_subject.value;
             this.lifted_by = this.fStdBidSubmit.lifted_by.value;
+
+
             this.lifted_time = this.fStdBidSubmit.lifted_time.value;
             this.lifted_date = this.fStdBidSubmit.lifted_date.value;
             this.lifted_city = this.fStdBidSubmit.lifted_city.value;
@@ -2099,6 +2166,11 @@ export class DrawCpClausesComponent implements OnInit
                 cpTime:this.cpTime,
                 cpDate:this.cpDate,
                 cpCity:this.cityId,
+
+                metricTonValue:this.metricTonValue,
+                customInput1:this.customInput1,
+                customInput2:this.customInput2,
+
                 fixture_subject:this.fixture_subject,
                 lifted_by:this.lifted_by,
                 lifted_time:this.lifted_time,
@@ -4359,6 +4431,10 @@ export class DrawCpClausesComponent implements OnInit
 
         if(this.tradingId != '' && this.tradingId != null && this.tradingId != undefined)
         {
+            var mainClausesChecked = [];
+            var mainClausesCustomChecked = [];
+            var mainClausesCustomTermsChecked = [];
+
             if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
             {
                 var mainClausesChecked = this.ownerCheckedClauses;
@@ -4374,6 +4450,7 @@ export class DrawCpClausesComponent implements OnInit
                 var mainClausesCustomTermsChecked = this.chartererCheckedCustomTermsClauses;
                 console.log(mainClausesChecked,'Charterer Currently Selected Clauases');
             }
+            
 
             console.log(mainClausesChecked,'Compare Clauases');
             // Main Term Clause Checked Start
@@ -4654,45 +4731,47 @@ export class DrawCpClausesComponent implements OnInit
             var updateData = {};
                 updateData['id'] = this.tradingId;
 
+                console.log(this.message);
+
                 if(this.ownerCounterNumber > '1')
                 {
                     updateData['progress'] = '30';
                     updateData['progress_info'] = '3';
                 }
                 
-                if(this.is_owner_main_term_sign_off == '1' && this.ownerDetailCounterNumber == '1')
+                if(this.is_owner_main_term_sign_off == '1')
                 {
                     updateData['progress'] = '40';
                     updateData['progress_info'] = '4';
-                    this.message = 'Owner Sign Off Main Term';
+                    this.message = this.ownerNameNotification+' Sign Off Main Term';
                 }
 
-                if(this.is_charterer_main_term_sign_off == '1' && this.ownerDetailCounterNumber == '1')
+                if(this.is_charterer_main_term_sign_off == '1')
                 {
                     updateData['progress'] = '50';
                     updateData['progress_info'] = '5';
-                    this.message = 'Charterer Sign Off Main Term';
+                    this.message = this.chartererNameNotification+' Sign Off Main Term';
                 }
 
                 if(this.ownerDetailCounterNumber > '1')
                 {
                     updateData['progress'] = '60';
                     updateData['progress_info'] = '6';
-
+                    this.message = this.pageTitle;
                 }
 
-                if(this.is_owner_detail_term_sign_off == '1')
+                if(this.is_owner_detail_term_sign_off == '1' && this.ownerDetailCounterNumber > '1')
                 {
                     updateData['progress'] = '70';
                     updateData['progress_info'] = '7';
-                    this.message = 'Owner Sign Off Detail Term';
+                    this.message = this.ownerNameNotification+' Sign Off Detail Term';
                 }
 
-                if(this.is_charterer_detail_term_sign_off == '1')
+                if(this.is_charterer_detail_term_sign_off == '1' && this.ownerDetailCounterNumber > '1')
                 {
                     updateData['progress'] = '80';
                     updateData['progress_info'] = '8';
-                    this.message = 'Charterer Sign Off Detail Term';
+                    this.message = this.chartererNameNotification+' Sign Off Detail Term';
                 }
 
                 
@@ -4742,7 +4821,10 @@ export class DrawCpClausesComponent implements OnInit
                 updateData['main_term_checked_clauses_custom'] = mainTermCheckedClausesCustom;
                 updateData['main_term_checked_clauses_custom_term'] = mainTermCheckedClausesCustomTerms;
                 updateData['updatedBy'] = JSON.parse(localStorage.getItem('userId'));
-            
+                
+                console.log(this.message);
+                console.log(this.pageTitle);
+
                 try{ this._userService.tradingDataUpdateCommon(updateData).pipe(first()).subscribe((res) =>{}, err => {  }); } catch (err){  }
                 
             const header = new HttpHeaders();
@@ -4756,7 +4838,8 @@ export class DrawCpClausesComponent implements OnInit
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
-                    tradingMessageInsertData['message'] = 'Charterer Updates';
+                    tradingMessageInsertData['message'] = this.message;
+                    // tradingMessageInsertData['message'] = 'Charterer Updates';
                     if(this.ownerCounterNumber > '1')
                     {
                         tradingMessageInsertData['message'] = this.message;
@@ -4782,7 +4865,8 @@ export class DrawCpClausesComponent implements OnInit
                 }
                 if (JSON.parse(localStorage.getItem('userRoleId')) == '4')
                 {
-                    tradingProgressInsertData['message'] = 'Charterer Updates';
+                    tradingMessageInsertData['message'] = this.message;
+                    // tradingProgressInsertData['message'] = 'Charterer Updates';
                     if(this.ownerCounterNumber > '1')
                     {
                         tradingProgressInsertData['message'] = this.message;
@@ -4798,6 +4882,54 @@ export class DrawCpClausesComponent implements OnInit
                 tradingProgressInsertData['updatedBy'] = localStorage.getItem('userId');
 
             this.http.post(`${config.baseUrl}/tradingProgressInsert`,tradingProgressInsertData, headerOptions).subscribe(res =>{},err =>{});
+
+
+            const tradingNotificationData =
+            {
+                fromUserId      :       localStorage.getItem('userId'),
+                toUserId        :       this.brokerId,
+                notification    :       this.message +' Fixture '+ this.tradingId,
+                createdBy       :       localStorage.getItem('userId'),
+                updatedBy       :       localStorage.getItem('userId')
+            };
+            this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+            tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+
+            if(localStorage.getItem('userRoleId') == '4')
+            {
+                if(this.ownerId != '' && this.ownerId != null && this.ownerId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.ownerId,
+                        notification    :       this.message +' Fixture '+ this.tradingId,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+
+            if(localStorage.getItem('userRoleId') == '6')
+            {
+                if(this.chartererId != '' && this.chartererId != null && this.chartererId != undefined)
+                {
+                    const tradingNotificationData =
+                    {
+                        fromUserId      :       localStorage.getItem('userId'),
+                        toUserId        :       this.chartererId,
+                        notification    :       this.message +' Fixture '+ this.tradingId,
+                        createdBy       :       localStorage.getItem('userId'),
+                        updatedBy       :       localStorage.getItem('userId')
+                    };
+                    this.http.post(`${config.baseUrl}/tradingNotificationInsert`,
+                    tradingNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                }
+            }
+            
+
             this.router.navigate(['/apps/trading-platform-management']);
         }
     }

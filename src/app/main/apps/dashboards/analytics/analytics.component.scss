@@ -4,7 +4,33 @@
 	.main-widget {
 		display: flex;
 		flex-direction: column;
+    }
+    
+    .status_tbl{
+		table{
+
+		margin-top: 4%;
+			tr{
+				th{
+					padding: 3%;
+					text-align: center;
+					background: #e2e2e2;
+					font-size: 14px;
+				}
+				td{
+					padding: 4%;
+	font-size: 14px;
+	text-align: center;
+    font-weight: 600;
+    border: 1px solid #e2e2e2;
+				}
+			}
+		}
 	}
+
+
+
+
 
 	.body.theme-default .fuse-card {
 		border-top: 3px solid #519dfb !important;
@@ -496,7 +522,16 @@
     {
         width: 45% !important;
         margin-top: 0px !important;
-        margin-bottom: 10px !important;
+        margin-bottom: -40px !important;
+        margin-left: 20px !important;
+        margin-right: 20px !important;
+    }
+
+    .customFormfullWidthDropDown
+    {
+        width: 45% !important;
+        margin-top: 40px !important;
+        margin-bottom: 20px !important;
         margin-left: 20px !important;
         margin-right: 20px !important;
     }

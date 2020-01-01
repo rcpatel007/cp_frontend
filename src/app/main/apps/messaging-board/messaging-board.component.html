@@ -194,16 +194,18 @@
                                     <mat-expansion-panel-header>
                                         <mat-panel-title>
                                             <h4 class="matCheckboxLayoutCustom"> 
-                                                <b style="margin-left: 10px;">{{ element.identifier }}</b>
+                                                <b style="margin-left: 10px;">{{ element.identifier }} - {{ element.vesselName }} - {{ element.companyName }} </b>
                                             </h4>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
-                                    <div style="max-height: 300px; overflow: scrolls;">
-                                    <h4 *ngFor="let dynamicData of element.progressMessages; let i= index">
-                                        {{ dynamicData.message }}
-                                        <br>
-                                        <br>
-                                    </h4>
+                                    <div style="max-height: 200px; overflow: scroll;">
+                                        <table>
+                                            <tr *ngFor="let dynamicData of element.progressMessages; let i= index">
+                                                <td>{{ dynamicData.message }}</td>
+                                                <td>{{ dynamicData.time }}</td>
+                                                <td>{{ dynamicData.progessDate }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </mat-expansion-panel>
                             </mat-accordion>

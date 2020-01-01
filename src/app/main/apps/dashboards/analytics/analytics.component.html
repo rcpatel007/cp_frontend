@@ -15,131 +15,75 @@
                     </div>
                 </div>
                 <div class="position-relative h-368 pb-16">
-                    <form [formGroup]="vesselSearchForm" (ngSubmit)="tradingProgressRecordsServerSide()" style="padding: 0px !important;">
+                    <form [formGroup]="vesselSearchForm" (ngSubmit)="tradingRecordsServerSideAccordingToVessel()" style="padding: 0px !important;">
                         <mat-form-field  class="customFormfullWidth" appearance="outline">
                             <mat-label>Vessel Name </mat-label>
                             <input formControlName="vesselName" matInput placeholder="Vessel Name" >
                         </mat-form-field>
-                        <mat-form-field  class="customFormfullWidth" appearance="outline">
-                            <mat-label>Keywords </mat-label>
-                            <input formControlName="keywords" matInput placeholder="Keywords" >
-                        </mat-form-field>
-                        <mat-form-field  class="customFormfullWidth" appearance="outline">
-                            <mat-label>Charterer </mat-label>
-                            <input formControlName="charterer" matInput placeholder="Charterer" >
-                        </mat-form-field>
                         <mat-form-field class="customFormfullWidth" appearance="outline">
-                            <mat-label>Date Min </mat-label>
-                            <input formControlName="dateMin" matInput [matDatepicker]="dateMinPicker" placeholder="Date Min" >
-                            <mat-datepicker-toggle matSuffix [for]="dateMinPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #dateMinPicker></mat-datepicker>
+                            <mat-label>CP Date </mat-label>
+                            <input formControlName="cpDate" matInput [matDatepicker]="cpDatePicker" placeholder="CP Date" >
+                            <mat-datepicker-toggle matSuffix [for]="cpDatePicker"></mat-datepicker-toggle>
+                            <mat-datepicker #cpDatePicker></mat-datepicker>
                         </mat-form-field>
-                        <mat-form-field  class="customFormfullWidth" appearance="outline">
-                            <mat-label>Owner </mat-label>
-                            <input formControlName="owner" matInput placeholder="Owner" >
-                        </mat-form-field>
-                        <mat-form-field class="customFormfullWidth" appearance="outline">
-                            <mat-label>Date Max </mat-label>
-                            <input formControlName="dateMin" matInput [matDatepicker]="dateMaxPicker" placeholder="Date Max" >
-                            <mat-datepicker-toggle matSuffix [for]="dateMaxPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #dateMaxPicker></mat-datepicker>
-                        </mat-form-field>
-                        <mat-form-field class="customFormfullWidth" appearance="outline">
-                            <mat-label>Vessel Type</mat-label>
-                            <mat-select formControlName="vessel_type" matSelect>
-                                <mat-option [value]="type1"> Type 1 </mat-option>
-                                <mat-option [value]="type2"> Type 2 </mat-option>
+
+                        <mat-form-field class="customFormfullWidthDropDown" appearance="outline" style="margin-bottom: -30px !important;">
+                            <mat-label>Broker</mat-label>
+                            <mat-select matSelect formControlName="brokerId">
+                                <mat-option *ngFor="let brokerData of brokerRecordsServerSideResponseData" [ngClass]="{'d-none': brokerData.isActive === 'N'}" 
+                                [value]="brokerData.id"> {{brokerData.username}} </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field class="customFormfullWidth" appearance="outline">
-                            <mat-label>Status</mat-label>
-                            <mat-select formControlName="status" matSelect>
-                                <mat-option [value]="status1"> Status 1 </mat-option>
-                                <mat-option [value]="status2"> Status 2 </mat-option>
+                        <mat-form-field class="customFormfullWidthDropDown" appearance="outline" style="margin-bottom: -30px !important;">
+                            <mat-label>Charterer</mat-label>
+                            <mat-select matSelect formControlName="chartererId">
+                                <mat-option *ngFor="let chartererData of chartererRecordsServerSideResponseData" [ngClass]="{'d-none': chartererData.isActive === 'N'}" 
+                                [value]="chartererData.id"> {{chartererData.username}} </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field  class="customFormfullWidth" appearance="outline">
-                            <mat-label>Charterer Broker </mat-label>
-                            <input formControlName="charterer_broker" matInput placeholder="Charterer Broker" >
+                        <mat-form-field class="customFormfullWidthDropDown" appearance="outline" style="margin-bottom: -30px !important;">
+                            <mat-label>Owner</mat-label>
+                            <mat-select matSelect formControlName="ownerId">
+                                <mat-option *ngFor="let ownerData of ownerRecordsServerSideResponseData" [ngClass]="{'d-none': ownerData.isActive === 'N'}" 
+                                [value]="ownerData.id"> {{ownerData.username}} </mat-option>
+                            </mat-select>
                         </mat-form-field>
-                        <mat-form-field class="customFormfullWidth" appearance="outline">
+                        <mat-form-field class="customFormfullWidthDropDown" appearance="outline" style="margin-bottom: -30px !important;">
                             <mat-label>Fixture ID</mat-label>
-                            <mat-select formControlName="fixture_id" matSelect>
-                                <mat-option [value]="fixture1"> Fixture2 </mat-option>
+                            <mat-select matSelect formControlName="fixtureId">
+                                <mat-option *ngFor="let fixtureData of tradingFixtureRecordsServerSideResponseData" [ngClass]="{'d-none': fixtureData.isActive === 'N'}" 
+                                [value]="fixtureData.id"> {{fixtureData.identifier}} </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="customFormfullWidthDropDown" appearance="outline" style="margin-bottom: -30px !important;">
+                            <mat-label>Location</mat-label>
+                            <mat-select matSelect formControlName="cpCity">
+                                <mat-option *ngFor="let cityData of cityRecordsServerSideResponseData" [ngClass]="{'d-none': cityData.isActive === 'N'}" 
+                                [value]="cityData.id"> {{cityData.cityName}} </mat-option>
                             </mat-select>
                         </mat-form-field>
 
                         <div *ngIf="advanceView">
-
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Owner Broker </mat-label>
-                                <input formControlName="charterer_broker" matInput placeholder="Owner Broker">
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Created By</mat-label>
-                                <mat-select formControlName="created_by" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Responsible User</mat-label>
-                                <mat-select formControlName="responsible_user" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Bookmarked By</mat-label>
-                                <mat-select formControlName="bookmarked_by" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Active User</mat-label>
-                                <mat-select formControlName="active_user" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Office Location</mat-label>
-                                <mat-select formControlName="office_location" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field  class="customFormfullWidth" appearance="outline">
-                                <mat-label>Hits / Page</mat-label>
-                                <mat-select formControlName="hits_page" matSelect>
-                                    <mat-option [value]="user1"> user1 </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                       
                             <br>
                             <br>
                             <mat-label style="margin-left: 25px; font-weight: bold;">Signed By </mat-label >
                             <br>
                             <br>
-                            <mat-checkbox style="margin-left: 25px;" formControlName="owner_signed">Charterer</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;" formControlName="charterer_signed">Owner</mat-checkbox>
+                            <mat-checkbox style="margin-left: 25px;" (change)="chartererSigned($event)">Charterer</mat-checkbox>
+                            <mat-checkbox style="margin-left: 25px;" (change)="ownerSigned($event)">Owner</mat-checkbox>
                             <br>
                             <br>
                             <mat-label style="margin-left: 25px; font-weight: bold;">Not Signed By </mat-label>
                             <br>
                             <br>
-                            <mat-checkbox style="margin-left: 25px;" formControlName="owner_not_signed">Charterer</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;" formControlName="charterer_not_signed">Owner</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;" formControlName="cp_not_signed">C/P</mat-checkbox>
+                            <mat-checkbox style="margin-left: 25px;" (change)="chartererNotSigned($event)">Charterer</mat-checkbox>
+                            <mat-checkbox style="margin-left: 25px;" (change)="ownerNotSigned($event)">Owner</mat-checkbox>
                             <br>
-                            <mat-label style="margin-left: 25px; font-weight: bold;">Vessel Type </mat-label>
-                            <br>
-                            <br>
-                            <mat-checkbox style="margin-left: 25px;">Small Bulk</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Handy Size</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Handymax</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Supermax</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Panamax</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Post-panamax</mat-checkbox>
-                            <mat-checkbox style="margin-left: 25px;">Capesize</mat-checkbox>
                             <br>
                         </div>
+                        <br>
+                        <br>
                         <button class="cst-modal__button cst-modal__button--submit " style="float: right; width: 220px; margin-right: 80px;" 
                         (click)="advanceOptionView()">Toggle Advance Option</button>
                         <button class="cst-modal__button cst-modal__button--submit " type="submit" style="float: right; width: 200px;" >Search</button>
@@ -155,6 +99,35 @@
                         <div class="h2 font-weight-300">Vessel Status</div>
                     </div>
                     <div class="h-390" style="max-height: 510px; height : 510px !important; overflow: scroll;">
+                       
+
+ <div class="h-200">
+    <ngx-charts-pie-chart
+        *fuseIfOnDom
+        [scheme]="widgets.widget7.scheme"
+        [results]="widgets.widget7.devices"
+        [doughnut]="true">
+    </ngx-charts-pie-chart>
+</div>
+<div class="status_tbl">
+    <span class="h2" style="padding:2%;">Fixture Status </span>
+
+    <table>
+        <tr>
+            <th>Active <span></span> </th>
+            <th>C/p Signed <span></span></th>
+            <th>C/P Not Signed<span></span> </th>
+        </tr>
+        <tr>
+            <td>{{active}}</td>
+            <td>{{Signed}}</td>
+            <td>{{notSigned}}</td>
+        </tr>
+    </table>
+
+    
+</div>
+                       
                         <!-- <div *ngFor="let dynamicData of userRecordsServerSideResponseData; let i= index" class="user_sec">
                             <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
                             <span>{{ dynamicData.username }}</span>
