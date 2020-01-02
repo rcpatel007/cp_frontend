@@ -18,6 +18,8 @@ import { getNumberOfCurrencyDigits } from '@angular/common';
 import {FormGroupDirective, NgForm,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import * as moment from 'moment';
+import * as io from 'socket.io-client';
+
 
 export interface PeriodicElement
 {
@@ -74,6 +76,8 @@ export interface PeriodicElement
 
 export class TradingPlatformManagementComponent implements OnInit
 {
+
+    socket:any;
     // Assign Div Name For Hide And Show Start
     tradeRecordsDiv = true;
     createTradeButtonView = false;
@@ -147,7 +151,7 @@ export class TradingPlatformManagementComponent implements OnInit
     cpFormId : string;
     copyTradingId : string;
     // Assign Variables End
-
+     msg =[];
     // Assign API Variable Start
     tradingRecordsServerSideResponse : any;
     tradingRecordsServerSideResponseData = [];
@@ -202,6 +206,14 @@ export class TradingPlatformManagementComponent implements OnInit
         
     )
     {
+
+        this.socket = io('http://3.18.221.80:3001');
+        this.socket.on('new-notification', (result) => {
+            console.log(result);
+            this.msg.push(result.data);
+
+        });
+
         this.tradingRecordsData = new MatTableDataSource(this.tradingRecordsServerSideResponseData );
     }
 
@@ -624,6 +636,7 @@ export class TradingPlatformManagementComponent implements OnInit
                             };
                             this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`,
                             ownerNotificationData, headerOptions).subscribe(res =>{},err =>{});
+                            this.socket.emit('new-notification', ownerNotificationData);
 
                             const tradingProgressData =
                             {
@@ -655,6 +668,7 @@ export class TradingPlatformManagementComponent implements OnInit
                             };
 
                             this.http.post(`${config.baseUrl}/tradingEmailIDAndNotificationSend`, chartererNotificatioNData, headerOptions).subscribe(res =>{},err =>{});
+                            this.socket.emit('new-notification', chartererNotificatioNData);
 
                             const tradingProgressData =
                             {

@@ -99,35 +99,6 @@
                         <div class="h2 font-weight-300">Vessel Status</div>
                     </div>
                     <div class="h-390" style="max-height: 510px; height : 510px !important; overflow: scroll;">
-                       
-
- <div class="h-200">
-    <ngx-charts-pie-chart
-        *fuseIfOnDom
-        [scheme]="widgets.widget7.scheme"
-        [results]="widgets.widget7.devices"
-        [doughnut]="true">
-    </ngx-charts-pie-chart>
-</div>
-<div class="status_tbl">
-    <span class="h2" style="padding:2%;">Fixture Status </span>
-
-    <table>
-        <tr>
-            <th>Active <span></span> </th>
-            <th>C/p Signed <span></span></th>
-            <th>C/P Not Signed<span></span> </th>
-        </tr>
-        <tr>
-            <td>{{active}}</td>
-            <td>{{Signed}}</td>
-            <td>{{notSigned}}</td>
-        </tr>
-    </table>
-
-    
-</div>
-                       
                         <!-- <div *ngFor="let dynamicData of userRecordsServerSideResponseData; let i= index" class="user_sec">
                             <img class="avatar" src="assets/images/avatars/Velazquez.jpg">
                             <span>{{ dynamicData.username }}</span>

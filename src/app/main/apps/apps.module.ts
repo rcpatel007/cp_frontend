@@ -12,6 +12,7 @@ import { DrawcpComponent } from './drawcp/drawcp.component';
 import { ChatManagementComponent } from './chat-management/chat-management.component';
 import { FaqManagementComponent } from './faq-management/faq-management.component';
 import { TermManagementComponent } from './term-management/term-management.component';
+// import { ChatComponent } from './chat/chat.component';
 
 // import { StdbidManagementComponent } from './stdbid-management/stdbid-management.component';
 // import { CountryPickerModule } from 'angular2-countrypicker';
@@ -156,6 +157,10 @@ const routes = [
         path: 'chat-management',
         loadChildren: './chat-management/chat-managment.module#ChatManagementModule',
     },
+    // {
+    //     path: 'chat',
+    //     loadChildren: './chat/chat.module#ChatModule',
+    // },
 
     {
         path: 'faq-management',

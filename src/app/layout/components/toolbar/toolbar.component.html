@@ -84,7 +84,13 @@
                     </span>
                 </button>
                
-
+                <button mat-menu-item *ngFor="let n of notification" (click)="setLanguage(lang)">
+                    <span fxLayout="row" fxLayoutAlign="start center">
+                        <!-- <img class="flag mr-16" [src]="'assets/icons/flags/'+lang.flag+'.png'"> -->
+                        <span class="iso">{{n}}</span>
+                    </span>
+                </button>
+               
                 <button mat-menu-item [routerLink]="'/components/multi-language'">
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <span>Learn more</span>

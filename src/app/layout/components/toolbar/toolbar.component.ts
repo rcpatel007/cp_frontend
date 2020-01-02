@@ -33,6 +33,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     userInfo: any;
     email: string;
     msg =  [];
+    notification =[];
     counter:number  =0;
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -53,19 +54,20 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private alertService: AlertService
     )
     {
-          this.socket = io('http://localhost:3001');
+          this.socket = io('http://3.18.221.80:3001');
           this.socket.on('message', (result) => {
             this.msg.push(result.data);
           console.log(result);
           console.log(this.msg);
           this.counter = this.counter +1;
           });
-          this.socket.on('new-notifaction', (result) => {
-            this.msg.push(result.data);
+          this.socket.on('new-notification', (result) => {
+            this.notification.push(result.data);
           console.log(result);
-          console.log(this.msg);
+          console.log(this.notification);
           this.counter = this.counter +1;
           });
+
         this.userInfo = '';
         // Set the defaults
         this.userStatusOptions = [
@@ -74,6 +76,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 icon : 'icon-checkbox-marked-circle',
                 color: '#4CAF50'
             },
+
             {
                 title: 'Away',
                 icon : 'icon-clock',

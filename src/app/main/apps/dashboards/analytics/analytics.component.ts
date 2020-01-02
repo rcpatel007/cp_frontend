@@ -138,9 +138,7 @@ export class AnalyticsDashboardComponent implements OnInit
 
     acceptRejectTitle : any;
     afteracceptRejectTitle : any;
-    active:number;
-    notSigned:number;
-    Signed:number;
+
     vesselSearchForm : FormGroup;
     get vesselSearchFormValues() { return this.vesselSearchForm.controls; }
     // Vessel Search Form Settings End
@@ -202,11 +200,6 @@ export class AnalyticsDashboardComponent implements OnInit
     
     companyId : string;
     
- tradeStatusDataServerSideResponsefull: any;
- tradeStatusDataServerSideResponseDatafull = [];
-
-
-
     tradingFixtureRecordsServerSideResponse : any;
     tradingFixtureRecordsServerSideResponseData = [];
 
@@ -342,50 +335,6 @@ export class AnalyticsDashboardComponent implements OnInit
      }
      // Fetch City Records End
 
-     tradeStatusData() {
-        var filter = {};
-        filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
-        this._userService.tradeStatusData(filter).pipe(first())
-            .subscribe(res => {
-                this.tradeStatusDataServerSideResponse = res;
-                if (this.tradeStatusDataServerSideResponse.success === true) {
-                    this.tradeStatusDataServerSideResponseData.push(this.tradeStatusDataServerSideResponse  .data);
-
-                    this.active = this.tradeStatusDataServerSideResponseData[0].active;
-                    this.Signed = this.tradeStatusDataServerSideResponseData[0].cpSigned;
-                    this.notSigned = this.tradeStatusDataServerSideResponseData[0].cpNotSigned;
-                    let widget7 = {
-                        scheme: {
-                            domain: ['#21B025', '#A833FF', '#FF5733']
-                        },
-                        devices: [
-                            {
-                                name: 'active',
-                                value: this.tradeStatusDataServerSideResponseData[0].active,
-                                change: -0.6
-                            },
-                            {
-                                name: 'C/P  Signed',
-                                value: this.tradeStatusDataServerSideResponseData[0].cpSigned,
-                                change: 0.7
-                            },
-                            {
-                                name: 'C/P NotSigned',
-                                value: this.tradeStatusDataServerSideResponseData[0].cpNotSigned,
-                                change: 0.1
-                            }
-                        ]
-                    }
-
-                    this.widgets = { widget7: widget7 };
-                    console.log(this.widgets);
-                    console.log(this.tradeStatusDataServerSideResponse);
-                    console.log(this.tradeStatusDataServerSideResponseData);
-                }
-            });
-    }
-
-
     // Trading Records Server Side Start
     tradingFixtureIDS(): void
     {
@@ -512,22 +461,22 @@ export class AnalyticsDashboardComponent implements OnInit
     }
 
     // Trade Status Data
-    // tradeStatusData()
-    // {
-    //     var filter = {};
-    //         filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
-    //     this._userService.tradeStatusData(filter).pipe(first())
-    //     .subscribe(res =>
-    //     {
-    //         this.tradeStatusDataServerSideResponse = res;
-    //         if (this.tradeStatusDataServerSideResponse.success === true)
-    //         {
-    //             this.tradeStatusDataServerSideResponseData = this.tradeStatusDataServerSideResponse.data;
-    //             console.log(this.tradeStatusDataServerSideResponse);
-    //             console.log(this.tradeStatusDataServerSideResponseData);
-    //         }   
-    //     }); 
-    // }
+    tradeStatusData()
+    {
+        var filter = {};
+            filter["companyId"] = JSON.parse(localStorage.getItem('companyId'));
+        this._userService.tradeStatusData(filter).pipe(first())
+        .subscribe(res =>
+        {
+            this.tradeStatusDataServerSideResponse = res;
+            if (this.tradeStatusDataServerSideResponse.success === true)
+            {
+                this.tradeStatusDataServerSideResponseData = this.tradeStatusDataServerSideResponse.data;
+                console.log(this.tradeStatusDataServerSideResponse);
+                console.log(this.tradeStatusDataServerSideResponseData);
+            }   
+        }); 
+    }
 
     // New Users Records
     newUsersRecords()

@@ -203,7 +203,7 @@ export class ChatManagementComponent implements OnInit {
             private authenticationService: AuthenticationService,
 
     ) {
-        this.socket = io('http://localhost:3001');
+        this.socket = io('http://3.18.221.80:3001');
         this.socket.on('message', (result) => {
             console.log(result);
             this.msg.push(result.data);
